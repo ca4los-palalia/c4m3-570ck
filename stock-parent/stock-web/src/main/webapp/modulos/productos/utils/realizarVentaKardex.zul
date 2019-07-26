@@ -1,0 +1,55 @@
+<?page title="" contentType="text/html;charset=UTF-8"?>
+<zk>
+	<?script type="text/javascript" src="/scripts/watermarks.js"?>
+
+	<window apply="org.zkoss.bind.BindComposer"
+		id="realizarVentaKardexVMModalDialog"
+		viewModel="@id('bpvm') @init('com.cplsystems.stock.app.vm.producto.RealizarVentaKardexVM')"
+		width="10%" height="7%" position="center,center" closable="true">
+
+		<borderlayout>
+			<north title=""
+				maxsize="300" size="30%" style="border-style: hidden;">
+					<window height="100%" width="100%">
+						<grid sclass="fgrid">
+							<columns>
+								<column align="left" width="90px" />
+								<column align="center" />
+							</columns>
+							<rows>
+								<row>
+									<label width="100%" value="Cantidad:" />
+									<textbox value="@bind(bpvm.cantidad)" width="100%"
+									onOK="@command('transferProduct')"/>
+								</row>
+							</rows>
+						</grid>
+						
+					</window>
+			</north>
+			<center style="border-style: hidden;">
+				<borderlayout>
+					<center style="border-style: hidden;">
+						<grid sclass="fgrid">
+							<columns>
+								<column align="center" />
+								<column align="center" />
+							</columns>
+							<rows>
+								<row>
+									<button width="100%"
+										label="@bind(bpvm.GENERICZUL_COMMAND_CANCELAR)"
+										onClick="@command('closeDialog')" />
+									<button width="100%"
+										label="@bind(bpvm.GENERICZUL_COMMAND_ACEPTAR)"
+										tooltiptext="La salida de mercancia se guardará automaticamente"
+										onClick="@command('transferProduct')" />
+								</row>
+							</rows>
+						</grid>
+					</center>
+				</borderlayout>
+			</center>
+		</borderlayout>
+	</window>
+</zk>

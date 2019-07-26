@@ -1,0 +1,76 @@
+@CHARSET "ISO-8859-1";
+
+.regionLeft, .regionRigth {
+	float: left;
+	min-height: 500px;
+}
+
+.regionLeft {
+	margin-left: 10px;
+	position: relative;
+	width: 520px;
+}
+
+
+.colorHeaderList{
+	background: #4c4c4c; /* Old browsers */
+	background: -moz-linear-gradient(top,  #4c4c4c 0%, #595959 12%, #666666 25%, #474747 39%, #2c2c2c 50%, #000000 51%, #111111 60%, #2b2b2b 76%, #1c1c1c 91%, #131313 100%); /* FF3.6-15 */
+	background: -webkit-linear-gradient(top,  #4c4c4c 0%,#595959 12%,#666666 25%,#474747 39%,#2c2c2c 50%,#000000 51%,#111111 60%,#2b2b2b 76%,#1c1c1c 91%,#131313 100%); /* Chrome10-25,Safari5.1-6 */
+	background: linear-gradient(to bottom,  #4c4c4c 0%,#595959 12%,#666666 25%,#474747 39%,#2c2c2c 50%,#000000 51%,#111111 60%,#2b2b2b 76%,#1c1c1c 91%,#131313 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#4c4c4c', endColorstr='#131313',GradientType=0 ); /* IE6-9 */
+}
+
+.colorHeaderTitleBlack{
+	background-image: -ms-linear-gradient(bottom, #959595 0%, #0D0D0D 46%, #010101 50%, #0A0A0A 53%, #1b1b1b 100%);/* IE10+ */ 
+	background-image: -moz-linear-gradient(bottom, #959595 0%, #0D0D0D 46%, #010101 50%, #0A0A0A 53%, #1b1b1b 100%);/* Mozilla Firefox */ 
+	background-image: -o-linear-gradient(bottom, #959595 0%, #0D0D0D 46%, #010101 50%, #0A0A0A 53%, #1b1b1b 100%);/* Opera */
+	background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0, #959595), color-stop(46, #0D0D0D), color-stop(50, #010101), color-stop(53, #0A0A0A), color-stop(100, #1b1b1b));/* Webkit (Safari/Chrome 10) */ 
+	background-image: -webkit-linear-gradient(bottom, #959595 0%, #0D0D0D 46%, #010101 50%, #0A0A0A 53%, #1b1b1b 100%);/* Webkit (Chrome 11+) */
+	background-image: linear-gradient(to top, #959595 0%, #0D0D0D 46%, #010101 50%, #0A0A0A 53%, #1b1b1b 100%);/* W3C Markup */
+}
+
+.colorHeaderTitleBlue{
+	/* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#1e5799+0,2989d8+50,207cca+51,7db9e8+100;Blue+Gloss+Default */
+	background: #1e5799; /* Old browsers */
+	background: -moz-linear-gradient(top,  #1e5799 0%, #2989d8 50%, #207cca 51%, #7db9e8 100%); /* FF3.6-15 */
+	background: -webkit-linear-gradient(top,  #1e5799 0%,#2989d8 50%,#207cca 51%,#7db9e8 100%); /* Chrome10-25,Safari5.1-6 */
+	background: linear-gradient(to bottom,  #1e5799 0%,#2989d8 50%,#207cca 51%,#7db9e8 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#1e5799', endColorstr='#7db9e8',GradientType=0 ); /* IE6-9 */
+}
+
+.colorHeaderTitleGreen{
+	background: #b4e391; /* Old browsers */
+	background: -moz-linear-gradient(top,  #b4e391 0%, #61c419 50%, #b4e391 100%); /* FF3.6-15 */
+	background: -webkit-linear-gradient(top,  #b4e391 0%,#61c419 50%,#b4e391 100%); /* Chrome10-25,Safari5.1-6 */
+	background: linear-gradient(to bottom,  #b4e391 0%,#61c419 50%,#b4e391 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#b4e391', endColorstr='#b4e391',GradientType=0 ); /* IE6-9 */
+}
+
+.colorHeaderTitleRed{
+	/* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#ff3019+0,cf0404+100;Red+3D */
+	background: #ff3019; /* Old browsers */
+	background: -moz-linear-gradient(top,  #ff3019 0%, #cf0404 100%); /* FF3.6-15 */
+	background: -webkit-linear-gradient(top,  #ff3019 0%,#cf0404 100%); /* Chrome10-25,Safari5.1-6 */
+	background: linear-gradient(to bottom,  #ff3019 0%,#cf0404 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ff3019', endColorstr='#cf0404',GradientType=0 ); /* IE6-9 */
+}
+
+.borderEmpty{
+	border-style: none;
+}
+
+.border1PxBlue{
+	border-style: solid;
+    border-width: 1px;
+    border-color: #126ded;
+}
+.border1PxGreen{
+	border-style: solid;
+    border-width: 1px;
+    border-color: #b4e391;
+}
+.border1PxRed{
+	border-style: solid;
+    border-width: 1px;
+    border-color: #ff3019;
+}

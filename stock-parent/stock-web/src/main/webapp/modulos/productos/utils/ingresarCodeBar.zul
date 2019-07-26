@@ -1,0 +1,66 @@
+<?page title="" contentType="text/html;charset=UTF-8"?>
+<zk>
+	<?script type="text/javascript" src="/scripts/watermarks.js"?>
+
+	<window apply="org.zkoss.bind.BindComposer"
+		id="ingresarCodeBarModalDialog" onCancel="@command('closeDialog')"
+		viewModel="@id('bpvm') @init('com.cplsystems.stock.app.vm.producto.IngresarCodeBarVM')"
+		width="50%" height="100px" position="center,center" closable="true">
+
+		<style>
+			@import
+			url('https://fonts.googleapis.com/css?family=Orbitron');
+			.btnFormat{ border-radius: 5px; cursor:pointer; padding:
+			6px; font-family: 'Orbitron', sans-serif; }
+
+			.btnGreen{ background: linear-gradient(to bottom, #11b76b
+			0%,#056f41 100%); color: #ffffff; }
+
+			.btnRed{ background: linear-gradient(to bottom, #d42626
+			0%,#990000 100%); color: #ffffff; }
+		</style>
+
+		<borderlayout>
+			<north title="Generador de codigo de barras"
+				maxsize="300" size="50px" border="none"
+				sclass="headerAreaBackgroud">
+				<grid sclass="my-grid">
+					<columns>
+						<column width="150px" />
+						<column />
+					</columns>
+					<rows>
+						<row>
+							<label value="Ingresar codigo de barras"
+								sclass="colorLabel" />
+							<textbox width="100%"
+								onOK="@command('searchItemByKeyOrName')"
+								value="@bind(bpvm.nuevoCodigo.codigo)" />
+						</row>
+					</rows>
+				</grid>
+			</north>
+			<center border="none" sclass="headerAreaBackgroud">
+				<grid sclass="my-grid">
+					<columns>
+						<column align="left" width="68%" />
+						<column align="center" />
+						<column align="center" />
+					</columns>
+					<rows>
+						<row>
+							<label width="100%" value="" />
+							<button
+								label="@bind(bpvm.GENERICZUL_COMMAND_CANCELAR)"
+								onClick="@command('closeDialog')" sclass="btnFormat btnRed" />
+							<button
+								label="@bind(bpvm.GENERICZUL_COMMAND_ACEPTAR)"
+								onClick="@command('transferProduct')"
+								sclass="btnFormat btnGreen" />
+						</row>
+					</rows>
+				</grid>
+			</center>
+		</borderlayout>
+	</window>
+</zk>

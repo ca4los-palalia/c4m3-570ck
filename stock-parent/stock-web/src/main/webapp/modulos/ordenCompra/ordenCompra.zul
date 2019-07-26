@@ -1,0 +1,418 @@
+<?page contentType="text/html;charset=UTF-8"?>
+<zk>
+	<script src="/scripts/watermarks.js" type="text/javascript" />
+	<window apply="org.zkoss.bind.BindComposer" height="100%"
+		border="none"
+		viewModel="@id('ovm') @init('com.cplsystems.stock.app.vm.ordencompra.OrdenCompraVM')">
+		<borderlayout>
+			<north maxsize="300" border="none" size="40px">
+				<window border="none">
+					<grid sclass="my-grid">
+						<columns>
+							<column align="left" />
+							<column align="center" width="205px" />
+							<column align="center" width="205px" />
+							<column align="center" width="130px" />
+						</columns>
+						<rows>
+							<row>
+								<label
+									style="@bind(ovm.styleModuloFontTitle)"
+									value="Ordenes de compra | orden de compra:" />
+
+								<button sclass="btnFormat btnGreen"
+									label="Aprovar orden de compra"
+									onClick="@command('aceptarOrdenCompra')" />
+								<button sclass="btnFormat btnRed"
+									label="Cancelar orden de compra"
+									onClick="@command('abrirVentanaCancelacion')" />
+								<button sclass="btnFormat btnRedBlue"
+									label="Exportar a PDF"
+									onClick="@command('imprimirOrdenCompra')"
+									tooltiptext="Exportar orden de compra a PDF" />
+							</row>
+						</rows>
+					</grid>
+				</window>
+			</north>
+			<center border="none">
+				<borderlayout>
+					<!-- BUSQUEDAS -->
+					<center flex="true">
+						<borderlayout>
+							<north maxsize="300" border="none"
+								size="95px">
+								<window width="100%" height="100%"
+									border="none">
+									<grid sclass="my-grid">
+										<columns>
+											<column align="center" />
+											<column align="center" />
+											<column align="center" />
+										</columns>
+										<rows>
+											<row>
+												<button
+													image="/images/toolbar/searchNew16.png"
+													zclass="find_button" onClick="@command('checkNueva')"
+													tooltiptext="Ordenes de compra nuevas" />
+												<button
+													image="/images/toolbar/searchCancel16.png"
+													zclass="find_button" onClick="@command('checkCancelada')"
+													tooltiptext="Ordenes de compra Canceladas" />
+												<button
+													image="/images/toolbar/searchAccept16.png"
+													zclass="find_button" onClick="@command('checkAceptada')"
+													tooltiptext="Ordenes de compra Aceptadas" />
+											</row>
+										</rows>
+									</grid>
+									<grid sclass="my-grid">
+										<columns>
+											<column />
+											<column width="14%" />
+										</columns>
+										<rows>
+											<row>
+												<textbox
+													id="buscarOrdCompraId" onOK="@command('fidByString')"
+													value="@bind(ovm.requisicion.buscarRequisicion)"
+													width="100%" />
+												<hlayout
+													style="text-align:center">
+													<button
+														image="/images/toolbar/find16x16.png" zclass="find_button"
+														onClick="@command('fidByString')"
+														tooltiptext="Buscar orden de compra" />
+												</hlayout>
+											</row>
+										</rows>
+									</grid>
+								</window>
+							</north>
+							<center border="none">
+								<!-- LISTA DE ORDENES DE COMPRA -->
+								<window border="none" height="100%"
+									width="100%">
+									<listbox vflex="1"
+										model="@load(ovm.ordenesCompras)"
+										selectedItem="@bind(ovm.ordenCompra)"
+										onSelect="@command('mostrarProductosOrdenCompra')"
+										emptyMessage="No hay ordenes de compra">
+										<listhead>
+											<listheader label="Orden C"
+												style="@bind(ovm.styleGlobalLabelTableHeaderFont)"
+												width="15%" sort="auto(codigo)" />
+											<listheader
+												style="@bind(ovm.styleGlobalLabelTableHeaderFont)"
+												label="Cotizacion" width="15%"
+												sort="auto(cotizacion.folioCotizacion)" />
+											<listheader
+												label="Proveedor"
+												style="@bind(ovm.styleGlobalLabelTableHeaderFont)"
+												sort="auto(cotizacion.proveedor.nombre)" />
+										</listhead>
+										<template name="model">
+											<listitem
+												style="@bind(each.estatusRequisicion.color)">
+
+												<listcell>
+													<label
+														style="@bind(each.estatusRequisicion.colorFont)"
+														value="@bind(each.codigo)" />
+												</listcell>
+												<listcell>
+													<label
+														style="@bind(each.estatusRequisicion.colorFont)"
+														value="@bind(each.cotizacion.folioCotizacion)" />
+												</listcell>
+
+												<listcell>
+													<label
+														style="@bind(each.estatusRequisicion.colorFont)"
+														value="@bind(each.cotizacion.proveedor.nombre)" />
+												</listcell>
+											</listitem>
+										</template>
+									</listbox>
+								</window>
+							</center>
+						</borderlayout>
+					</center>
+					<!-- INFORMACION DE LA ORDEN DE COMPRA -->
+					<east size="70%" flex="true">
+						<borderlayout>
+							<north maxsize="300" size="95px"
+								border="none">
+								<window width="100%" height="100%"
+									border="none">
+									<grid sclass="my-grid">
+										<columns>
+											<column width="13%" />
+											<column />
+											<column width="13%" />
+											<column />
+										</columns>
+										<rows>
+											<row>
+												<label
+													value="Proveedor:" style="@bind(ovm.styleGlobalLabelFont)" />
+												<div
+													style="border-bottom-style: solid; border-bottom-width: 1px;">
+													<label
+														style="@bind(ovm.styleGlobalLabelFont)"
+														value="@bind(ovm.ordenCompra.cotizacion.proveedor.nombre)" />
+												</div>
+
+												<label value="Atención:"
+													style="@bind(ovm.styleGlobalLabelFont)" />
+
+												<div
+													style="border-bottom-style: solid; border-bottom-width: 1px;">
+													<hlayout>
+
+														<label
+															style="@bind(ovm.styleGlobalLabelFont)"
+															value="@bind(ovm.ordenCompra.cotizacion.proveedor.representanteAteCliente.apellidoPaterno)" />
+														<label
+															style="@bind(ovm.styleGlobalLabelFont)" value=" " />
+														<label
+															style="@bind(ovm.styleGlobalLabelFont)"
+															value="@bind(ovm.ordenCompra.cotizacion.proveedor.representanteAteCliente.apellidoMaterno)" />
+														<label
+															style="@bind(ovm.styleGlobalLabelFont)" value=" " />
+														<label
+															style="@bind(ovm.styleGlobalLabelFont)"
+															value="@bind(ovm.ordenCompra.cotizacion.proveedor.representanteAteCliente.nombre)" />
+													</hlayout>
+												</div>
+
+											</row>
+										</rows>
+									</grid>
+
+									<grid sclass="my-grid">
+										<columns>
+											<column width="13%" />
+											<column />
+
+										</columns>
+										<rows>
+											<row>
+
+												<label
+													value="Dirección:" style="@bind(ovm.styleGlobalLabelFont)" />
+												<div
+													style="border-bottom-style: solid; border-bottom-width: 1px;">
+													<hlayout>
+														<label
+															style="@bind(ovm.styleGlobalLabelTableContentFont)"
+															value="@bind(ovm.ordenCompra.cotizacion.proveedor.direccionFiscal.calle)" />
+
+														<label
+															style="@bind(ovm.styleGlobalLabelTableContentFont)"
+															value="@bind(ovm.ordenCompra.cotizacion.proveedor.direccionFiscal.numExt)" />
+
+														<label
+															style="@bind(ovm.styleGlobalLabelTableContentFont)"
+															value="@bind(ovm.ordenCompra.cotizacion.proveedor.direccionFiscal.colonia)" />
+
+														<label
+															style="@bind(ovm.styleGlobalLabelTableContentFont)"
+															value="@bind(ovm.ordenCompra.cotizacion.proveedor.direccionFiscal.cp)" />
+
+														<label
+															style="@bind(ovm.styleGlobalLabelTableContentFont)"
+															value="@bind(ovm.ordenCompra.cotizacion.proveedor.direccionFiscal.cuidad)" />
+
+														<label
+															style="@bind(ovm.styleGlobalLabelTableContentFont)"
+															value="@bind(ovm.ordenCompra.cotizacion.proveedor.direccionFiscal.estado.nombre)" />
+
+														<label
+															style="@bind(ovm.styleGlobalLabelTableContentFont)"
+															value="@bind(ovm.ordenCompra.cotizacion.proveedor.direccionFiscal.pais.nombre)" />
+
+													</hlayout>
+												</div>
+											</row>
+										</rows>
+									</grid>
+
+									<grid sclass="my-grid">
+										<columns>
+											<column width="13%" />
+											<column width="13%" />
+											<column width="7%" />
+											<column width="17%" />
+											<column width="13%" />
+											<column />
+										</columns>
+										<rows>
+											<row>
+												<label value="Telefono:"
+													style="@bind(rvm.styleGlobalLabelFont)" />
+												<div
+													style="border-bottom-style: solid; border-bottom-width: 1px;">
+													<label
+														style="@bind(ovm.styleGlobalLabelTableContentFont)"
+														value="@bind(ovm.ordenCompra.cotizacion.proveedor.representanteAteCliente.contacto.telefono.numero)" />
+												</div>
+												<label value="E-mail:"
+													style="@bind(rvm.styleGlobalLabelFont)" />
+												<div
+													style="border-bottom-style: solid; border-bottom-width: 1px;">
+													<label
+														style="@bind(ovm.styleGlobalLabelTableContentFont)"
+														value="@bind(ovm.ordenCompra.cotizacion.proveedor.representanteAteCliente.contacto.email.email)" />
+												</div>
+												<label value="Fecha:"
+													style="@bind(rvm.styleGlobalLabelFont)" />
+												<div
+													style="border-bottom-style: solid; border-bottom-width: 1px;">
+													<datebox
+														style="@bind(ovm.styleGlobalLabelTableContentFont)"
+														value="@bind(ovm.fecha)" buttonVisible="false"
+														readonly="true" />
+												</div>
+											</row>
+										</rows>
+									</grid>
+								</window>
+							</north>
+							<center border="none">
+								<!-- LISTA DE PRODUCTOS DEL PROVEEDOR -->
+								<window border="none" height="100%"
+									width="100%">
+									<listbox vflex="1"
+										model="@load(ovm.cotizacionesConProductos)"
+										emptyMessage="No hay productos para esta cotización">
+										<listhead>
+											<listheader
+												style="@bind(ovm.styleGlobalLabelTableHeaderFont)"
+												label="No" width="5%" visible="false" />
+											<listheader
+												style="@bind(ovm.styleGlobalLabelTableHeaderFont)"
+												label="Clave" width="10%" sort="auto(producto.clave)" />
+											<listheader
+												style="@bind(ovm.styleGlobalLabelTableHeaderFont)"
+												label="Producto" sort="auto(proveedor.nombre)" />
+											<listheader
+												style="@bind(ovm.styleGlobalLabelTableHeaderFont)"
+												label="Partida generica" width="20%"
+												sort="auto(requisicionProducto.cofiaPartidaGenerica.nombre)" />
+
+											<listheader
+												style="@bind(ovm.styleGlobalLabelTableHeaderFont)"
+												label="Cantidad" width="10%" sort="auto(cantidad)" />
+											<listheader
+												style="@bind(ovm.styleGlobalLabelTableHeaderFont)"
+												label="U/M" width="10%" sort="auto(producto.unidad.nombre)" />
+											<listheader
+												style="@bind(ovm.styleGlobalLabelTableHeaderFont)"
+												label="Precio U." width="10%" sort="auto(producto.precio)" />
+											<listheader
+												style="@bind(ovm.styleGlobalLabelTableHeaderFont)"
+												label="Total." width="10%"
+												sort="auto(requisicionProducto.totalProductoPorUnidad)" />
+										</listhead>
+										<template name="model">
+											<listitem>
+												<listcell>
+													<label
+														style="@bind(rvm.styleGlobalLabelTableContentFont)"
+														value="${forEachStatus.index + 1}" />
+												</listcell>
+
+												<listcell>
+													<label
+														style="@bind(rvm.styleGlobalLabelTableContentFont)"
+														value="@bind(each.producto.clave)" />
+												</listcell>
+												<listcell>
+													<label
+														value="@bind(each.producto.nombre)"
+														style="@bind(rvm.styleGlobalLabelTableContentFont)" />
+												</listcell>
+												<listcell>
+													<label
+														value="@bind(each.requisicionProducto.cofiaPartidaGenerica.nombre)"
+														style="@bind(rvm.styleGlobalLabelTableContentFont)" />
+												</listcell>
+												<listcell>
+													<label
+														value="@bind(each.requisicionProducto.cantidad)"
+														style="@bind(rvm.styleGlobalLabelTableContentFont)" />
+												</listcell>
+												<listcell>
+													<label
+														value="@bind(each.producto.unidad.nombre)"
+														style="@bind(rvm.styleGlobalLabelTableContentFont)" />
+												</listcell>
+												<listcell>
+													<doublebox
+														style="@bind(rvm.styleGlobalLabelTableContentFont)"
+														width="100%" readonly="true" format="###,###,###.00"
+														value="@bind(each.producto.precio)" />
+
+												</listcell>
+												<listcell>
+													<doublebox
+														style="@bind(rvm.styleGlobalLabelTableContentFont)"
+														width="100%" readonly="true" format="###,###,###"
+														value="@bind(each.requisicionProducto.totalProductoPorUnidad)" />
+
+												</listcell>
+
+											</listitem>
+										</template>
+									</listbox>
+								</window>
+							</center>
+							<south border="none" size="30px">
+								<grid sclass="my-grid">
+									<columns>
+										<column width="5%" />
+										<column width="10%" />
+										<column />
+										<column width="20%" />
+										<column width="10%" />
+										<column width="15%" />
+										<column width="10%" />
+									</columns>
+									<rows>
+										<row>
+											<label />
+											<label />
+											<label />
+											<label />
+											<label />
+											<hlayout>
+												<image
+													src="/images/toolbar/products.png" />
+												<label style="@bind(rvm.styleGlobalLabelFont)"
+													value="Productos: " />
+												<label style="@bind(ovm.styleGlobalLabelTableContentFont)"
+													value="@bind(ovm.numeroProductos)" />
+											</hlayout>
+											<hlayout>
+												<image
+													src="/images/toolbar/currency.png" />
+												<doublebox 
+													style="@bind(ovm.styleGlobalLabelTableContentFont)" width="100%"
+													readonly="true" format="###,###,###"
+													value="@bind(ovm.precioTotal)" />
+											</hlayout>
+
+
+										</row>
+									</rows>
+								</grid>
+							</south>
+						</borderlayout>
+					</east>
+				</borderlayout>
+			</center>
+		</borderlayout>
+	</window>
+</zk>

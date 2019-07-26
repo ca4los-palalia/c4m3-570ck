@@ -1,0 +1,375 @@
+<?page contentType="text/html;charset=UTF-8"?>
+<zk>
+	<script src="/scripts/watermarks.js" type="text/javascript" />
+	<window apply="org.zkoss.bind.BindComposer" height="100%"
+		border="none" id="winMain"
+		viewModel="@id('ovm') @init('com.cplsystems.stock.app.vm.requisicion.ControlVM')">
+		<borderlayout visible="true">
+			<north maxsize="300" size="40px">
+				<window border="none" sclass="middle-div">
+					<grid sclass="my-grid">
+						<columns>
+							<column align="left" />
+							<column align="center" width="75px" />
+						</columns>
+						<rows>
+							<row>
+								<label
+									style="@bind(ovm.styleModuloFontTitle)"
+									value="Ordenes de compra | Control de compras:" />
+								<button sclass="btnFormat btnBlue"
+									visible="false" onClick="@command('abrirKardex')"
+									label="Kardex" />
+							</row>
+						</rows>
+					</grid>
+				</window>
+			</north>
+			<center border="none">
+				<borderlayout>
+					<center border="none" flex="true">
+						<!-- LISTA DE ORDENES DE COMPRA -->
+						<window height="100%" width="100%"
+							border="none">
+							<listbox sclass="mylist" vflex="1"
+								model="@load(ovm.kardexProveedorList)"
+								selectedItem="@bind(ovm.kardexProveedor)"
+								onSelect="@command('mostrarProductosOrdenCompra')"
+								emptyMessage="No hay ordenes de compra">
+								<listhead>
+									<listheader label="O. Comp"
+										style="@bind(ovm.styleGlobalLabelTableHeaderFont)"
+										width="30%"
+										sort="auto(ordenCompra.codigo)" />
+									<listheader label="Proveedor"
+										style="@bind(ovm.styleGlobalLabelTableHeaderFont)"
+										sort="auto(proveedor.nombre)" />
+
+								</listhead>
+								<template name="model">
+									<listitem>
+
+										<listcell>
+											<label
+												tooltiptext="Fólio orden de compra"
+												style="@bind(ovm.styleGlobalLabelTableContentFont)"
+												value="@bind(each.ordenCompra.codigo)" />
+										</listcell>
+										<listcell>
+											<label
+												style="@bind(ovm.styleGlobalLabelTableContentFont)"
+												value="@bind(each.proveedor.nombre)" />
+										</listcell>
+									</listitem>
+								</template>
+							</listbox>
+						</window>
+					</center>
+					<east size="80%" border="none" flex="true">
+						<!-- DETALLE DE LA INFORMACION -->
+						<borderlayout>
+							<north maxsize="300" size="95px"
+								border="none">
+								<window width="100%" height="100%"
+									border="none">
+									<grid sclass="my-grid">
+										<columns>
+											<column width="13%" />
+											<column />
+											<column width="13%" />
+											<column />
+										</columns>
+										<rows>
+											<row>
+												<label
+													value="Proveedor:"
+													style="@bind(ovm.styleGlobalLabelFont)"/>
+												<div
+													style="border-bottom-style: solid; border-bottom-width: 1px;">
+													<label
+														style="@bind(ovm.styleGlobalLabelTableContentFont)"
+														value="@bind(ovm.kardexProveedor.proveedor.nombre)" />
+												</div>
+
+												<label value="Atención:"
+													style="@bind(ovm.styleGlobalLabelFont)"/>
+												<div
+													style="border-bottom-style: solid; border-bottom-width: 1px;">
+													<hlayout>
+
+														<label
+															style="@bind(ovm.styleGlobalLabelTableContentFont)"
+															value="@bind(ovm.kardexProveedor.proveedor.representanteAteCliente.apellidoPaterno)" />
+														<label style="@bind(ovm.styleGlobalLabelTableContentFont)" value=" " />
+														<label
+															style="@bind(ovm.styleGlobalLabelTableContentFont)"
+															value="@bind(ovm.kardexProveedor.proveedor.representanteAteCliente.apellidoMaterno)" />
+														<label
+															style="@bind(ovm.styleGlobalLabelTableContentFont)" value=" " />
+														<label
+															style="@bind(ovm.styleGlobalLabelTableContentFont)"
+															value="@bind(ovm.kardexProveedor.proveedor.representanteAteCliente.nombre)" />
+													</hlayout>
+												</div>
+
+											</row>
+										</rows>
+									</grid>
+
+									<grid sclass="my-grid">
+										<columns>
+											<column width="13%" />
+											<column />
+
+										</columns>
+										<rows>
+											<row>
+
+												<label value="Dirección:"
+													style="@bind(ovm.styleGlobalLabelFont)"/>
+												<div
+													style="border-bottom-style: solid; border-bottom-width: 1px;">
+													<hlayout>
+														<label
+															style="@bind(ovm.styleGlobalLabelTableContentFont)"
+															value="@bind(ovm.kardexProveedor.proveedor.direccionFiscal.calle)" />
+
+														<label
+															style="@bind(ovm.styleGlobalLabelTableContentFont)"
+															value="@bind(ovm.kardexProveedor.proveedor.direccionFiscal.numExt)" />
+
+														<label
+															style="@bind(ovm.styleGlobalLabelTableContentFont)"
+															value="@bind(ovm.kardexProveedor.proveedor.direccionFiscal.colonia)" />
+
+														<label
+															style="@bind(ovm.styleGlobalLabelTableContentFont)"
+															value="@bind(ovm.kardexProveedor.proveedor.direccionFiscal.cp)" />
+
+														<label
+															style="@bind(ovm.styleGlobalLabelTableContentFont)"
+															value="@bind(ovm.kardexProveedor.proveedor.direccionFiscal.cuidad)" />
+
+														<label
+															style="@bind(ovm.styleGlobalLabelTableContentFont)"
+															value="@bind(ovm.kardexProveedor.proveedor.direccionFiscal.estado.nombre)" />
+
+														<label
+															style="@bind(ovm.styleGlobalLabelTableContentFont)"
+															value="@bind(ovm.kardexProveedor.proveedor.direccionFiscal.pais.nombre)" />
+
+													</hlayout>
+												</div>
+											</row>
+										</rows>
+									</grid>
+
+									<grid sclass="my-grid">
+										<columns>
+											<column width="13%" />
+											<column width="13%" />
+											<column width="7%" />
+											<column width="17%" />
+											<column width="13%" />
+											<column />
+										</columns>
+										<rows>
+											<row>
+												<label value="Telefono:"
+													style="@bind(ovm.styleGlobalLabelFont)"/>
+												<div
+													style="border-bottom-style: solid; border-bottom-width: 1px;">
+													<label
+														style="@bind(ovm.styleGlobalLabelTableContentFont)"
+														value="@bind(ovm.kardexProveedor.proveedor.representanteAteCliente.contacto.telefono.numero)" />
+												</div>
+												<label value="E-mail:"
+													style="@bind(ovm.styleGlobalLabelFont)"/>
+												<div
+													style="border-bottom-style: solid; border-bottom-width: 1px;">
+													<label
+														style="@bind(ovm.styleGlobalLabelTableContentFont)"
+														value="@bind(ovm.kardexProveedor.proveedor.representanteAteCliente.contacto.email.email)" />
+												</div>
+												<label value="Fecha:"
+													style="@bind(ovm.styleGlobalLabelFont)"/>
+												<div
+													style="border-bottom-style: solid; border-bottom-width: 1px;">
+													<datebox style="@bind(ovm.styleGlobalLabelTableContentFont)"
+														value="@bind(ovm.fecha)" buttonVisible="false"
+														readonly="true" />
+												</div>
+											</row>
+										</rows>
+									</grid>
+								</window>
+							</north>
+							<center border="none">
+								<window border="none" height="100%"
+									width="100%">
+									<listbox vflex="1" id="listItems"
+										emptyMessage="Kardex vacio" model="@load(ovm.kardexList)"
+										selectedItem="@bind(ovm.kardex)">
+										<auxhead>
+											<auxheader label=""
+												colspan="2" align="center" sclass="colorHeaderList"
+												zclass="borderEmpty" />
+											<auxheader label="UNIDADES"
+												colspan="2" align="center" sclass="colorHeaderList"
+												zclass="borderEmpty" style="color: white; font-size: 90%" />
+											<auxheader label="COSTO"
+												colspan="1" align="center" sclass="colorHeaderList"
+												zclass="borderEmpty" style="color: white; font-size: 90%" />
+											<auxheader colspan="2"
+												align="center" sclass="colorHeaderList"
+												zclass="borderEmpty" />
+										</auxhead>
+										<listhead>
+											<listheader
+												sclass="colorHeaderTitleBlack" zclass="borderEmpty"
+												style="color: white; font-size: 90%; text-align: center;"
+												label="Fecha" width="8%" align="center" />
+											<listheader
+												sclass="colorHeaderTitleBlack" zclass="borderEmpty"
+												style="color: white; font-size: 90%; text-align: center;"
+												label="Producto" tooltiptext="Nombre del producto" />
+
+											<listheader
+												sclass="colorHeaderTitleBlue" zclass="border1PxBlue"
+												style="color: white; font-size: 90%; text-align: center;"
+												label="Entrada"
+												tooltiptext="Numero de unidades del producto" width="6%" />
+											<listheader
+												sclass="colorHeaderTitleBlue" zclass="border1PxBlue"
+												style="color: white; font-size: 90%; text-align: center;"
+												label="Existencia"
+												tooltiptext="Numero de unidades del producto" width="7%" />
+											<listheader
+												sclass="colorHeaderTitleGreen" zclass="border1PxGreen"
+												style="color: white; font-size: 90%; text-align: center;"
+												label="Precio" tooltiptext="precio unitario" width="5%" />
+											<listheader
+												sclass="colorHeaderTitleBlack" zclass="borderEmpty"
+												style="color: white; font-size: 90%; text-align: center;"
+												width="10%" tooltiptext="" align="center" />
+										</listhead>
+										<template name="model"
+											var="kardexVar">
+											<listitem>
+												<listcell style="@bind(ovm.styleGlobalLabelTableContentFont)">
+													<datebox
+														readonly="true" value="@bind(kardexVar.fechaEntrada)"
+														compact="false" buttonVisible="false" />
+												</listcell>
+												<listcell>
+													<grid
+														sclass="my-grid">
+														<columns>
+															<column
+																width="12%" align="center" />
+															<column />
+														</columns>
+														<rows>
+															<row>
+																<button
+																	visible="@bind(kardexVar.botonBuscarProducto)"
+																	style="width:25px" zclass="find_button"
+																	image="/images/toolbar/wand32.png"
+																	onClick="@command('search', index=kardexVarStatus.index)"
+																	tooltiptext="Asistente para busqueda de producto" />
+																<label
+																	style="@bind(ovm.styleGlobalLabelTableContentFont)" width="100%"
+																	value="@bind(kardexVar.producto.nombre)" />
+															</row>
+														</rows>
+													</grid>
+												</listcell>
+												<listcell>
+													<textbox style="@bind(ovm.styleGlobalLabelTableContentFont)"
+														width="100%"
+														onChange="@command('calcularDebe', index=kardexVarStatus.index)"
+														value="@bind(kardexVar.entradaCantidad)" />
+												</listcell>
+												<listcell>
+													<textbox style="@bind(ovm.styleGlobalLabelTableContentFont)"
+														width="100%" value="@bind(kardexVar.existenciaCantidad)" />
+												</listcell>
+												<listcell>
+													<label
+														style="@bind(ovm.styleGlobalLabelTableContentFont)" width="100%"
+														value="@bind(kardexVar.precioUnitarioString)" />
+												</listcell>
+												<listcell>
+													<image
+														onClick="@command('salvarCambiosRowKardex', index=kardexVarStatus.index)"
+														src="/images/toolbar/saveOff16.png"
+														tooltiptext="Guardar cambios" style="cursor:pointer" />
+													<image
+														onClick="@command('configEnvio', index=kardexVarStatus.index)"
+														src="@bind(kardexVar.icon)"
+														tooltiptext="Asistente para configurar envio de producto"
+														style="cursor:pointer" />
+													<image
+														onClick="@command('verTarjetaProductoKardex', index=kardexVarStatus.index)"
+														src="/images/toolbar/cost16.png"
+														tooltiptext="Ver tarjeta de almacen"
+														style="cursor:pointer" />
+													<button
+														visible="false" image="/images/toolbar/remove16.png"
+														onClick="@command('eliminarItem', index=kardexVarStatus.index)"
+														zclass="find_button" tooltiptext="Remover item" />
+
+												</listcell>
+											</listitem>
+										</template>
+									</listbox>
+								</window>
+							</center>
+							<south size="30px" border="none">
+								<window width="100%" height="100%"
+									border="none">
+
+									<grid sclass="my-grid middle-div">
+										<columns>
+											<column align="center"
+												width="37px" />
+											<column align="center"
+												width="37px" />
+
+											<column align="right" />
+											<column align="right"
+												width="10%" />
+										</columns>
+										<rows>
+											<row>
+												<button
+													image="/images/toolbar/add16.png"
+													onClick="@command('agregarItem')" zclass="find_button"
+													tooltiptext="Agregar nuevo Producto" />
+												<button
+													zclass="find_button" image="/images/toolbar/saveOff16.png"
+													onClick="@command('save')" tooltiptext="Guardar KArdex" />
+
+												<image
+													src="/images/toolbar/products.png" />
+												<hlayout>
+													<label style="@bind(ovm.styleGlobalLabelFont)"
+														sclass="colorLabel" value="Productos: " />
+													<label
+														style="@bind(ovm.styleGlobalLabelTableContentFont)"
+														value="@bind(ovm.numeroProductos)" />
+												</hlayout>
+											</row>
+										</rows>
+									</grid>
+								</window>
+							</south>
+						</borderlayout>
+
+					</east>
+				</borderlayout>
+
+			</center>
+		</borderlayout>
+	</window>
+</zk>

@@ -1,0 +1,65 @@
+<?page title="" contentType="text/html;charset=UTF-8"?>
+<zk>
+	<?script type="text/javascript" src="/scripts/watermarks.js"?>
+
+	<window apply="org.zkoss.bind.BindComposer"
+		id="realizarDevolucionKardexVMModalDialog"
+		viewModel="@id('bpvm') @init('com.cplsystems.stock.app.vm.producto.RealizarDevolucionKardexVM')"
+		width="10%" height="170px" position="center,center" closable="true">
+		
+		<borderlayout>
+			<north title="Devolucion de producto"
+				maxsize="300" size="130px" style="border-style: hidden;">
+					<window height="100%" width="100%">
+						<radiogroup id="sv1" onCheck="choice1.value = self.selectedItem.label" />
+						<grid sclass="fgrid">
+							<columns>
+								<column align="left" width="80px" />
+								<column align="center" />
+							</columns>
+							<rows>
+								<row>
+									<radio label="Salida" radiogroup="sv1" checked="@bind(bpvm.devolucionSalida)"/>
+              						<radio label="Compra" radiogroup="sv1" checked="@bind(bpvm.devolucionCompra)"/>
+								</row>
+								<row>
+									<label width="100%" value="Cantidad:" />
+									<textbox value="@bind(bpvm.cantidad)" width="100%"
+									onOK="@command('transferProduct')"/>
+								</row>
+								<row>
+									<label width="100%" value="Referencia:" />
+									<textbox value="@bind(bpvm.referencia)" width="100%"
+									onOK="@command('transferProduct')"/>
+								</row>
+							</rows>
+						</grid>
+						
+					</window>
+			</north>
+			<center style="border-style: hidden;">
+				<borderlayout>
+					<center style="border-style: hidden;">
+						<grid sclass="fgrid">
+							<columns>
+								<column align="center" />
+								<column align="center" />
+							</columns>
+							<rows>
+								<row>
+									<button width="100%"
+										label="@bind(bpvm.GENERICZUL_COMMAND_CANCELAR)"
+										onClick="@command('closeDialog')" />
+									<button width="100%"
+										label="@bind(bpvm.GENERICZUL_COMMAND_ACEPTAR)"
+										tooltiptext="La salida de mercancia se guardará automaticamente"
+										onClick="@command('transferProduct')" />
+								</row>
+							</rows>
+						</grid>
+					</center>
+				</borderlayout>
+			</center>
+		</borderlayout>
+	</window>
+</zk>

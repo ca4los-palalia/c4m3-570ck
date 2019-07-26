@@ -1,0 +1,114 @@
+<?page title="" contentType="text/html;charset=UTF-8"?>
+<zk>
+	<?script type="text/javascript" src="/scripts/watermarks.js"?>
+	<?script type="style" src="/styles/home/styleGlobal.css" ?>
+	<?script type="style" src="/styles/home/styleHome.css" ?>
+
+	<window apply="org.zkoss.bind.BindComposer"
+		id="progressBarVMModalDialog"
+		viewModel="@id('bpvm') @init('com.cplsystems.stock.app.vm.producto.ProgressBarModelVM')"
+		width="30%" height="100%" position="center,center" closable="true">
+
+
+		<timer id="timer" delay="50" repeats="true" onTimer="@command('fetchingSimulatorTimer')"
+			onCreate="self.stop()">
+		</timer>
+		<timer delay="500" repeats="true" onTimer="@command('startTimer')"/>
+		
+
+
+		<borderlayout id="borderLay">
+			<north title="@bind(bpvm.WINDOW_SELECT_JUSTIFICACION_TITLE)"
+				maxsize="300" size="90%" style="border-style: hidden;">
+				<window height="100%" width="100%" id="winProgress">
+
+					<grid sclass="my-grid">
+						<columns>
+							<column />
+							<column />
+						</columns>
+						<rows>
+							<row>
+								<vlayout hflex="1">
+									<listbox id="nameList"
+										checkmark="true">
+										<auxhead>
+											<auxheader colspan="2">
+												<button id="fetchBtn" onClick="@command('fetchFileFromServer')"
+													label="Fetch Profile" hflex="1" height="35px"
+													autodisable="self" />
+											</auxheader>
+										</auxhead>
+										<listhead>
+											<listheader
+												label="Name List">
+											</listheader>
+										</listhead>
+									</listbox>
+									<hlayout sclass="selected-area">
+										Selected Number :
+										<label id="selectedText" />
+									</hlayout>
+								</vlayout>
+
+								<vlayout hflex="1">
+									<progressmeter id="progress"
+										hflex="1" value="0" />
+									<listbox id="downList" hflex="1">
+										<auxhead>
+											<auxheader colspan="2">
+												Profile Download List
+											</auxheader>
+										</auxhead>
+										<listhead>
+											<listheader label="Name" />
+											<listheader
+												label="Profile Download" />
+										</listhead>
+									</listbox>
+								</vlayout>
+							</row>
+						</rows>
+					</grid>
+
+
+
+
+				</window>
+			</north>
+			<center style="border-style: hidden;">
+				<borderlayout>
+					<center style="border-style: hidden;">
+						<div sclass="middle-div">
+
+							<grid sclass="fgrid">
+								<columns>
+									<column align="left" width="68%" />
+									<column align="center" />
+									<column align="center" />
+								</columns>
+								<rows>
+									<row>
+										<label width="100%" value="" />
+										<button
+											label="@bind(bpvm.GENERICZUL_COMMAND_CANCELAR)"
+											onClick="@command('closeDialog')" />
+										<button
+											label="@bind(bpvm.GENERICZUL_COMMAND_ACEPTAR)"
+											onClick="@command('transfer')" />
+									</row>
+								</rows>
+							</grid>
+						</div>
+					</center>
+				</borderlayout>
+			</center>
+		</borderlayout>
+
+
+
+
+
+
+	</window>
+</zk>

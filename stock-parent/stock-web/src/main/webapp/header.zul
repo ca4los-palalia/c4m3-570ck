@@ -1,0 +1,39 @@
+<?page title="" contentType="text/html;charset=UTF-8"?>
+<zk>
+	<window apply="org.zkoss.bind.BindComposer" height="100%" border="none" style="@bind(hvm.styleHomeHeader)"
+		viewModel="@id('hvm') @init('com.cplsystems.stock.app.vm.HeaderVM')">
+		<grid sclass="my-grid" width="100%">
+			<columns>
+				<column width="42px" align="center"/>
+				<column width="42px" align="center"/>
+				<column align="left" width="55%" />
+				<column />
+				<column align="right" />
+			</columns>
+			<rows>
+				<row>
+					<a onClick="@command('goHome')" tooltiptext="Inicio">
+						<image
+							width="100%" height="100%"
+							src="/images/home/home.png"/>
+					</a>
+					<a onClick="@command('openUrl')">
+						<image
+						width="100%" height="100%"
+						content="@bind(hvm.organizacion.logotipoAImage)" />
+					</a>
+					
+					<label zclass="tlLabel headerFontStyle"
+						value="@load(hvm.organizacion.nombre)" sclass="company" />
+					
+					<label zclass="tlLabel"  sclass="company" 
+						value="@bind(hvm.organizacion.navigating)"/>
+					<image width="30px" height="30px" class="circular"
+						style="cursor:pointer" src="/images/home/off24.png"
+						tooltiptext="@load(hvm.TAG_HEADERVM_TOOLTIP_CERRAR)" onClick="@command('logOut')" />
+					
+				</row>
+			</rows>
+		</grid>
+	</window>
+</zk>

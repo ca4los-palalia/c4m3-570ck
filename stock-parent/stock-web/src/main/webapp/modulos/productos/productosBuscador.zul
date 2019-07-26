@@ -1,0 +1,1473 @@
+<?page contentType="text/html;charset=UTF-8"?>
+<zk xmlns:x="xhtml">
+	<script src="/scripts/watermarks.js" type="text/javascript" />
+
+	<window apply="org.zkoss.bind.BindComposer" height="100%"
+		border="none"
+		viewModel="@id('pvm') @init('com.cplsystems.stock.app.vm.producto.ProductosVM')">
+
+		<menupopup id="downloadCodeBarPopup">
+			<menuitem onClick="@command('descargarCodigoBarras')"
+				image="/images/toolbar/update.png"
+				label="Descargar codigo de barras" />
+		</menupopup>
+
+		<borderlayout visible="true">
+			<north maxsize="300"
+				border="none" size="45px">
+				<window border="none" sclass="middle-div">
+					<grid sclass="my-grid">
+						<columns>
+							<column align="left" />
+							<column align="center" width="140px" />
+							<column align="center" width="160px" />
+							<column align="center" width="150px" />
+							<column align="center" width="130px" />
+							<column align="center" width="140px" />
+						</columns>
+						<rows>
+							<row>
+								<label
+									style="@bind(pvm.styleModuloFontTitle)"
+									value="Panel de control | Productos:" />
+								<button sclass="btnFormat btnBlueLow"
+									onClick="@command('nuevaCaptura')" label="Nuevo producto" />
+								<button sclass="btnFormat btnBlueTurq"
+									label="Guardar/Actualizar" onClick="@command('newRecord')" />
+								<button sclass="btnFormat btnRed"
+									label="Eliminar producto" onClick="@command('deleteRecord')" />
+								<button sclass="btnFormat btnRedBlue"
+									label="Exportar a PDF" onClick="@command('reporteProductos')"
+									tooltiptext="Exportar reporte como PDF" />
+								<button id="button" upload="true"
+									sclass="btnFormat btnGreenXls" label="Importar excel"
+									onUpload="@command('onUploadExcel',upEvent=event)"
+									tooltiptext="Importar Productos desde excel" />
+							</row>
+						</rows>
+					</grid>
+				</window>
+			</north>
+			<center border="none">
+				<borderlayout>
+					<!-- BUSCADOR -->
+					<center border="none">
+						<borderlayout>
+							<north maxsize="300" size="60%"
+								border="none">
+								<!-- FILTRO DE BUSQUEDAS -->
+								<borderlayout>
+									<north maxsize="300" border="none"
+										size="120px" title="Buscador">
+										<window width="100%"
+											height="100%" sclass="backgroundWindow" border="none">
+											<grid sclass="my-grid">
+												<columns>
+													<column width="16%" />
+													<column />
+												</columns>
+												<rows>
+													<row>
+
+														<label
+															style="@bind(pvm.styleGlobalLabelFont)" value="Familia: " />
+														<combobox
+															model="@load(pvm.productoTipoDB)"
+															onChange="@command('buscarProductosPorFamiliaChangeCombo')"
+															selectedItem="@bind(pvm.productoTipoSelected)"
+															readonly="true" width="100%" autodrop="true">
+															<template
+																name="model">
+																<comboitem
+																	label="@load(each.nombre)" />
+															</template>
+														</combobox>
+
+													</row>
+												</rows>
+											</grid>
+											<grid sclass="my-grid">
+												<columns>
+													<column />
+													<column width="14%" />
+												</columns>
+												<rows>
+													<row>
+
+														<textbox
+															id="buscadorProducto"
+															value="@bind(pvm.buscarProducto.nombre)" width="100%"
+															onOK="@command('findProductos')"
+															sclass="fontSizeContentGrid" />
+														<hlayout
+															style="text-align:center">
+															<button
+																image="/images/toolbar/find16x16.png"
+																zclass="find_button" onClick="@command('findProductos')"
+																tooltiptext="Buscar Productos" />
+														</hlayout>
+													</row>
+												</rows>
+											</grid>
+											
+										</window>
+									</north>
+									<center border="none">
+										<!-- LISTA DE PRODUCTOS -->
+										<window border="none"
+											height="100%" width="100%">
+											<listbox vflex="1"
+												onSelect="@command('obtenerListaFamiliasProducto')"
+												emptyMessage="No se encontro ningun producto"
+												model="@load(pvm.productoDB)"
+												selectedItem="@bind(pvm.producto)">
+												<listhead>
+													<listheader
+														style="@bind(pvm.styleGlobalLabelTableHeaderFont)" label="Clave"
+														width="18%" />
+													<listheader
+														style="@bind(pvm.styleGlobalLabelTableHeaderFont)" label="Nombre"
+														width="100%" />
+												</listhead>
+												<template name="model"
+													var="productoVar">
+													<listitem>
+														<listcell>
+															<label
+																style="font-size: 80%;" value="@bind(productoVar.clave)"
+																width="100%" />
+														</listcell>
+														<listcell>
+															<label
+																style="font-size: 80%;"
+																value="@bind(productoVar.nombre)" width="100%" />
+														</listcell>
+													</listitem>
+												</template>
+											</listbox>
+										</window>
+									</center>
+								</borderlayout>
+							</north>
+							<center border="none">
+								<window sclass="backgroundWindow"
+									border="none" style="text-align: center;" height="100%">
+									<div sclass="middle-div">
+
+										<image width="50%" height="50%"
+											content="@bind(pvm.producto.imagenAImage)" />
+									</div>
+								</window>
+							</center>
+						</borderlayout>
+					</center>
+					<!-- DETALLE DE LA INFORMACION -->
+					<east size="75%" border="none" flex="true">
+						<tabbox height="100%">
+							<tabs>
+								<tab
+									onClick="@command('tabSelectedInfoProducto')"
+									image="/images/toolbar/info16.png"
+									label="Información del producto" />
+								<tab
+									onClick="@command('tabSelectedReportesArticulos')"
+									image="/images/toolbar/report.png"
+									label="Reportes de artículos" />
+								<tab
+									onClick="@command('tabSelectedClasificaciones')"
+									image="/images/toolbar/catalogs.png" label="Clasificaciones" />
+								<tab
+									onClick="@command('tabSelectedMultiplesCodigos')"
+									image="/images/toolbar/barcode.png" label="Multiples códigos" />
+								<tab
+									onClick="@command('tabSelectedActualizarCodigos')"
+									image="/images/toolbar/cost16.png" label="Actualizar costos" />
+
+							</tabs>
+							<tabpanels>
+								<!-- INFORMACION DEL PRODUCTO -->
+								<tabpanel style="overflow:auto">
+									<window sclass="backgroundWindow"
+										width="100%" height="330px" border="none">
+										<div
+											sclass="divTitleDimension">
+											<label
+												value="Informacion general" sclass="divTitleFormat" />
+										</div>
+										<grid sclass="my-grid">
+											<columns>
+												<column width="13%" />
+												<column />
+											</columns>
+											<rows>
+												<row>
+													<hlayout>
+														<label value="*"
+															style="color:red" />
+														<label
+															style="@bind(pvm.styleGlobalLabelFont)" value="partida genérica:"
+															width="100%" />
+													</hlayout>
+
+													<combobox
+														model="@load(pvm.catalogoPartidaGenericas)" mold="rounded"
+														onChange="@command('copiarClaveArmonizadaToClaveProducto')"
+														selectedItem="@bind(pvm.producto.conffyaPartidaGenerica)"
+														readonly="true" width="100%" autodrop="true">
+														<template
+															name="model">
+															<comboitem
+																label="@load(each.claveConDescripcion)" />
+														</template>
+													</combobox>
+												</row>
+											</rows>
+										</grid>
+										<grid sclass="my-grid">
+											<columns>
+												<column width="13%" />
+												<column width="25%" />
+												<column width="13%" />
+												<column />
+											</columns>
+											<rows>
+												<row>
+													<hlayout>
+														<label value="*"
+															style="color:red" />
+														<label
+															style="@bind(pvm.styleGlobalLabelFont)" value="Clave:" width="100%" />
+													</hlayout>
+													<textbox id="clave"
+														zclass="tBox" maxlength="24" width="100%"
+														value="@bind(pvm.producto.clave)" />
+
+													<hlayout>
+														<label value="*"
+															style="color:red" />
+														<label
+															style="@bind(pvm.styleGlobalLabelFont)" value="Nombre:" />
+													</hlayout>
+													<textbox
+														zclass="tBox" width="100%"
+														value="@bind(pvm.producto.nombre)" maxlength="60" />
+												</row>
+												<row>
+													<hlayout>
+														<label value="*"
+															style="color:red" />
+														<label
+															style="@bind(pvm.styleGlobalLabelFont)" value="Marca:" />
+													</hlayout>
+													<textbox
+														zclass="tBox" width="100%" maxlength="22"
+														value="@bind(pvm.producto.marca)" />
+
+													<hlayout>
+														<label value="*"
+															style="color:red" />
+														<label
+															style="@bind(pvm.styleGlobalLabelFont)" value="Modelo :" />
+													</hlayout>
+													<textbox
+														zclass="tBox" width="100%" maxlength="24"
+														value="@bind(pvm.producto.modelo)" />
+												</row>
+											</rows>
+										</grid>
+										<grid sclass="my-grid">
+											<columns>
+												<column width="13%" />
+												<column width="25%" />
+												<column width="13%" />
+												<column />
+												<column width="13%" />
+												<column />
+												<column align="center"
+													width="20%" />
+											</columns>
+											<rows>
+												<row>
+													<label
+														style="@bind(pvm.styleGlobalLabelFont)" value="C. Barras:" />
+													<textbox
+														width="100%" value="@bind(pvm.producto.codigosDeBarrasSelected.codigo)" zclass="tBox" maxlength="12" />
+													<hlayout>
+														<label value="*"
+															style="color:red" />
+														<label
+															style="@bind(pvm.styleGlobalLabelFont)" value="Unidad:" />
+													</hlayout>
+													<combobox
+														model="@load(pvm.unidadesDB)"
+														tooltiptext="Seleccionar unidad de medida"
+														selectedItem="@bind(pvm.producto.unidad)" readonly="true"
+														width="100%">
+														<template
+															name="model">
+															<comboitem
+																label="@load(each.nombre)" />
+														</template>
+													</combobox>
+													
+													<label
+														style="@bind(pvm.styleGlobalLabelFont)" value="Presentación:" />
+													<combobox
+														model="@load(pvm.presentaciones)"
+														tooltiptext="Seleccionar presentacion del producto"
+														selectedItem="@bind(pvm.producto.presentacion)" readonly="true"
+														width="100%">
+														<template
+															name="model">
+															<comboitem
+																label="@load(each.nombre)" />
+														</template>
+													</combobox>
+
+													<button
+														sclass="btnOrange" Label="Subir imagen" width="100%"
+														tooltiptext="Subir imagen del producto"
+														upload="true,maxsize=10000"
+														onUpload="@command('onImageUpload', upEvent=event)"
+														mold="trendy" />
+												</row>
+											</rows>
+										</grid>
+
+										<grid sclass="my-grid">
+											<columns>
+												<column width="13%" />
+												<column />
+												<column align="center"
+													width="20%" />
+											</columns>
+											<rows>
+												<row valign="top">
+													<label
+														style="@bind(pvm.styleGlobalLabelFont)" value="Descripción:" />
+													<textbox
+														multiline="true" width="100%"
+														value="@bind(pvm.producto.descripcion)" droppable="false"
+														type="text" zclass="tBox" height="80px" />
+													<image width="100px"
+														height="100px" class="circular"
+														content="@bind(pvm.producto.imagenAImage)" />
+												</row>
+											</rows>
+										</grid>
+										<grid sclass="my-grid">
+											<columns>
+												<column width="13%" />
+												<column width="10%" />
+												<column width="13%" />
+												<column />
+												<column width="70px" />
+												<column/>
+												<column width="65px" />
+												<column/>
+												<column width="65px" />
+												<column/>
+											</columns>
+											<rows>
+												<row>
+													<hlayout>
+														<label value="*"
+															style="color:red" />
+														<label
+															style="@bind(pvm.styleGlobalLabelFont)" value="Activo:" width="100%" />
+													</hlayout>
+													<checkbox
+														checked="@bind(pvm.producto.activo)" />
+													<hlayout>
+														<label value="*"
+															style="color:red" />
+														<label
+															style="@bind(pvm.styleGlobalLabelFont)" value="Naturaleza:" />
+													</hlayout>
+													<combobox
+														width="100%" readonly="true"
+														model="@bind(pvm.productosNaturalezas)"
+														selectedItem="@bind(pvm.producto.productoNaturaleza)">
+														<template
+															name="model">
+															<comboitem
+																label="@load(each.nombre)" />
+														</template>
+													</combobox>
+													<label
+														style="@bind(pvm.styleGlobalLabelFont)" value="En existencia" />
+													<longbox
+														width="100%" maxlength="5"
+														value="@bind(pvm.producto.enExistencia)" />
+													<hlayout>
+														<label value="*"
+															style="color:red" />
+														<label
+															style="@bind(pvm.styleGlobalLabelFont)" value="Máximo" />
+													</hlayout>
+													<longbox
+														width="100%" maxlength="5"
+														value="@bind(pvm.producto.maximo)" />
+													<hlayout>
+														<label value="*"
+															style="color:red" />
+														<label
+															style="@bind(pvm.styleGlobalLabelFont)" value="Mínimo" />
+													</hlayout>
+													<longbox
+														width="100%" maxlength="5"
+														value="@bind(pvm.producto.minimo)" />
+												</row>
+											</rows>
+										</grid>
+										
+										<grid sclass="my-grid">
+											<columns>
+												<column width="13%" />
+												<column width="25%" />
+												<column width="13%" />
+												<column />
+												<column width="150px" />
+												<column/>
+											</columns>
+											<rows>
+												<row>
+													<label
+														style="@bind(pvm.styleGlobalLabelFont)" value="Número de serie:" width="100%" />
+													<textbox width="100%" value="@bind(pvm.producto.numeroSerie)"/>
+													<label
+														style="@bind(pvm.styleGlobalLabelFont)" value="Lote:" width="100%" />
+													<textbox width="100%" value="@bind(pvm.producto.lote)"/>
+													<label
+														style="@bind(pvm.styleGlobalLabelFont)" value="Fecha de caducidad:" width="100%" />
+													<datebox width="100%" value="@bind(pvm.producto.fechaCaducidadDate)"/>
+												</row>
+											</rows>
+										</grid>
+									</window>
+									<window height="30px" sclass="backgroundWindow" border="none"/>
+									
+
+									<window sclass="backgroundWindow"
+										width="100%" height="330px" border="none">
+										<div
+											sclass="divTitleDimension">
+											<label value="Clasificación"
+												sclass="divTitleFormat" />
+										</div>
+
+										<borderlayout>
+											<west size="50%" flex="true"
+												maxsize="250" splittable="true" border="none">
+												<window border="none"
+													height="400px">
+													<listbox id="left"
+														vflex="1" width="100%"
+														selectedItem="@bind(pvm.productoTipoSelected)"
+														emptyMessage="Catalogo de familias para productos vacio"
+														model="@bind(pvm.productoTipoDB)" draggable="true"
+														droppable="true" onDrop="@command('move')">
+
+														<listhead>
+															<listheader
+																style="@bind(pvm.styleGlobalLabelTableHeaderFont)"
+																label="Nombre de familia a asignar" />
+														</listhead>
+														<template
+															name="model" var="tipo">
+															<listitem
+																draggable="true" droppable="true"
+																onDrop="@command('move')">
+																<listcell>
+																	<label
+																		value="@bind(tipo.nombre)" width="100%" />
+																</listcell>
+															</listitem>
+														</template>
+													</listbox>
+												</window>
+											</west>
+											<center border="none"
+												flex="true">
+												<window border="none"
+													height="600px">
+
+													<listbox id="right"
+														vflex="1"
+														emptyMessage="No hay familias asignadas a este producto"
+														width="100%" model="@bind(pvm.productoTipo)"
+														draggable="true" droppable="true"
+														onDrop="@command('move')">
+
+														<listhead>
+															<listheader
+																style="@bind(pvm.styleGlobalLabelTableHeaderFont)"
+																label="Nombre de familia asignada" />
+														</listhead>
+														<template
+															name="model" var="familia">
+															<listitem
+																draggable="true" droppable="true"
+																onDrop="@command('move')">
+																<listcell>
+																	<label
+																		value="@bind(familia.nombre)" width="100%" />
+																</listcell>
+															</listitem>
+														</template>
+													</listbox>
+												</window>
+											</center>
+										</borderlayout>
+									</window>
+
+									<window sclass="backgroundWindow"
+										width="100%" height="330px" border="none">
+										<div
+											sclass="divTitleDimension">
+											<label value="Precios"
+												sclass="divTitleFormat" />
+										</div>
+
+										<grid sclass="my-grid">
+											<columns>
+												<column />
+												<column />
+												<column />
+												<column />
+											</columns>
+											<rows>
+												<row>
+													<grid
+														sclass="my-grid">
+														<columns>
+															<column />
+															<column />
+														</columns>
+														<rows>
+															<row>
+																<label
+																	style="@bind(pvm.styleGlobalLabelFont)" value="Divisa" />
+																<combobox
+																	width="100%" model="@bind(pvm.monedasDB)"
+																	selectedItem="@bind(pvm.producto.moneda)">
+																	<template
+																		name="model">
+																		<comboitem
+																			label="@load(each.nombre)" />
+																	</template>
+																</combobox>
+															</row>
+														</rows>
+													</grid>
+													<grid
+														sclass="my-grid">
+														<columns>
+															<column />
+															<column />
+														</columns>
+														<rows>
+															<row>
+																<label
+																	style="@bind(pvm.styleGlobalLabelFont)" value="Excento" />
+																<textbox
+																	width="100%" />
+															</row>
+														</rows>
+													</grid>
+													<grid
+														sclass="my-grid">
+														<columns>
+															<column />
+															<column />
+														</columns>
+														<rows>
+															<row>
+																<label
+																	style="@bind(pvm.styleGlobalLabelFont)" value="%Imp1" />
+																<doublebox
+																	width="100%" />
+															</row>
+														</rows>
+													</grid>
+													<grid
+														sclass="my-grid">
+														<columns>
+															<column />
+															<column />
+														</columns>
+														<rows>
+															<row>
+																<label
+																	style="@bind(pvm.styleGlobalLabelFont)" value="%Imp2" />
+																<doublebox
+																	width="100%" />
+															</row>
+														</rows>
+													</grid>
+												</row>
+											</rows>
+										</grid>
+
+										<grid sclass="my-grid">
+
+											<columns>
+												<column width="16%" />
+												<column width="16%" />
+												<column width="17%" />
+												<column />
+											</columns>
+											<rows>
+												<row>
+													<vlayout>
+														<window
+															border="none" height="210px">
+															<listbox
+																vflex="1" emptyMessage="Ningun precio asignado"
+																width="100%" model="@load(pvm.productoPrecios)">
+
+																<listhead>
+																	<listheader
+																		style="@bind(pvm.styleGlobalLabelTableHeaderFont)"
+																		width="20px" label="" />
+																	<listheader
+																		style="@bind(pvm.styleGlobalLabelTableHeaderFont)"
+																		label="precio" />
+																	<listheader
+																		style="@bind(pvm.styleGlobalLabelTableHeaderFont)"
+																		align="center" width="45px" label="" />
+																</listhead>
+																<template
+																	name="model" var="varPrecio">
+																	<listitem>
+																		<listcell>
+																			<label
+																				value="@bind(varPrecio.precioDescripcion)"
+																				width="100%" />
+																		</listcell>
+																		<listcell>
+																			<textbox
+																				value="@bind(varPrecio.precioValue)" width="100%" />
+																		</listcell>
+																		<listcell>
+																			<button
+																				image="/images/toolbar/remove16.png"
+																				onClick="@command('eliminarProductoPrecios', index=varPrecioStatus.index)"
+																				zclass="find_button" tooltiptext="Remover precio" />
+																		</listcell>
+
+																	</listitem>
+																</template>
+															</listbox>
+														</window>
+
+														<hlayout>
+															<button
+																image="/images/toolbar/add16.png"
+																onClick="@command('agregarNuevoPrecio', compAddPrecioBtn=self)"
+																zclass="find_button" tooltiptext="Agregar nuevo precio" />
+															<button
+																zclass="find_button"
+																image="/images/toolbar/saveOff16.png"
+																onClick="@command('savePrecio', compSavePrecioBtn=self)"
+																tooltiptext="Guardar cambios en precios" />
+														</hlayout>
+													</vlayout>
+
+													<vlayout>
+														<window
+															border="none" height="210px">
+
+															<listbox
+																vflex="1" emptyMessage="Ningun factor asignado"
+																width="100%" model="@load(pvm.productoFactores)">
+
+																<listhead>
+																	<listheader
+																		style="@bind(pvm.styleGlobalLabelTableHeaderFont)"
+																		width="20px" label="" />
+																	<listheader
+																		style="@bind(pvm.styleGlobalLabelTableHeaderFont)"
+																		label="Factor" />
+																	<listheader
+																		style="@bind(pvm.styleGlobalLabelTableHeaderFont)"
+																		align="center" width="45px" label="" />
+																</listhead>
+																<template
+																	name="model" var="var">
+																	<listitem>
+																		<listcell>
+																			<label
+																				value="@bind(var.factorDescripcion)" width="100%" />
+																		</listcell>
+																		<listcell>
+																			<textbox
+																				value="@bind(var.factorValue)" width="100%" />
+																		</listcell>
+																		<listcell>
+																			<button
+																				image="/images/toolbar/remove16.png"
+																				onClick="@command('eliminarProductoFactores', index=varStatus.index)"
+																				zclass="find_button" tooltiptext="Remover factor" />
+																		</listcell>
+																	</listitem>
+																</template>
+															</listbox>
+														</window>
+														<hlayout>
+															<button
+																image="/images/toolbar/add16.png"
+																onClick="@command('agregarNuevoFactor', compAddFactBtn=self)"
+																zclass="find_button" tooltiptext="Agregar nuevo factor" />
+															<button
+																zclass="find_button"
+																image="/images/toolbar/saveOff16.png"
+																onClick="@command('saveFactor', compSaveFactBtn=self)"
+																tooltiptext="Guardar cambios en factores" />
+														</hlayout>
+													</vlayout>
+
+													<vlayout>
+														<window
+															border="none" height="210px">
+															<listbox
+																vflex="1" emptyMessage="Ningun margen asignado"
+																width="100%" model="@load(pvm.productoMargenes)">
+
+																<listhead>
+																	<listheader
+																		style="@bind(pvm.styleGlobalLabelTableHeaderFont)"
+																		width="20px" label="" />
+																	<listheader
+																		style="@bind(pvm.styleGlobalLabelTableHeaderFont)"
+																		label="Margen(%)" />
+																	<listheader
+																		style="@bind(pvm.styleGlobalLabelTableHeaderFont)"
+																		align="center" width="45px" label="" />
+																</listhead>
+																<template
+																	name="model" var="var">
+																	<listitem>
+																		<listcell>
+																			<label
+																				value="@bind(var.margenDescripcion)" width="100%" />
+																		</listcell>
+																		<listcell>
+																			<textbox
+																				value="@bind(var.margenValue)" width="100%" />
+																		</listcell>
+																		<listcell>
+																			<button
+																				image="/images/toolbar/remove16.png"
+																				onClick="@command('eliminarProductoMargenes', index=varStatus.index)"
+																				zclass="find_button" tooltiptext="Remover margen" />
+																		</listcell>
+																	</listitem>
+																</template>
+															</listbox>
+														</window>
+														<hlayout>
+															<button
+																image="/images/toolbar/add16.png"
+																onClick="@command('agregarNuevoMargen', compAddMargBtn=self)"
+																zclass="find_button" tooltiptext="Agregar nuevo Margen" />
+															<button
+																zclass="find_button"
+																image="/images/toolbar/saveOff16.png"
+																onClick="@command('saveMargen', compSaveMargBtn=self)"
+																tooltiptext="Guardar cambios en margenes" />
+														</hlayout>
+													</vlayout>
+
+													<vlayout>
+														<window
+															border="none" height="210px">
+															<listbox
+																vflex="1" emptyMessage="Ningun costo asignado"
+																width="100%" model="@load(pvm.productoCostos)">
+
+																<listhead>
+																	<listheader
+																		style="@bind(pvm.styleGlobalLabelTableHeaderFont)"
+																		label="Nombre" />
+																	<listheader
+																		style="@bind(pvm.styleGlobalLabelTableHeaderFont)"
+																		label="Costos" width="55px" />
+																	<listheader
+																		style="@bind(pvm.styleGlobalLabelTableHeaderFont)"
+																		label="Fecha" />
+																	<listheader
+																		style="@bind(pvm.styleGlobalLabelTableHeaderFont)"
+																		align="center" width="45px" label="" />
+																</listhead>
+																<template
+																	name="model" var="var">
+																	<listitem>
+																		<listcell>
+																			<combobox
+																				width="100%" model="@bind(pvm.costosTiposLista)"
+																				selectedItem="@bind(var.costosTipos)">
+																				<template
+																					name="model">
+																					<comboitem
+																						label="@load(each.nombre)" />
+																				</template>
+																			</combobox>
+																		</listcell>
+																		<listcell>
+																			<textbox
+																				value="@bind(var.costoValue)" width="100%" />
+																		</listcell>
+																		<listcell>
+																			<label
+																				value="@bind(var.fecha)" width="100%" />
+																		</listcell>
+																		<listcell>
+																			<button
+																				image="/images/toolbar/remove16.png"
+																				onClick="@command('eliminarProductoCostos', index=varStatus.index)"
+																				zclass="find_button" tooltiptext="Remover costo" />
+																		</listcell>
+																	</listitem>
+																</template>
+															</listbox>
+														</window>
+														<hlayout>
+															<button
+																image="/images/toolbar/add16.png"
+																onClick="@command('agregarNuevoCosto', compAddCostBtn=self)"
+																zclass="find_button" tooltiptext="Agregar nuevo costo" />
+															<button
+																zclass="find_button"
+																image="/images/toolbar/saveOff16.png"
+																onClick="@command('saveCosto', compSaveCostBtn=self)"
+																tooltiptext="Guardar cambios en costos" />
+														</hlayout>
+													</vlayout>
+												</row>
+											</rows>
+										</grid>
+									</window>
+
+									<window sclass="backgroundWindow"
+										width="100%" height="330px" border="none">
+										<div
+											sclass="divTitleDimension">
+											<label
+												value="Ultimas compras" sclass="divTitleFormat" />
+										</div>
+										<listbox vflex="1"
+											emptyMessage="No existen productos comprados" rows="5"
+											width="100%" height="100%" model="@load(pvm.cotizacionDB)">
+
+											<listhead>
+												<listheader
+													style="@bind(pvm.styleGlobalLabelTableHeaderFont)" label="Nombre" />
+											</listhead>
+											<template name="model"
+												var="proveedor">
+												<listitem>
+													<listcell>
+														<label
+															value="@bind(proveedor.nombre)" width="100%" />
+													</listcell>
+												</listitem>
+											</template>
+										</listbox>
+									</window>
+								</tabpanel>
+								
+								<!-- REPORTES DE ARTICULOS -->
+								<tabpanel height="100%">
+									<window width="100%" height="100%"
+										sclass="backgroundWindow" border="none">
+
+										<separator />
+
+										<grid sclass="my-grid">
+											<columns>
+												<column width="20%" />
+												<column />
+											</columns>
+											<rows>
+												<row>
+													<label
+														style="@bind(pvm.styleGlobalLabelFont)" value="Seleccionar reporte:" />
+													<combobox
+														width="100%" />
+												</row>
+											</rows>
+										</grid>
+
+
+										<grid sclass="my-grid">
+											<columns>
+												<column width="20%" />
+												<column />
+												<column width="20%" />
+												<column />
+											</columns>
+											<rows>
+												<row>
+													<label
+														style="@bind(pvm.styleGlobalLabelFont)" value="Desde:" />
+													<textbox
+														width="100%" />
+													<label
+														style="@bind(pvm.styleGlobalLabelFont)" value="Hasta:" />
+													<textbox
+														width="100%" />
+												</row>
+											</rows>
+										</grid>
+
+										<grid sclass="my-grid">
+											<columns>
+												<column width="20%" />
+												<column />
+												<column />
+											</columns>
+											<rows>
+												<row>
+													<label
+														style="@bind(pvm.styleGlobalLabelFont)" value="Linea:" />
+													<textbox
+														width="100%" />
+													<textbox
+														width="100%" disabled="true" />
+												</row>
+
+												<row>
+													<label
+														style="@bind(pvm.styleGlobalLabelFont)" value="Familia:" />
+													<textbox
+														width="100%" />
+													<textbox
+														width="100%" disabled="true" />
+												</row>
+												<row>
+													<label
+														style="@bind(pvm.styleGlobalLabelFont)" value="Categoria:" />
+													<textbox
+														width="100%" />
+													<textbox
+														width="100%" disabled="true" />
+												</row>
+												<row>
+													<label
+														style="@bind(pvm.styleGlobalLabelFont)" value="departamento:" />
+													<textbox
+														width="100%" />
+													<textbox
+														width="100%" disabled="true" />
+												</row>
+												<row>
+													<label
+														style="@bind(pvm.styleGlobalLabelFont)" value="Proveedor:" />
+													<textbox
+														width="100%" />
+													<textbox
+														width="100%" disabled="true" />
+												</row>
+												<row>
+													<label
+														style="@bind(pvm.styleGlobalLabelFont)" value="Ubicación:" />
+													<textbox
+														width="100%" />
+													<textbox
+														width="100%" disabled="true" />
+												</row>
+												<row>
+													<label
+														style="@bind(pvm.styleGlobalLabelFont)" value="Orden:" />
+													<textbox
+														width="100%" />
+													<textbox
+														width="100%" disabled="true" />
+												</row>
+											</rows>
+										</grid>
+
+									</window>
+								</tabpanel>
+								
+								<!-- CLASIFICACIONES -->
+								<tabpanel height="100%">
+									<borderlayout>
+										<north border="none"
+											title="Seleccionar familia de productos" maxsize="300"
+											size="50%">
+											<window border="none"
+												height="100%">
+												<listbox
+													emptyMessage="No se encontraron familias para productos"
+													vflex="1"
+													onSelect="@command('obtenerProductosPorFamiliaSelectItemList')"
+													width="100%" model="@bind(pvm.productoTipoClasificaciones)"
+													selectedItem="@bind(pvm.productoTipoSelected)">
+													<template
+														name="model" var="tipo">
+														<listitem>
+															<listcell>
+																<label
+																	value="@bind(tipo.nombre)" width="100%" />
+															</listcell>
+														</listitem>
+													</template>
+												</listbox>
+											</window>
+										</north>
+										<center border="none">
+											<window border="none"
+												height="100%">
+												<listbox vflex="1"
+													emptyMessage="No se encontraron productos" width="100%"
+													model="@bind(pvm.familiasProductos)">
+
+													<auxhead>
+														<auxheader
+															colspan="6">
+															<grid
+																sclass="fgrid">
+																<columns>
+																	<column
+																		align="left" width="10%" />
+																	<column
+																		align="left" />
+																	<column
+																		width="32px" align="center" />
+																</columns>
+																<rows>
+																	<row
+																		height="16px">
+																		<label
+																			value="Productos de la familia: " />
+																		<label
+																			value="@bind(pvm.productoTipoSelected.nombre)" />
+																		<image
+																			src="/images/toolbar/pdf.png"
+																			onClick="@command('reporteProductosClasificacionSubmenu')"
+																			tooltiptext="Exportar a un archivo PDF (tab Clasificaciones)" />
+																	</row>
+																</rows>
+															</grid>
+														</auxheader>
+													</auxhead>
+
+													<listhead>
+
+														<listheader
+															style="@bind(pvm.styleGlobalLabelTableHeaderFont)" label="Clave"
+															width="8%" />
+														<listheader
+															style="@bind(pvm.styleGlobalLabelTableHeaderFont)"
+															label="Nombre" />
+
+														<listheader
+															style="@bind(pvm.styleGlobalLabelTableHeaderFont)"
+															label="Naturaleza" />
+														<listheader
+															style="@bind(pvm.styleGlobalLabelTableHeaderFont)"
+															label="Unidad" />
+														<listheader
+															style="@bind(pvm.styleGlobalLabelTableHeaderFont)"
+															label="En existencia" />
+
+
+													</listhead>
+													<template
+														name="model" var="tipo">
+														<listitem>
+															<listcell>
+																<label
+																	value="@bind(tipo.producto.clave)" />
+															</listcell>
+
+															<listcell>
+																<label
+																	value="@bind(tipo.producto.nombre)" width="100%" />
+															</listcell>
+
+															<listcell>
+																<label
+																	value="@bind(tipo.producto.productoNaturaleza.nombre)"
+																	width="100%" />
+															</listcell>
+
+															<listcell>
+																<label
+																	value="@bind(tipo.producto.unidad.nombre)"
+																	width="100%" />
+															</listcell>
+
+															<listcell>
+																<label
+																	value="@bind(tipo.producto.enExistencia)" width="100%" />
+															</listcell>
+														</listitem>
+													</template>
+												</listbox>
+											</window>
+										</center>
+									</borderlayout>
+
+
+
+
+
+								</tabpanel>
+								
+								<!-- MULTIPLES CODIGOS -->
+								<tabpanel height="100%">
+									<borderlayout>
+										<north border="none"
+											maxsize="300" size="95%">
+											<borderlayout>
+												<west border="none"
+													title="Detalles de producto" size="65%">
+													<window width="100%"
+														height="100%" sclass="backgroundWindow" border="none">
+														<grid
+															sclass="my-grid">
+															<columns>
+																<column
+																	width="20%" />
+																<column />
+															</columns>
+															<rows>
+																<row>
+																	<label
+																		style="@bind(pvm.styleGlobalLabelFont)"
+																		value="Clave armonizada:" />
+																	<label
+																		style="@bind(pvm.styleGlobalLabelFont)"
+																		value="@bind(pvm.producto.conffyaPartidaGenerica.claveConDescripcion)" />
+																</row>
+																<row>
+																	<label
+																		style="@bind(pvm.styleGlobalLabelFont)"
+																		value="Clave:" />
+																	<label
+																		style="@bind(pvm.styleGlobalLabelFont)" value="@bind(pvm.producto.clave)" />
+																</row>
+																<row>
+																	<label
+																		style="@bind(pvm.styleGlobalLabelFont)"
+																		value="Nombre:" />
+																	<label
+																		style="@bind(pvm.styleGlobalLabelFont)"
+																		value="@bind(pvm.producto.nombre)" />
+																</row>
+																<row>
+																	<label
+																		style="@bind(pvm.styleGlobalLabelFont)"
+																		value="Marca:" />
+																	<label
+																		style="@bind(pvm.styleGlobalLabelFont)" value="@bind(pvm.producto.marca)" />
+																</row>
+																<row>
+																	<label
+																		style="@bind(pvm.styleGlobalLabelFont)"
+																		value="Modelo:" />
+																	<label
+																		style="@bind(pvm.styleGlobalLabelFont)"
+																		value="@bind(pvm.producto.modelo)" />
+																</row>
+																<row>
+																	<label
+																		style="@bind(pvm.styleGlobalLabelFont)"
+																		value="Naturaleza:" />
+																	<label
+																		style="@bind(pvm.styleGlobalLabelFont)"
+																		value="@bind(pvm.producto.productoNaturaleza.nombre)" />
+																</row>
+															</rows>
+														</grid>
+													</window>
+												</west>
+												<center border="none"
+													flex="true">
+													<listbox
+														emptyMessage="Ningún código asignado" style="height:50%"
+														onSelect="@command('codigoSeleccionado')"
+														sclass="heightGrid"
+														selectedItem="@bind(pvm.codigoBarrasProducto)"
+														model="@bind(pvm.codigosBarrasProductos)">
+														<listhead>
+															<listheader
+																width="45%" />
+															<listheader
+																width="100%" />
+														</listhead>
+														<template
+															name="model" var="codigo">
+															<listitem>
+																<listcell>
+																	<image
+																		context="downloadCodeBarPopup" width="100%"
+																		height="auto" content="@bind(codigo.barCodeAImage)" />
+																</listcell>
+																<listcell>
+																	<label
+																		style="font-size: 300%;" value="@bind(codigo.codigo)"
+																		width="100%" sclass="heightGrid" />
+																</listcell>
+															</listitem>
+														</template>
+													</listbox>
+												</center>
+											</borderlayout>
+										</north>
+										<center border="none">
+											<grid sclass="my-grid">
+												<columns>
+													<column
+														align="center" />
+													<column
+														align="right" width="35px" />
+													<column
+														align="right" width="35px" />
+													<column
+														align="right" width="35px" />
+												</columns>
+												<rows>
+													<row>
+														<label />
+														<button
+															image="/images/toolbar/add16.png" zclass="find_button"
+															tooltiptext="Agregar fila"
+															onClick="@command('addNewItemCodigo')" />
+														<button
+															image="/images/toolbar/remove16.png" zclass="find_button"
+															tooltiptext="Quitar fila"
+															onClick="@command('delItemCodigo')" />
+
+														<button
+															image="/images/toolbar/saveOff16.png"
+															zclass="find_button" tooltiptext="Guardar cambios"
+															onClick="@command('guardarCodigosBarras')" />
+													</row>
+												</rows>
+											</grid>
+										</center>
+									</borderlayout>
+
+								</tabpanel>
+								<tabpanel height="100%">
+									<!-- ACTUALIZAR COSTOS -->
+									<window width="100%" height="100%"
+										sclass="backgroundWindow" border="none">
+										<grid sclass="my-grid">
+											<columns>
+												<column width="13%" />
+												<column width="25%" />
+												<column width="13%" />
+												<column />
+											</columns>
+											<rows>
+												<row>
+													<label
+														style="@bind(pvm.styleGlobalLabelFont)" value="Clave:" />
+													<textbox
+														readonly="true" width="100%"
+														value="@bind(pvm.producto.clave)" />
+													<label
+														style="@bind(pvm.styleGlobalLabelFont)" value="Nombre:" />
+													<textbox
+														zclass="tBox" width="100%" readonly="true"
+														value="@bind(pvm.producto.nombre)" maxlength="60" />
+												</row>
+												<row>
+													<label
+														style="@bind(pvm.styleGlobalLabelFont)" value="Marca:" />
+													<textbox
+														zclass="tBox" width="100%" maxlength="22" readonly="true"
+														value="@bind(pvm.producto.marca)" />
+													<label
+														style="@bind(pvm.styleGlobalLabelFont)" value="Modelo :" />
+													<textbox
+														zclass="tBox" width="100%" maxlength="24" readonly="true"
+														value="@bind(pvm.producto.modelo)" />
+												</row>
+											</rows>
+										</grid>
+
+										<grid sclass="my-grid">
+											<columns>
+												<column width="13%" />
+												<column />
+											</columns>
+											<rows>
+												<row>
+													<label
+														style="@bind(pvm.styleGlobalLabelFont)" value="Descripción:" />
+													<textbox
+														multiline="true" width="100%" readonly="true"
+														value="@bind(pvm.producto.descripcion)" droppable="false"
+														type="text" zclass="tBox" height="80px" />
+												</row>
+											</rows>
+										</grid>
+
+										<separator bar="true" />
+
+										<grid sclass="my-grid">
+											<columns>
+												<column width="13%" />
+												<column />
+												<column width="13%" />
+												<column />
+												<column width="13%" />
+												<column />
+											</columns>
+											<rows>
+												<row>
+													<label
+														style="@bind(pvm.styleGlobalLabelFont)" value="Activo" />
+													<checkbox
+														checked="@bind(pvm.producto.activo)" disabled="true" />
+													<label
+														style="@bind(pvm.styleGlobalLabelFont)" value="En existencia" />
+													<longbox
+														width="100%" value="@bind(pvm.producto.enExistencia)"
+														readonly="true" />
+													<label
+														style="@bind(pvm.styleGlobalLabelFont)" value="Unidad :" />
+													<textbox
+														value="@bind(pvm.producto.unidad.nombre)" width="100%"
+														readonly="true" />
+												</row>
+											</rows>
+										</grid>
+
+										<separator />
+										<separator bar="true"
+											sclass="separador" />
+										<separator />
+
+
+
+										<grid sclass="my-grid">
+											<columns>
+												<column
+													label="Datos actuales" />
+												<column
+													label="Nuevos datos" />
+											</columns>
+											<rows>
+												<row>
+													<hlayout>
+														<grid
+															sclass="my-grid">
+															<columns>
+																<column
+																	width="25%" />
+																<column />
+																<column />
+															</columns>
+															<rows>
+
+																<row>
+																	<label />
+																	<label
+																		style="@bind(pvm.styleGlobalLabelFont)" value="Costo unitario" />
+																	<label
+																		style="@bind(pvm.styleGlobalLabelFont)" value="Actualizado" />
+																</row>
+
+																<row>
+																	<label
+																		style="@bind(pvm.styleGlobalLabelFont)" value="Reposición:" />
+																	<doublebox
+																		zclass="tBox"
+																		value="@bind(pvm.costosProducto.reposicionUnitario)"
+																		readonly="true" width="100%" />
+																	<doublebox
+																		zclass="tBox"
+																		value="@bind(pvm.costosProducto.reposicionActualizado)"
+																		readonly="true" width="100%" />
+
+																</row>
+
+																<row>
+																	<label
+																		style="@bind(pvm.styleGlobalLabelFont)" value="Máximo:" />
+																	<doublebox
+																		zclass="tBox"
+																		value="@bind(pvm.costosProducto.maximoUnitario)"
+																		readonly="true" width="100%" />
+																	<doublebox
+																		zclass="tBox"
+																		value="@bind(pvm.costosProducto.maximoActualizado)"
+																		readonly="true" width="100%" />
+
+																</row>
+
+															</rows>
+														</grid>
+													</hlayout>
+
+
+													<hlayout>
+														<grid
+															sclass="my-grid">
+															<columns>
+																<column />
+																<column />
+															</columns>
+															<rows>
+																<row>
+																	<label
+																		style="@bind(pvm.styleGlobalLabelFont)" value="Costo unitario" />
+																	<label
+																		style="@bind(pvm.styleGlobalLabelFont)" value="Actualizado" />
+																</row>
+
+																<row>
+																	<doublebox
+																		zclass="tBox"
+																		value="@bind(pvm.costosProductoNuevo.reposicionUnitario)"
+																		width="100%" />
+																	<doublebox
+																		zclass="tBox"
+																		value="@bind(pvm.costosProductoNuevo.reposicionActualizado)"
+																		width="100%" />
+																</row>
+																<row>
+																	<doublebox
+																		zclass="tBox"
+																		value="@bind(pvm.costosProductoNuevo.maximoUnitario)"
+																		width="100%" />
+																	<doublebox
+																		zclass="tBox"
+																		value="@bind(pvm.costosProductoNuevo.maximoActualizado)"
+																		width="100%" />
+																</row>
+															</rows>
+														</grid>
+													</hlayout>
+
+												</row>
+
+											</rows>
+										</grid>
+
+									</window>
+
+
+								</tabpanel>
+
+
+
+							</tabpanels>
+						</tabbox>
+
+					</east>
+				</borderlayout>
+
+			</center>
+		</borderlayout>
+
+
+	</window>
+</zk>

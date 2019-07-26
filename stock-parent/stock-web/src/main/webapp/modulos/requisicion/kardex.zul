@@ -1,0 +1,315 @@
+<?page contentType="text/html;charset=UTF-8"?>
+<zk>
+
+	<window apply="org.zkoss.bind.BindComposer" height="100%"
+		border="none" id="winMain" sclass="borderWindow"
+		viewModel="@id('bpvm') @init('com.cplsystems.stock.app.vm.requisicion.KardexVM')">
+
+
+
+		<window visible="@bind(bpvm.visibleConstruccion)">
+			<label
+				value="En construccion. no se puede presentar el calculo del costo"
+				style="font-size: 200%; text-align: center;" />
+			<button width="100%"
+				label="@bind(bpvm.GENERICZUL_COMMAND_CANCELAR)"
+				onClick="@command('closeDialog')" />
+		</window>
+
+
+
+		<borderlayout visible="@bind(bpvm.visibleContenido)">
+
+			<west size="20%" maxsize="250" border="none"
+				visible="@bind(bpvm.general)">
+
+				<borderlayout>
+					<north size="60px">
+						<window>
+							<div sclass="divTitleDimension">
+								<label value="Buscador"
+									sclass="divTitleFormat" />
+							</div>
+							<grid sclass="my-grid">
+								<columns>
+									<column />
+									<column width="14%" />
+								</columns>
+								<rows>
+									<row>
+										<textbox id="buscadorProducto"
+											value="@bind(bpvm.buscador)" width="100%"
+											onOK="@command('findProductos')"
+											sclass="fontSizeContentGrid" />
+										<hlayout
+											style="text-align:center">
+											<button
+												image="/images/toolbar/find16x16.png" zclass="find_button"
+												onClick="@command('findProductos')"
+												tooltiptext="Buscar Productos" />
+										</hlayout>
+									</row>
+								</rows>
+							</grid>
+
+						</window>
+
+					</north>
+					<center>
+						<window height="100%" width="100%"
+							border="none">
+
+							<listbox vflex="1"
+								model="@load(bpvm.listaProductosKardex)"
+								selectedItem="@bind(bpvm.productosKardexSelected)"
+								onSelect="@command('verTarjetaProductoSeleccionado')"
+								emptyMessage="No existen productos nuevos en el almacen">
+								<listhead>
+
+									<listheader label="Clave"
+										width="30%" sort="auto(clave)" />
+									<listheader label="Nombre"
+										sort="auto(nombre)" />
+
+								</listhead>
+								<template name="model">
+									<listitem>
+
+										<listcell>
+											<label
+												tooltiptext="Clave del producto" style="font-size:smaller;"
+												value="@bind(each.clave)" />
+										</listcell>
+										<listcell>
+											<label
+												style="font-size:smaller;" value="@bind(each.nombre)" />
+										</listcell>
+									</listitem>
+								</template>
+							</listbox>
+						</window>
+
+					</center>
+				</borderlayout>
+
+
+
+			</west>
+			<center border="none">
+				<borderlayout>
+					<north border="none"
+						maxsize="300" size="0%"/>
+					<!-- LISTA DE PRODUCTOS DEL PROVEEDOR -->
+					<center border="none" title="@bind(bpvm.title)">
+						<window height="100%" width="100%" border="none"
+							id="winProductos">
+							<listbox vflex="1" id="listItems"
+								emptyMessage="Kardex vacio"
+								model="@load(bpvm.kardexListInside)">
+								<auxhead>
+									<auxheader label="" colspan="2"
+										align="center" sclass="colorHeaderList" zclass="borderEmpty" />
+									<auxheader label="UNIDADES"
+										colspan="6" align="center" sclass="colorHeaderList"
+										zclass="borderEmpty" style="color: white; font-size: 90%" />
+									<auxheader label="COSTO" colspan="1"
+										align="center" sclass="colorHeaderList" zclass="borderEmpty"
+										style="color: white; font-size: 90%" />
+									<auxheader label="VALORES"
+										colspan="4" align="center" sclass="colorHeaderList"
+										zclass="borderEmpty" style="color: white; font-size: 90%" />
+									<auxheader label="" colspan="1"
+										align="center" sclass="colorHeaderList" zclass="borderEmpty" />
+
+								</auxhead>
+								<listhead>
+									<listheader
+										sclass="colorHeaderTitleBlack" zclass="borderEmpty"
+										style="color: white; font-size: 90%; text-align: center;"
+										label="Fecha" width="8%" align="center" />
+									<listheader
+										sclass="colorHeaderTitleBlack" zclass="borderEmpty"
+										style="color: white; font-size: 90%; text-align: center;"
+										label="Producto" tooltiptext="Nombre del producto" />
+
+									<listheader
+										sclass="colorHeaderTitleBlue" zclass="border1PxBlue"
+										style="color: white; font-size: 90%; text-align: center;"
+										label="Entrada" tooltiptext="Numero de unidades del producto"
+										width="6%" />
+									<listheader
+										sclass="colorHeaderTitleBlue" zclass="border1PxBlue"
+										style="color: white; font-size: 90%; text-align: center;"
+										label="Lote" width="4%" />
+									<listheader
+										sclass="colorHeaderTitleBlue" zclass="border1PxBlue"
+										style="color: white; font-size: 90%; text-align: center;"
+										label="Salida" tooltiptext="Numero de unidades del producto"
+										width="5%" />
+									<listheader
+										sclass="colorHeaderTitleBlue" zclass="border1PxBlue"
+										style="color: white; font-size: 90%; text-align: center;"
+										label="Lote" width="4%" />
+									<listheader
+										sclass="colorHeaderTitleBlue" zclass="border1PxBlue"
+										style="color: white; font-size: 90%; text-align: center;"
+										label="Existencia"
+										tooltiptext="Numero de unidades del producto" width="7%" />
+									<listheader
+										sclass="colorHeaderTitleBlue" zclass="border1PxBlue"
+										style="color: white; font-size: 90%; text-align: center;"
+										label="Lote" width="4%" />
+
+
+									<listheader
+										sclass="colorHeaderTitleGreen" zclass="border1PxGreen"
+										style="color: white; font-size: 90%; text-align: center;"
+										label="Precio" tooltiptext="precio unitario" width="5%" />
+
+									<listheader
+										sclass="colorHeaderTitleRed" zclass="border1PxRed"
+										style="color: white; font-size: 90%; text-align: center;"
+										label="Debe" width="5%" />
+									<listheader
+										sclass="colorHeaderTitleRed" zclass="border1PxRed"
+										style="color: white; font-size: 90%; text-align: center;"
+										label="Haber" width="5%" />
+									<listheader
+										sclass="colorHeaderTitleRed" zclass="border1PxRed"
+										style="color: white; font-size: 90%; text-align: center;"
+										label="Saldo" width="5%" />
+									<listheader
+										sclass="colorHeaderTitleRed" zclass="border1PxRed"
+										visible="@bind(bpvm.ocultarColumnaPromedio)"
+										style="color: white; font-size: 90%; text-align: center;"
+										label="Promedio" width="70px" />
+									<listheader
+										sclass="colorHeaderTitleBlack" zclass="borderEmpty"
+										style="color: white; font-size: 90%; text-align: center;"
+										width="32px" align="center" />
+
+								</listhead>
+								<template name="model"
+									var="kardexVar">
+									<listitem>
+										<listcell>
+											<datebox readonly="true"
+												value="@bind(kardexVar.fechaEntrada)" compact="false"
+												buttonVisible="false" />
+										</listcell>
+										<listcell>
+											<label width="100%"
+												value="@bind(kardexVar.producto.nombre)" />
+										</listcell>
+										<listcell>
+											<label
+												value="@bind(kardexVar.entradaCantidad)"
+												visible="@bind(kardexVar.entradaReadOnly)" />
+											<textbox width="100%"
+												visible="@bind(kardexVar.entradaEditVisible)"
+												onChange="@command('calcularDebe', index=kardexVarStatus.index)"
+												value="@bind(kardexVar.entradaCantidad)" />
+										</listcell>
+										<listcell>
+											<label
+												value="@bind(kardexVar.entradaLote)"
+												visible="@bind(kardexVar.entradaLoteReadOnly)" />
+											<textbox width="100%"
+												visible="@bind(kardexVar.entradaLoteEditVisible)"
+												value="@bind(kardexVar.entradaLote)" />
+										</listcell>
+										<listcell>
+											<label
+												value="@bind(kardexVar.salidaCantidad)"
+												visible="@bind(kardexVar.salidaReadOnly)" />
+											<textbox width="100%"
+												visible="@bind(kardexVar.salidaCantidadEditVisible)"
+												onChange="@command('insertarCantidadSalidas', index=kardexVarStatus.index)"
+												value="@bind(kardexVar.salidaCantidad)" />
+										</listcell>
+										<listcell>
+											<label
+												value="@bind(kardexVar.salidaLote)"
+												visible="@bind(kardexVar.salidaLoteReadOnly)" />
+											<textbox width="100%"
+												visible="@bind(kardexVar.salidaLoteEditVisible)"
+												value="@bind(kardexVar.salidaLote)" />
+										</listcell>
+										<listcell>
+											<label width="100%"
+												style="font-size: 85%;"
+												value="@bind(kardexVar.existenciaCantidad)" />
+										</listcell>
+										<listcell>
+											<textbox width="100%"
+												value="@bind(kardexVar.existenciaLote)" />
+										</listcell>
+
+										<listcell>
+											<label
+												style="font-size: 85%;" width="100%"
+												value="@bind(kardexVar.precioUnitarioString)" />
+										</listcell>
+
+										<listcell>
+											<label
+												style="font-size: 85%;" width="100%"
+												value="@bind(kardexVar.debeString)" />
+										</listcell>
+										<listcell>
+											<label
+												style="font-size: 85%;" width="100%"
+												value="@bind(kardexVar.haberString)" />
+										</listcell>
+										<listcell>
+											<label
+												style="font-size: 85%;" width="100%"
+												value="@bind(kardexVar.saldoString)" />
+										</listcell>
+										<listcell>
+											<label
+												style="font-size: 85%;" width="100%"
+												value="@bind(kardexVar.costoPromedioString)" />
+										</listcell>
+										<listcell>
+											<image
+												onClick="@command('salvarCambiosRowKardex', index=kardexVarStatus.index, compSaveData=self)"
+												src="/images/toolbar/saveOff16.png"
+												tooltiptext="Guardar salida de mercancia"
+												visible="@bind(kardexVar.enableSaveBotton)"
+												style="cursor:pointer" />
+										</listcell>
+									</listitem>
+								</template>
+							</listbox>
+						</window>
+					</center>
+					<south size="35px">
+						<grid sclass="fgrid">
+							<columns>
+								<column align="left"/>
+								<column align="center" width="150px"/>
+								<column align="center" width="150px" visible="false"/>
+								<column align="center" width="70px"/>
+							</columns>
+							<rows>
+								<row>
+									<label width="100%" value="" />
+									<button width="100%"
+										label="Salida de mercancia"
+										onClick="@command('registrarVenta')" />
+									<button width="100%"
+										label="Realizar devolucion"
+										onClick="@command('registrarDevolucion')" />
+									<button width="100%"
+										label="@bind(bpvm.GENERICZUL_COMMAND_ACEPTAR)"
+										onClick="@command('transfer')" />
+								</row>
+							</rows>
+						</grid>
+					</south>
+				</borderlayout>
+			</center>
+		</borderlayout>
+	</window>
+</zk>

@@ -1,0 +1,2034 @@
+<?page title="Proveedores" contentType="text/html;charset=UTF-8"?>
+
+<zk>
+	<style src="/styles/home/styleHome.css" />
+	<style src="/styles/home/styleGlobal.css" />
+	<script src="/scripts/watermarks.js" type="text/javascript" />
+
+	<window apply="org.zkoss.bind.BindComposer" height="100%"
+		id="controlPanelWindowContainer" border="none"
+		viewModel="@id('cvm') @init('com.cplsystems.stock.app.vm.controlpanel.ControlPanelVM')"
+		ctrlKeys="^y"
+		onCtrlKey="@command('actualizarTodoConfya',code=event.getKeyCode())">
+
+		<borderlayout id="borderlayoutContainer1">
+			<north maxsize="300" size="100%" id="northContainer1"
+				title="Panel de control | catalogos:">
+				<tabbox height="100%" id="tabBox1">
+					<tabs>
+						<tab onClick="@command('selectAreaTab')"
+							label="Áreas (UR)" image="/images/toolbar/area.png" />
+						<tab onClick="@command('selectBancosTab')"
+							label="Bancos" image="/images/toolbar/bank.png" />
+						<tab onClick="@command('selectConffyaTab')"
+							label="Conffya" image="/images/toolbar/update16.png" />
+						<tab onClick="@command('selectContratoTab')"
+							label="Contratos" image="/images/toolbar/linedpaperpencil32.png" />
+						<tab onClick="@command('selectMonedaTab')"
+							label="Divisas" image="/images/toolbar/coins.png" />
+
+						<tab onClick="@command('selectPuestoTab')"
+							label="Puestos" image="/images/toolbar/area.png" />
+						<tab onClick="@command('selectTipoProductoTab')"
+							label="Familias" image="/images/toolbar/products.png" />
+						<tab
+							onClick="@command('selectUnidadesMedidaTab')"
+							label="Unidades de medida"
+							image="/images/toolbar/stationery.png" />
+						<tab
+							onClick="@command('selectPresentacionTab')"
+							label="Presentaciones"
+							image="/images/toolbar/stationery.png" />
+						<tab onClick="@command('selectGirosTab')"
+							label="Giros" image="/images/toolbar/arrow_split.png" />
+						<tab
+							onClick="@command('selectProductoNaturalezaTab')"
+							label="Naturaleza del Producto"
+							image="/images/toolbar/arrow_split.png" />
+						<tab style="background: red:"
+							onClick="@command('selectLAyoutTab')" label="Layouts"
+							image="/images/toolbar/excel16.png" />
+
+					</tabs>
+					<tabpanels>
+						<tabpanel height="100%" id="tabPanel1"><!-- AREAS -->
+							<borderlayout id="layoutCatalogoAreas">
+								<west title="Areas" size="40%"
+									maxsize="250" border="none">
+									<borderlayout>
+										<north size="0%" border="none" />
+										<center border="none">
+											<window border="none"
+												height="100%" width="100%">
+												<listbox
+													id="tabPanel1ListBox1" vflex="1"
+													onClick="@command('getALmacenesDeArea')"
+													emptyMessage="Por el momento no se encuentran Áreas registradas"
+													model="@load(cvm.areas)" selectedItem="@bind(cvm.area)">
+													<listhead>
+														<listheader width="32px"
+															style="@bind(cvm.styleGlobalLabelTableHeaderFont)"
+															label="Cvl" />
+														<listheader
+															style="@bind(cvm.styleGlobalLabelTableHeaderFont)"
+															label="Nombre" />
+														<listheader
+															style="@bind(cvm.styleGlobalLabelTableHeaderFont)"
+															label="Actualización" width="22%" />
+														<listheader align="center"
+															visible="false"
+															style="@bind(cvm.styleGlobalLabelTableHeaderFont)"
+															width="11%" />
+													</listhead>
+													<template
+														name="model" var="areav">
+														<listitem>
+															<listcell>
+																<label style="@bind(cvm.styleGlobalLabelTableContentFont)"
+																	value="@bind(areav.clave)" width="100%" />
+															</listcell>
+															<listcell>
+																<label style="@bind(cvm.styleGlobalLabelTableContentFont)"
+																	value="@bind(areav.nombre)"
+																	tooltiptext="@bind(areav.descripcion)" width="70%" />
+															</listcell>
+
+															<listcell>
+																<label style="@bind(cvm.styleGlobalLabelTableContentFont)"
+																	value="@bind(areav.fechaActualizacion)" />
+															</listcell>
+															<listcell>
+																<button
+																	image="/images/toolbar/remove16.png"
+																	onClick="@command('eliminarAreaIndex', index=areavStatus.index)"
+																	zclass="find_button" tooltiptext="Remover área" />
+															</listcell>
+														</listitem>
+													</template>
+												</listbox>
+											</window>
+										</center>
+										<south size="35px" border="none">
+											<window width="100%"
+												id="windowCtrArea" height="100%"
+												sclass="middle-div" border="none">
+												<grid
+													sclass="my-grid">
+													<columns>
+														<column
+															align="center" width="35px" />
+														<column
+															align="center" width="50px" />
+
+
+														<column
+															align="center" width="90px" />
+														<column
+															align="center" />
+
+														<column
+															align="center" width="35px" />
+													</columns>
+													<rows>
+														<row>
+															<button
+																image="/images/toolbar/newDoc16.png"
+																onClick="@command('agregarNuevaArea')"
+																zclass="find_button" tooltiptext="Agregar nueva área" />
+															<button
+																upload="true" image="/images/toolbar/uploadColor16.png"
+																onUpload="@command('onUploadExcelArea',upEvent=event)"
+																tooltiptext="Importar catalogo de Áreas desde excel"/>
+															<label style="@bind(cvm.styleGlobalLabelFont)"
+																value="Area (UR):" />
+															<textbox style="@bind(cvm.styleGlobalLabelTableContentFont)"
+																value="@bind(cvm.area.nombre)" width="100%"
+																id="txtAreaNueva" disabled="@bind(cvm.controlBotoArea.modulo)"/>
+															<button disabled="@bind(cvm.controlBotoArea.modulo)"
+																zclass="find_button"
+																image="/images/toolbar/saveOff16.png"
+																onClick="@command('saveArea', compSaveArea=self)"
+																tooltiptext="Guardar/Actualizar Area" />
+														</row>
+													</rows>
+												</grid>
+											</window>
+										</south>
+									</borderlayout>
+								</west>
+								<center title="Almacenes" border="none">
+									<borderlayout>
+										<north size="0%" border="none" />
+										<center border="none">
+											<window border="none"
+												height="100%" width="100%">
+												<listbox vflex="1"
+													emptyMessage="No hay almacenes registrados"
+													model="@load(cvm.almacenesList)"
+													selectedItem="@bind(cvm.almacenSelected)">
+													<listhead>
+														<listheader
+															style="@bind(cvm.styleGlobalLabelTableHeaderFont)"
+															label="Nombre" />
+														<listheader label="calle"
+															style="@bind(cvm.styleGlobalLabelTableHeaderFont)" />
+														<listheader label="Num"
+															style="@bind(cvm.styleGlobalLabelTableHeaderFont)"
+															width="7%" />
+														<listheader label="C.P."
+															style="@bind(cvm.styleGlobalLabelTableHeaderFont)"
+															width="14%" />
+														<listheader label="Col" 
+															style="@bind(cvm.styleGlobalLabelTableHeaderFont)"/>
+														<listheader label="Mun"
+															style="@bind(cvm.styleGlobalLabelTableHeaderFont)" />
+														<listheader label="Edo"
+															style="@bind(cvm.styleGlobalLabelTableHeaderFont)" />
+													</listhead>
+													<template
+														name="model" var="almacenVar">
+														<listitem>
+															<listcell>
+																<label style="@bind(cvm.styleGlobalLabelTableContentFont)"
+																	value="@bind(almacenVar.nombre)"
+																	width="100%" />
+															</listcell>
+															<listcell>
+																<label
+																	style="@bind(cvm.styleGlobalLabelTableContentFont)"
+																	value="@bind(almacenVar.direccion.calle)" width="100%" />
+															</listcell>
+															<listcell>
+																<label
+																	style="@bind(cvm.styleGlobalLabelTableContentFont)"
+																	value="@bind(almacenVar.direccion.numExt)"
+																	width="100%" />
+															</listcell>
+															<listcell>
+																<label
+																	style="@bind(cvm.styleGlobalLabelTableContentFont)"
+																	value="@bind(almacenVar.direccion.cp)" width="100%" />
+															</listcell>
+															<listcell>
+																<label
+																	style="@bind(cvm.styleGlobalLabelTableContentFont)"
+																	value="@bind(almacenVar.direccion.colonia)"
+																	width="100%" />
+															</listcell>
+															<listcell>
+																<label
+																	style="@bind(cvm.styleGlobalLabelTableContentFont)"
+																	value="@bind(almacenVar.direccion.municipio.nombre)"
+																	width="100%" />
+															</listcell>
+															<listcell>
+																<label
+																	style="@bind(cvm.styleGlobalLabelTableContentFont)"
+																	value="@bind(almacenVar.direccion.estado.nombre)"
+																	width="100%" />
+															</listcell>
+														</listitem>
+													</template>
+												</listbox>
+											</window>
+										</center>
+										<south size="35px" border="none">
+											<window width="100%"
+												id="windowCtrlAlmacen" height="100%"
+												sclass="middle-div" border="none">
+												<grid
+													sclass="my-grid">
+													<columns>
+														<column
+															align="center" width="40px" />
+														<column
+															align="center" width="60px" />
+														<column
+															align="center" />
+														<column
+															align="center" width="45px" />
+														<column
+															align="center" />
+														<column
+															align="center" width="60px" />
+														<column
+															align="center" />
+														<column
+															align="center" width="30px" />
+														<column
+															align="center" />
+														<column
+															width="40px" align="center" />
+													</columns>
+													<rows>
+														<row>
+															<button disabled="@bind(cvm.controlBotoArea.submodulo)"
+																id="btnAddAlmacen" image="/images/toolbar/newDoc16.png"
+																onClick="@command('agregarNuevoAlmacen')"
+																zclass="find_button"
+																tooltiptext="Agregar nuevo almacen" />
+															<label style="@bind(cvm.styleGlobalLabelFont)"
+																value="Nombre:" />
+															<textbox style="@bind(cvm.styleGlobalLabelTableContentFont)"
+																value="@bind(cvm.almacenSelected.nombre)" width="100%"
+																id="txtAlmacenNombre" disabled="@bind(cvm.controlBotoArea.submodulo)"/>
+															<label style="@bind(cvm.styleGlobalLabelFont)"
+																value="Calle:" />
+															<textbox style="@bind(cvm.styleGlobalLabelTableContentFont)"
+																value="@bind(cvm.almacenSelected.direccion.calle)"
+																width="100%" id="txtAlmacenCalle" 
+																disabled="@bind(cvm.controlBotoArea.submodulo)"/>
+															<label style="@bind(cvm.styleGlobalLabelFont)"
+																value="Numero:" />
+															<textbox style="@bind(cvm.styleGlobalLabelTableContentFont)"
+																value="@bind(cvm.almacenSelected.direccion.numExt)"
+																width="100%" id="txtAlmacenNumero" 
+																disabled="@bind(cvm.controlBotoArea.submodulo)"/>
+
+															<label style="@bind(cvm.styleGlobalLabelFont)"
+																value="CP:" />
+															<grid
+																sclass="my-grid">
+																<columns>
+																	<column
+																		align="center" />
+																	<column
+																		align="center" width="35px" />
+																</columns>
+																<rows>
+																	<row>
+																		<textbox style="@bind(cvm.styleGlobalLabelTableContentFont)"
+																			id="txtAlmacenCp"
+																			onOK="@command('getInformacionDireccionFromCPAlmacen')"
+																			value="@bind(cvm.almacenSelected.direccion.cp)"
+																			width="100%" 
+																			disabled="@bind(cvm.controlBotoArea.submodulo)"/>
+																		<button
+																			id="btnBuscaCp" image="/images/toolbar/find16x16.png"
+																			zclass="find_button"
+																			onClick="@command('getInformacionDireccionFromCPAlmacen')"
+																			tooltiptext="Buscar Informacion del codigo postal" 
+																			disabled="@bind(cvm.controlBotoArea.submodulo)"/>
+																	</row>
+																</rows>
+															</grid>
+															<button disabled="@bind(cvm.controlBotoArea.submodulo)"
+																zclass="find_button"
+																image="/images/toolbar/saveOff16.png"
+																onClick="@command('salvarAlmacenes')"
+																tooltiptext="Guardar cambios" />
+														</row>
+													</rows>
+												</grid>
+											</window>
+										</south>
+									</borderlayout>
+								</center>
+							</borderlayout>
+						</tabpanel>
+						<tabpanel height="100%" id="tabPanel2"><!-- BANCOS -->
+							<borderlayout id="layoutCatalogoBancos">
+								<north size="0%"
+									border="none" id="panelDatosCatalogBanco"/>
+								<center border="none"
+									id="panelControlCatalogBanco">
+									<window border="none" height="100%"
+										width="100%" id="windowDatosbanco">
+										<listbox vflex="1"
+											id="listBancosCatalogo"
+											emptyMessage="Por el momento no se encuentran bancos registrados"
+											model="@load(cvm.bancosDB)"
+											selectedItem="@bind(cvm.bancoSeleccionado)">
+											<listhead>
+												<listheader width="50px"
+													style="@bind(cvm.styleGlobalLabelTableHeaderFont)" label="Clave" />
+												<listheader
+													style="@bind(cvm.styleGlobalLabelTableHeaderFont)" label="Nombre" />
+												<listheader
+													style="@bind(cvm.styleGlobalLabelTableHeaderFont)"
+													label="Actualización" width="12%" />
+												<listheader
+													visible="false" style="@bind(cvm.styleGlobalLabelTableHeaderFont)"
+													width="8%" align="center" />
+											</listhead>
+											<template name="model"
+												var="bancoVar">
+												<listitem>
+													<listcell>
+														<label style="@bind(cvm.styleGlobalLabelTableContentFont)"
+															value="@bind(bancoVar.idBanco)" />
+													</listcell>
+													<listcell>
+														<label style="@bind(cvm.styleGlobalLabelTableContentFont)"
+															value="@bind(bancoVar.nombre)" />
+													</listcell>
+													<listcell>
+														<label style="@bind(cvm.styleGlobalLabelTableContentFont)"
+															value="@bind(bancoVar.fechaActualizacion)" />
+													</listcell>
+													<listcell>
+														<button
+															image="/images/toolbar/remove16.png"
+															onClick="@command('eliminarBanco', index=bancoVarStatus.index)"
+															zclass="find_button" tooltiptext="Remover banco" />
+													</listcell>
+												</listitem>
+											</template>
+										</listbox>
+									</window>
+								</center>
+								<south
+									size="35px" border="none">
+									<window width="100%" height="100%"
+										id="windowCtrlBanco" sclass="middle-div"
+										border="none">
+										<grid sclass="my-grid">
+											<columns>
+												<column align="center"
+													width="40px" />
+												<column align="center"
+													width="50px" />
+												<column align="center"
+													width="120px" />
+												<column align="center"
+													width="100%" />
+												<column align="center"
+													width="40px" />
+											</columns>
+											<rows>
+												<row>
+													<button
+														id="btnAddNuevoBanco" image="/images/toolbar/newDoc16.png"
+														onClick="@command('agregarNuevoBanco')"
+														zclass="find_button" tooltiptext="Agregar nuevo banco" />
+
+													<button
+														id="btnUploadImportBanco" upload="true"
+														image="/images/toolbar/uploadColor16.png"
+														onUpload="@command('onUploadExcelBanco',upEvent=event)"
+														tooltiptext="Importar catalogo de Bancos desde excel" />
+													<label style="@bind(cvm.styleGlobalLabelFont)"
+														value="Nombre del banco:" />
+													<textbox style="@bind(cvm.styleGlobalLabelTableContentFont)"
+														value="@bind(cvm.bancoSeleccionado.nombre)"
+														id="txtBancoNombre" width="100%" />
+													<button
+														id="btnSaveBanco" zclass="find_button"
+														image="/images/toolbar/saveOff16.png"
+														onClick="@command('saveBancos')"
+														tooltiptext="Guardar/Actualizar Banco" />
+												</row>
+											</rows>
+										</grid>
+									</window>
+								</south>
+							</borderlayout>
+						</tabpanel>
+						<tabpanel height="100%" id="tabPanel3"><!-- CONFFYA -->
+							<borderlayout>
+								<north border="none" size="100%">
+									<window height="100%"
+										border="none">
+										<button label="Update All" visible="false" 
+											onClick="@command('actualizarTodoConfya')" />
+										<tabbox height="100%">
+											<tabs>
+												<tab
+													visible="@bind(cvm.visualizarControlesCame)"
+													onClick="@command('conffyaEntidad')" label="Entidades" />
+												<tab
+													onClick="@command('conffyaAreas')" label="Areas (UR)" />
+												<tab
+													onClick="@command('conffyaFuentes')"
+													label="Fuentes de financiamiento" />
+												<tab
+													onClick="@command('conffyaPartida')"
+													label="Partida generica" />
+												<tab
+													onClick="@command('conffyaProgramas')" label="Programas" />
+												<tab
+													onClick="@command('conffyaProyectos')" label="Proyectos" />
+												<tab
+													visible="@bind(cvm.visualizarControlesCame)"
+													onClick="@command('conffyaPresupuesto')"
+													label="Presupuesto de egresos" />
+											</tabs>
+											<tabpanels>
+												<!-- ENTIDADES -->
+												<tabpanel
+													height="100%">
+													<window border="none"
+														height="100%">
+														<listbox
+															vflex="1" model="@load(cvm.organizaciones)"
+															selectedItem="@bind(cvm.organizacionSelected)">
+															<listhead>
+																<listheader
+																	style="@bind(cvm.styleGlobalLabelTableHeaderFont)"
+																	sort="auto(nombre)" label="Organizacion">
+																	<button sclass="btnBlue btnFormat"
+																		visible="@bind(cvm.visualizarControlesCame)"
+																		onClick="@command('updateEntidad')" label="Update" />
+																</listheader>
+																<listheader
+																	width="80px" style="@bind(cvm.styleGlobalLabelTableHeaderFont)"
+																	sort="auto(numero)" label="Numero" />
+																<listheader
+																	align="center"
+																	style="@bind(cvm.styleGlobalLabelTableHeaderFont)"
+																	label="Activar" width="50px" />
+															</listhead>
+															<template
+																name="model" var="areav">
+																<listitem>
+																	<listcell>
+																		<label style="@bind(cvm.styleGlobalLabelTableContentFont)"
+																			value="@bind(areav.nombre)" width="40%" />
+																	</listcell>
+
+																	<listcell>
+																		<label style="@bind(cvm.styleGlobalLabelTableContentFont)"
+																			value="@bind(areav.numero)" width="40%" />
+																	</listcell>
+																	<listcell>
+																		<checkbox
+																			tooltiptext="Activar entidad"
+																			checked="@bind(areav.checked)"
+																			disabled="@bind(areav.disableActiv)"
+																			onCheck="@command('activarEntidad', index=areavStatus.index)" />
+																	</listcell>
+																</listitem>
+															</template>
+														</listbox>
+													</window>
+												</tabpanel>
+
+												<!-- AREAS -->
+												<tabpanel
+													height="100%">
+													<window border="none"
+														height="100%">
+														<listbox
+															vflex="1"
+															emptyMessage="Por el momento no se encuentran Áreas registradas"
+															model="@load(cvm.areas)">
+															<listhead>
+																<listheader
+																	style="@bind(cvm.styleGlobalLabelTableHeaderFont)"
+																	sort="auto(clave)" label="Clave" width="80px" />
+																<listheader
+																	style="@bind(cvm.styleGlobalLabelTableHeaderFont)"
+																	sort="auto(nombre)" label="Area" width="60%">
+																	<button sclass="btnBlue btnFormat"
+																		visible="@bind(cvm.visualizarControlesCame)"
+																		onClick="@command('updateAreas')" label="Update" />
+																</listheader>
+																<listheader
+																	style="@bind(cvm.styleGlobalLabelTableHeaderFont)"
+																	sort="auto(organizacion.nombre)" label="Organizacion" />
+															</listhead>
+															<template
+																name="model" var="areav">
+																<listitem>
+																	<listcell>
+																		<label style="@bind(cvm.styleGlobalLabelTableContentFont)"
+																			value="@bind(areav.clave)" width="40%" />
+																	</listcell>
+																	<listcell>
+																		<label style="@bind(cvm.styleGlobalLabelTableContentFont)"
+																			value="@bind(areav.nombre)" width="40%" />
+																	</listcell>
+
+																	<listcell>
+																		<label style="@bind(cvm.styleGlobalLabelTableContentFont)"
+																			value="@bind(areav.organizacion.nombre)" width="40%" />
+																	</listcell>
+																</listitem>
+															</template>
+														</listbox>
+													</window>
+												</tabpanel>
+
+												<!-- FUENTES -->
+												<tabpanel
+													height="100%">
+													<window border="none"
+														height="100%">
+														<listbox
+															vflex="1"
+															model="@load(cvm.cofiaFuenteFinanciamientos)">
+															<listhead>
+																<listheader
+																	style="@bind(cvm.styleGlobalLabelTableHeaderFont)"
+																	sort="auto(clave)" label="Clave" width="80px" />
+																<listheader
+																	style="@bind(cvm.styleGlobalLabelTableHeaderFont)"
+																	sort="auto(nombre)" label="Fuente de financiemiento"
+																	width="60%">
+																	<button sclass="btnBlue btnFormat"
+																		visible="@bind(cvm.visualizarControlesCame)"
+																		onClick="@command('updateFuenteFinanciamiento')"
+																		label="Update" />
+																</listheader>
+																<listheader
+																	style="@bind(cvm.styleGlobalLabelTableHeaderFont)"
+																	sort="auto(organizacion.nombre)" label="Organizacion" />
+															</listhead>
+															<template
+																name="model" var="areav">
+																<listitem>
+																	<listcell>
+																		<label style="@bind(cvm.styleGlobalLabelTableHeaderFont)"
+																			value="@bind(areav.clave)" width="100%" />
+																	</listcell>
+																	<listcell>
+																		<label style="@bind(cvm.styleGlobalLabelTableHeaderFont)"
+																			value="@bind(areav.nombre)" width="40%" />
+																	</listcell>
+
+																	<listcell>
+																		<label style="@bind(cvm.styleGlobalLabelTableHeaderFont)"
+																			value="@bind(areav.organizacion.nombre)" width="40%" />
+																	</listcell>
+																</listitem>
+															</template>
+														</listbox>
+													</window>
+												</tabpanel>
+
+												<!-- PARTIDAS -->
+												<tabpanel
+													height="100%">
+													<window border="none"
+														height="100%">
+														<listbox
+															vflex="1" model="@load(cvm.cofiaPartidaGenericas)">
+															<listhead>
+																<listheader
+																	style="@bind(cvm.styleGlobalLabelTableHeaderFont)"
+																	sort="auto(clave)" label="Clave" width="80px" />
+																<listheader
+																	style="@bind(cvm.styleGlobalLabelTableHeaderFont)"
+																	sort="auto(nombre)" label="Partida generica"
+																	width="60%">
+																	<button
+																		visible="@bind(cvm.visualizarControlesCame)"
+																		onClick="@command('updatePartidaGenerica')"
+																		label="Update" />
+																</listheader>
+																<listheader
+																	style="@bind(cvm.styleGlobalLabelTableHeaderFont)"
+																	sort="auto(organizacion.nombre)" label="Entidad" />
+															</listhead>
+															<template
+																name="model" var="areav">
+																<listitem>
+																	<listcell>
+																		<label
+																			value="@bind(areav.clave)" />
+																	</listcell>
+																	<listcell>
+																		<label
+																			value="@bind(areav.nombre)" />
+																	</listcell>
+
+																	<listcell>
+																		<label
+																			value="@bind(areav.organizacion.nombre)" />
+																	</listcell>
+																</listitem>
+															</template>
+														</listbox>
+													</window>
+												</tabpanel>
+
+												<!-- PROGRAMAS -->
+												<tabpanel
+													height="100%">
+													<window
+														height="100%">
+														<listbox
+															vflex="1" model="@load(cvm.cofiaProgs)">
+															<listhead>
+																<listheader
+																	style="@bind(cvm.styleGlobalLabelTableHeaderFont)"
+																	sort="auto(clave)" label="Clave" width="80px" />
+																<listheader
+																	style="@bind(cvm.styleGlobalLabelTableHeaderFont)"
+																	sort="auto(nombre)" label="Programa" width="60%">
+																	<button
+																		visible="@bind(cvm.visualizarControlesCame)"
+																		onClick="@command('updateProgramas')" label="Update" />
+																</listheader>
+																<listheader
+																	style="@bind(cvm.styleGlobalLabelTableHeaderFont)"
+																	sort="auto(organizacion.nombre)" label="Organizacion" />
+															</listhead>
+															<template
+																name="model" var="areav">
+																<listitem>
+																	<listcell>
+																		<label
+																			value="@bind(areav.clave)" width="40%" />
+																	</listcell>
+																	<listcell>
+																		<label
+																			value="@bind(areav.nombre)" width="40%" />
+																	</listcell>
+
+																	<listcell>
+																		<label
+																			value="@bind(areav.organizacion.nombre)" width="40%" />
+																	</listcell>
+																</listitem>
+															</template>
+														</listbox>
+													</window>
+												</tabpanel>
+
+												<!-- PROYECTOS -->
+												<tabpanel
+													height="100%">
+													<window
+														height="100%">
+														<listbox
+															vflex="1" model="@load(cvm.cofiaPys)">
+															<listhead>
+																<listheader
+																	style="@bind(cvm.styleGlobalLabelTableHeaderFont)"
+																	sort="auto(nombre)" label="Clave" width="80px" />
+																<listheader
+																	style="@bind(cvm.styleGlobalLabelTableHeaderFont)"
+																	sort="auto(nombre)" label="Proyecto" width="60%">
+																	<button
+																		visible="@bind(cvm.visualizarControlesCame)"
+																		onClick="@command('updateProyectos')" label="Update" />
+																</listheader>
+																<listheader
+																	style="@bind(cvm.styleGlobalLabelTableHeaderFont)"
+																	sort="auto(organizacion.nombre)" label="Organizacion" />
+															</listhead>
+															<template
+																name="model" var="areav">
+																<listitem>
+																	<listcell>
+																		<label
+																			value="@bind(areav.clave)" width="100%" />
+																	</listcell>
+																	<listcell>
+																		<label
+																			value="@bind(areav.nombre)" width="40%" />
+																	</listcell>
+
+																	<listcell>
+																		<label
+																			value="@bind(areav.organizacion.nombre)" width="40%" />
+																	</listcell>
+																</listitem>
+															</template>
+														</listbox>
+													</window>
+												</tabpanel>
+
+												<!-- PRESUPUESTO -->
+												<tabpanel
+													height="100%">
+													<window
+														height="100%">
+														<listbox
+															vflex="1"
+															model="@load(cvm.conffyaPresupuestoDesglosadoList)">
+															<listhead>
+																<listheader
+																	style="@bind(cvm.styleGlobalLabelTableHeaderFont)"
+																	sort="auto(clave)" label="Clave" width="60%" />
+																<listheader
+																	style="@bind(cvm.styleGlobalLabelTableHeaderFont)"
+																	sort="auto(descripcion)" label="Descripcion">
+																	<button
+																		visible="@bind(cvm.visualizarControlesCame)"
+																		onClick="@command('updatePresupuesto')"
+																		label="Update" />
+																</listheader>
+																<listheader
+																	style="@bind(cvm.styleGlobalLabelTableHeaderFont)" label="UR" />
+															</listhead>
+															<template
+																name="model" var="areav">
+																<listitem>
+																	<listcell>
+																		<label
+																			value="@bind(areav.clave)" width="40%" />
+																	</listcell>
+
+																	<listcell>
+																		<label
+																			value="@bind(areav.descripcion)" width="40%" />
+																	</listcell>
+																	<listcell>
+																		<label
+																			value="@bind(areav.organizacion.nombre)" width="40%" />
+																	</listcell>
+																</listitem>
+															</template>
+														</listbox>
+													</window>
+												</tabpanel>
+											</tabpanels>
+										</tabbox>
+
+									</window>
+
+								</north>
+							</borderlayout>
+						</tabpanel>
+						<tabpanel height="100%" id="tabPanel4"><!-- CONTRATOS -->
+							<borderlayout
+								id="layoutCatalogoContratos">
+								<north maxsize="300" size="0%"
+									border="none" id="panelDatosCatalogContratos"/>
+								<center border="none"
+									id="panelControlCatalogContrato">
+									<window height="100%" border="none"
+										width="100%" id="windowDatosContrato">
+										<listbox vflex="1"
+											id="listContratosCatalogo"
+											emptyMessage="Por el momento no existen contratos en el catalogo"
+											model="@load(cvm.contratos)"
+											selectedItem="@bind(cvm.contrato)">
+
+											<listhead>
+												<listheader width="50px"
+													style="@bind(cvm.styleGlobalLabelTableHeaderFont)" label="Clave" />
+												<listheader
+													style="@bind(cvm.styleGlobalLabelTableHeaderFont)" label="Nombre" />
+												<listheader
+													style="@bind(cvm.styleGlobalLabelTableHeaderFont)"
+													label="descripción" />
+												<listheader
+													width="100px" style="@bind(cvm.styleGlobalLabelTableHeaderFont)"
+													label="Vigencia inicio" />
+												<listheader
+													width="100px" style="@bind(cvm.styleGlobalLabelTableHeaderFont)"
+													label="Vigencia fin" />
+												<listheader
+													style="@bind(cvm.styleGlobalLabelTableHeaderFont)"
+													label="Actualización" width="12%" />
+												<listheader
+													visible="false" style="@bind(cvm.styleGlobalLabelTableHeaderFont)"
+													width="8%" align="center" />
+											</listhead>
+											<template name="model"
+												var="contratoVar">
+												<listitem>
+													<listcell>
+														<label
+															style="@bind(cvm.styleGlobalLabelTableContentFont)"
+															value="@bind(contratoVar.idContrato)" width="100%" />
+													</listcell>
+													<listcell>
+														<label
+															style="@bind(cvm.styleGlobalLabelTableContentFont)"
+															value="@bind(contratoVar.nombre)" width="100%" />
+													</listcell>
+													<listcell>
+														<label
+															style="@bind(cvm.styleGlobalLabelTableContentFont)"
+															value="@bind(contratoVar.descripcion)" width="100%" />
+													</listcell>
+													<listcell>
+														<datebox
+															readonly="true" width="100%" format="yyyy/MM/dd"
+															buttonVisible="false"
+															value="@bind(contratoVar.fechaVigenciaInicioDate)" />
+													</listcell>
+
+													<listcell>
+														<datebox
+															buttonVisible="false" width="100%" readonly="true"
+															format="yyyy/MM/dd"
+															value="@bind(contratoVar.fechaVigenciaFinDate)" />
+													</listcell>
+
+													<listcell>
+														<label
+															style="@bind(cvm.styleGlobalLabelTableContentFont)"
+															value="@bind(contratoVar.fechaActualizacion)" />
+													</listcell>
+													<listcell>
+														<button
+															image="/images/toolbar/remove16.png"
+															onClick="@command('eliminarContrato', index=contratoVarStatus.index)"
+															zclass="find_button" tooltiptext="Remover contrato" />
+													</listcell>
+												</listitem>
+											</template>
+										</listbox>
+									</window>
+								</center>
+								<south
+									size="35px" border="none">
+									<window width="100%" height="100%"
+										id="windowCtrlContrato" sclass="middle-div"
+										border="none">
+										<grid sclass="my-grid">
+											<columns>
+												<column align="center"
+													width="40px" />
+												<column align="center"
+													width="80px" />
+												<column align="center" />
+												<column align="center"
+													width="100px" />
+												<column align="center" />
+
+												<column align="center"
+													width="100px" />
+												<column align="center"
+													width="100px" />
+												<column align="center"
+													width="100px" />
+												<column align="center"
+													width="100px" />
+
+												<column align="center"
+													width="40px" />
+											</columns>
+											<rows>
+												<row>
+													<button
+														id="btnAddNuevoContrato" image="/images/toolbar/newDoc16.png"
+														onClick="@command('agregarNuevoContrato')"
+														zclass="find_button" tooltiptext="Agregar nuevo contrato" />
+													<label style="@bind(cvm.styleGlobalLabelFont)"
+														value="Nombre:" />
+													<textbox style="@bind(cvm.styleGlobalLabelTableContentFont)"
+														id="txtNombreContrato" value="@bind(cvm.contrato.nombre)"
+														width="100%" />
+													<label style="@bind(cvm.styleGlobalLabelFont)"
+														value="Descripcion:" />
+													<textbox style="@bind(cvm.styleGlobalLabelTableContentFont)"
+														id="txtDescripcionContrato"
+														value="@bind(cvm.contrato.descripcion)" width="100%" />
+													<label style="@bind(cvm.styleGlobalLabelFont)"
+														value="Fecha Inicio:" />
+													<datebox style="@bind(cvm.styleGlobalLabelTableContentFont)"
+														id="dateBoxVigenciaInicio" readonly="true"
+														format="yyyy/MM/dd" width="100%"
+														value="@bind(cvm.contrato.fechaVigenciaInicioDate)" />
+													<label style="@bind(cvm.styleGlobalLabelFont)"
+														value="Fecha Fin:" />
+													<datebox style="@bind(cvm.styleGlobalLabelTableContentFont)"
+														id="dateBoxVigenciaFin" readonly="true"
+														format="yyyy/MM/dd" width="100%"
+														value="@bind(cvm.contrato.fechaVigenciaFinDate)" />
+													<button
+														id="btnSaveContrato" zclass="find_button"
+														image="/images/toolbar/saveOff16.png"
+														onClick="@command('saveContratos')"
+														tooltiptext="Guarda/Actualizar contrato" />
+												</row>
+											</rows>
+										</grid>
+									</window>
+								</south>
+							</borderlayout>
+						</tabpanel>
+						<tabpanel height="100%" id="tabPanel5"><!-- DIVISAS -->
+							<borderlayout id="layoutCatalogoDivisas">
+								<north maxsize="300" size="0%"
+									border="none" id="panelDatosCatalogDivisas"/>
+								<center border="none"
+									id="panelControlCatalogDivisas">
+									<window border="none" height="100%"
+										width="100%" id="windowDatosDivisas">
+										<listbox vflex="1"
+											id="listDivisasCatalogo"
+											emptyMessage="Por el momento no existe un tipo de moneda en el catalogo"
+											model="@load(cvm.monedasDB)"
+											selectedItem="@bind(cvm.monedaSeleccionada)">
+
+											<listhead>
+												<listheader width="50px"
+													style="@bind(cvm.styleGlobalLabelTableHeaderFont)" label="Clave" />
+												<listheader
+													style="@bind(cvm.styleGlobalLabelTableHeaderFont)" label="Nombre" />
+												<listheader
+													style="@bind(cvm.styleGlobalLabelTableHeaderFont)" label="Simbolo"
+													width="15%" />
+												<listheader
+													style="@bind(cvm.styleGlobalLabelTableHeaderFont)"
+													label="Actualización" width="12%" />
+												<listheader
+													visible="false" style="@bind(cvm.styleGlobalLabelTableHeaderFont)"
+													width="8%" align="center" />
+											</listhead>
+											<template name="model"
+												var="monedaVar">
+												<listitem>
+													<listcell>
+														<label style="@bind(cvm.styleGlobalLabelTableContentFont)"
+															value="@bind(monedaVar.idMoneda)" />
+													</listcell>
+													<listcell>
+														<label style="@bind(cvm.styleGlobalLabelTableContentFont)"
+															value="@bind(monedaVar.nombre)" />
+													</listcell>
+													<listcell>
+														<label style="@bind(cvm.styleGlobalLabelTableContentFont)"
+															value="@bind(monedaVar.simbolo)" />
+													</listcell>
+													<listcell>
+														<label style="@bind(cvm.styleGlobalLabelTableContentFont)"
+															value="@bind(monedaVar.fechaActualizacion)" />
+													</listcell>
+													<listcell>
+														<button
+															image="/images/toolbar/remove16.png"
+															onClick="@command('eliminarMoneda', index=monedaVarStatus.index)"
+															zclass="find_button" tooltiptext="Remover divisa" />
+													</listcell>
+												</listitem>
+											</template>
+										</listbox>
+									</window>
+								</center>
+								<south
+									size="35px" border="none">
+									<window width="100%" height="100%"
+										id="windowCtrlDivisas" sclass="middle-div"
+										border="none">
+										<grid sclass="my-grid">
+											<columns>
+												<column align="center"
+													width="40px" />
+												<column align="center"
+													width="50px" />
+												<column align="center"
+													width="100px" />
+												<column align="center" />
+												<column align="center"
+													width="100px" />
+												<column align="center" />
+												<column align="center"
+													width="40px" />
+											</columns>
+											<rows>
+												<row>
+													<button
+														id="btnNuevaDivisa" image="/images/toolbar/newDoc16.png"
+														onClick="@command('agregarNuevaDivisa')"
+														zclass="find_button" tooltiptext="Agregar nueva divisa" />
+													<button
+														id="btnUploadDivisa" upload="true"
+														image="/images/toolbar/uploadColor16.png"
+														onUpload="@command('onUploadExcelMoneda',upEvent=event)"
+														tooltiptext="Importar catalogo de Divisas desde excel" />
+													<label style="@bind(cvm.styleGlobalLabelFont)"
+														value="Nombre:" />
+													<textbox style="@bind(cvm.styleGlobalLabelTableContentFont)"
+														value="@bind(cvm.monedaSeleccionada.nombre)" width="100%"
+														id="txtNombreDivisa" />
+													<label style="@bind(cvm.styleGlobalLabelFont)"
+														value="Simbolo:" />
+													<textbox style="@bind(cvm.styleGlobalLabelTableContentFont)"
+														value="@bind(cvm.monedaSeleccionada.simbolo)" width="100%"
+														id="txtSimboloDivisa" />
+													<button
+														id="btnSaveDivisa" zclass="find_button"
+														image="/images/toolbar/saveOff16.png"
+														onClick="@command('saveMoneda')"
+														tooltiptext="Guardar cambios" />
+												</row>
+											</rows>
+										</grid>
+									</window>
+								</south>
+							</borderlayout>
+						</tabpanel>
+
+						<tabpanel height="100%" id="tabPanel6"><!-- PUESTOS -->
+							<borderlayout id="layoutCatalogoPuestos">
+								<north maxsize="300" size="0%"
+									border="none" id="panelDatosCatalogPuestos"/>
+								<center border="none"
+									id="panelControlCatalogPuestos">
+									<window border="none" height="100%"
+										width="100%" id="windowDatosPuestos">
+										<listbox vflex="1"
+											id="listPuestosCatalogo"
+											emptyMessage="Por el momento no se encuentran puestos registrados"
+											model="@load(cvm.posiciones)"
+											selectedItem="@bind(cvm.posicion)">
+											<listhead>
+												<listheader width="50px"
+													style="@bind(cvm.styleGlobalLabelTableHeaderFont)" label="Clave" />
+												<listheader
+													style="@bind(cvm.styleGlobalLabelTableHeaderFont)" label="Nombre" />
+												<listheader
+													style="@bind(cvm.styleGlobalLabelTableHeaderFont)"
+													label="Descripcion" />
+												<listheader
+													style="@bind(cvm.styleGlobalLabelTableHeaderFont)"
+													label="Actualización" width="12%" />
+												<listheader
+													visible="false" style="@bind(cvm.styleGlobalLabelTableHeaderFont)"
+													width="8%" align="center" />
+											</listhead>
+											<template name="model"
+												var="puestoV">
+												<listitem>
+													<listcell>
+														<label style="@bind(cvm.styleGlobalLabelTableContentFont)"
+															value="@bind(puestoV.idPosicion)" />
+													</listcell>
+													<listcell>
+														<label style="@bind(cvm.styleGlobalLabelTableContentFont)"
+															value="@bind(puestoV.nombre)" />
+													</listcell>
+													<listcell>
+														<label style="@bind(cvm.styleGlobalLabelTableContentFont)"
+															value="@bind(puestoV.descripcion)" />
+													</listcell>
+													<listcell>
+														<label style="@bind(cvm.styleGlobalLabelTableContentFont)"
+															value="@bind(puestoV.fechaActualizacion)" />
+													</listcell>
+													<listcell>
+														<button
+															image="/images/toolbar/remove16.png"
+															onClick="@command('eliminarPuesto', index=puestoVStatus.index)"
+															zclass="find_button" tooltiptext="Remover puesto" />
+													</listcell>
+												</listitem>
+											</template>
+										</listbox>
+									</window>
+								</center>
+								<south
+									size="35px" border="none">
+									<window width="100%" height="100%"
+										id="windowCtrlPuestos" sclass="middle-div"
+										border="none">
+										<grid sclass="my-grid">
+											<columns>
+												<column align="center"
+													width="40px" />
+												<column align="center"
+													width="50px" />
+												<column align="center"
+													width="150px" />
+												<column align="center" />
+												<column align="center"
+													width="150px" />
+												<column align="center" />
+												<column align="center"
+													width="40px" />
+											</columns>
+											<rows>
+												<row>
+													<button
+														id="btnNuevoPuesto" image="/images/toolbar/newDoc16.png"
+														onClick="@command('agregarNuevoPuesto')"
+														zclass="find_button" tooltiptext="Agregar nuevo puesto" />
+													<button
+														id="btnUploadPuestos" upload="true"
+														image="/images/toolbar/uploadColor16.png"
+														onUpload="@command('onUploadExcelPosicion',upEvent=event)"
+														tooltiptext="Importar catalogo de Puestos desde excel" />
+													<label style="@bind(cvm.styleGlobalLabelFont)"
+														value="Nombre del puesto:" />
+													<textbox style="@bind(cvm.styleGlobalLabelTableContentFont)"
+														value="@bind(cvm.posicion.nombre)" id="txtNombrePosicion"
+														width="100%" />
+													<label style="@bind(cvm.styleGlobalLabelFont)"
+														value="Descripcion::" />
+													<textbox style="@bind(cvm.styleGlobalLabelTableContentFont)"
+														value="@bind(cvm.posicion.descripcion)" width="100%" />
+													<button
+														id="btnSavePuesto" zclass="find_button"
+														image="/images/toolbar/saveOff16.png"
+														onClick="@command('savePuesto')"
+														tooltiptext="Guardar cambios" />
+												</row>
+											</rows>
+										</grid>
+									</window>
+								</south>
+							</borderlayout>
+						</tabpanel>
+						<tabpanel height="100%" id="tabPanel7"><!-- FAMILIA -->
+							<borderlayout
+								id="layoutCatalogoTipoProductos">
+								<west title="Familias" border="none"
+									size="50%">
+									<borderlayout>
+										<north border="none" size="0%" />
+										<center border="none">
+											<window border="none"
+												height="100%" width="100%" id="windowDatosTipoProductos">
+												<listbox vflex="1"
+													id="listTipoProductosCatalogo"
+													emptyMessage="Por el momento no se encuentran familias registradas"
+													model="@load(cvm.productoTipoDB)"
+													selectedItem="@bind(cvm.productoTipoSelected)"
+													onSelect="@command('cargarSubfamilias')">
+													<listhead>
+														<listheader
+															style="@bind(cvm.styleGlobalLabelTableHeaderFont)" label="Clave"
+															width="50px" />
+														<listheader
+															style="@bind(cvm.styleGlobalLabelTableHeaderFont)" label="Nombre"
+															width="25%" />
+														<listheader
+															style="@bind(cvm.styleGlobalLabelTableHeaderFont)"
+															label="Descripción" />
+														<listheader
+															style="@bind(cvm.styleGlobalLabelTableHeaderFont)"
+															label="Actualización" width="150px" />
+														<listheader
+															visible="false"
+															style="@bind(cvm.styleGlobalLabelTableHeaderFont)" align="center"
+															width="8%" />
+													</listhead>
+													<template
+														name="model" var="productoTipoVar">
+														<listitem>
+															<listcell>
+																<label
+																	style="@bind(cvm.styleGlobalLabelTableContentFont)"
+																	value="@bind(productoTipoVar.idProductoTipo)" />
+															</listcell>
+															<listcell>
+																<label
+																	style="@bind(cvm.styleGlobalLabelTableContentFont)"
+																	value="@bind(productoTipoVar.nombre)" />
+															</listcell>
+															<listcell>
+																<label
+																	style="@bind(cvm.styleGlobalLabelTableContentFont)"
+																	value="@bind(productoTipoVar.descripcion)" />
+															</listcell>
+															<listcell>
+																<label style="@bind(cvm.styleGlobalLabelTableContentFont)"
+																	value="@bind(productoTipoVar.fechaActualizacion)" />
+															</listcell>
+															<listcell>
+																<button
+																	image="/images/toolbar/remove16.png"
+																	onClick="@command('eliminarTipoProducto', index=productoTipoVarStatus.index)"
+																	zclass="find_button" tooltiptext="Remover familia" />
+															</listcell>
+														</listitem>
+													</template>
+												</listbox>
+											</window>
+										</center>
+										<south
+											border="none" size="35px">
+											<window width="100%"
+												height="100%" id="windowCtrlTipoProductos"
+												sclass="middle-div" border="none">
+												<grid
+													sclass="my-grid">
+													<columns>
+														<column
+															align="center" width="40px" />
+														<column
+															align="center" width="50px" />
+														<column
+															align="center" width="150px" />
+														<column
+															align="center" />
+														<column
+															align="center" width="80px" />
+														<column
+															align="center" />
+														<column
+															align="center" width="40px" />
+													</columns>
+													<rows>
+														<row>
+															<button
+																id="btnNuevoTipoProductos"
+																image="/images/toolbar/newDoc16.png"
+																onClick="@command('agregarNuevoTipoProducto')"
+																zclass="find_button"
+																tooltiptext="Agregar nueva familia" />
+															<button
+																id="btnUploadTipoProductos" upload="true"
+																image="/images/toolbar/uploadColor16.png"
+																onUpload="@command('onUploadExcelTipoProducto',upEvent=event)"
+																tooltiptext="Importar catalogo de Tipos de productos desde excel" />
+															<label	style="@bind(cvm.styleGlobalLabelFont)"
+																value="Nombre tipo de producto:" />
+															<textbox style="@bind(cvm.styleGlobalLabelTableContentFont)"
+																value="@bind(cvm.productoTipoSelected.nombre)"
+																width="100%" id="txtNombreTipoProductos" />
+															<label style="@bind(cvm.styleGlobalLabelFont)"
+																value="Descripcion:" />
+															<textbox style="@bind(cvm.styleGlobalLabelTableContentFont)"
+																value="@bind(cvm.productoTipoSelected.descripcion)"
+																width="100%" id="txtDescripcionTipoProductos" />
+															<button
+																id="btnSaveTipoProductos" zclass="find_button"
+																image="/images/toolbar/saveOff16.png"
+																onClick="@command('saveTipoProducto')"
+																tooltiptext="Guardar cambios" />
+														</row>
+													</rows>
+												</grid>
+											</window>
+										</south>
+									</borderlayout>
+								</west>
+								<center title="Sub familias"
+									border="none">
+									<borderlayout>
+										<north border="none" size="0%" />
+										<center border="none">
+											<window border="none"
+												height="100%" width="100%">
+												<listbox vflex="1"
+													model="@load(cvm.productoTipoSelected.productoTipoSubFamiliaList)"
+													selectedItem="@bind(cvm.productoTipoSelected.productoTipoSubFamiliaSelected)">
+													<listhead>
+														<listheader
+															style="@bind(cvm.styleGlobalLabelTableHeaderFont)" label="Clave"
+															width="50px" />
+														<listheader
+															style="@bind(cvm.styleGlobalLabelTableHeaderFont)" label="Nombre"
+															width="25%" />
+														<listheader
+															style="@bind(cvm.styleGlobalLabelTableHeaderFont)"
+															label="Descripción" />
+														<listheader
+															width="40px" visible="false"
+															style="@bind(cvm.styleGlobalLabelTableHeaderFont)"
+															label="Descripción" />
+													</listhead>
+													<template
+														name="model" var="subItem">
+														<listitem>
+															<listcell>
+																<label
+																	style="@bind(cvm.styleGlobalLabelTableContentFont)"
+																	value="@bind(subItem.idProductoTipoSubFamilia)" />
+															</listcell>
+															<listcell>
+																<label style="@bind(cvm.styleGlobalLabelTableContentFont)"
+																	value="@bind(subItem.nombre)" />
+															</listcell>
+															<listcell>
+																<label style="@bind(cvm.styleGlobalLabelTableContentFont)"
+																	value="@bind(subItem.descripcion)" />
+															</listcell>
+															<listcell>
+																<button
+																	image="/images/toolbar/remove16.png"
+																	onClick="@command('eliminarTipoProducto', index=subItemStatus.index)"
+																	zclass="find_button" tooltiptext="Remover subfamilila" />
+															</listcell>
+														</listitem>
+													</template>
+												</listbox>
+											</window>
+										</center>
+										<south border="none" size="35px">
+											<window width="100%"
+												height="100%" sclass="middle-div"
+												border="none">
+												<grid
+													sclass="my-grid">
+													<columns>
+														<column
+															align="center" width="40px" />
+
+														<column
+															align="center" width="150px" />
+														<column
+															align="center" />
+														<column
+															align="center" width="80px" />
+														<column
+															align="center" />
+														<column
+															align="center" width="40px" />
+													</columns>
+													<rows>
+														<row>
+															<button
+																image="/images/toolbar/newDoc16.png"
+																onClick="@command('agregarNuevaSubfamilia')"
+																zclass="find_button"
+																tooltiptext="Agregar nueva Subfamilia" />
+															<label style="@bind(cvm.styleGlobalLabelFont)"
+																value="Nombre Subfamilia:" />
+															<textbox style="@bind(cvm.styleGlobalLabelTableContentFont)"
+																value="@bind(cvm.productoTipoSelected.productoTipoSubFamiliaSelected.nombre)"
+																width="100%" id="txtNombreTipoProductos" />
+															<label style="@bind(cvm.styleGlobalLabelFont)"
+																value="Descripcion:" />
+															<textbox style="@bind(cvm.styleGlobalLabelTableContentFont)"
+																value="@bind(cvm.productoTipoSelected.productoTipoSubFamiliaSelected.descripcion)"
+																width="100%" id="txtDescripcionTipoProductos" />
+															<button
+																id="btnSaveTipoProductos" zclass="find_button"
+																image="/images/toolbar/saveOff16.png"
+																onClick="@command('saveTipoProductoSubFamilia')"
+																tooltiptext="Guardar cambios de subfamilia" />
+														</row>
+													</rows>
+												</grid>
+											</window>
+										</south>
+									</borderlayout>
+								</center>
+							</borderlayout>
+						</tabpanel>
+						<tabpanel height="100%" id="tabPanel8"><!-- UNIDADES DE MEDIDA -->
+							<borderlayout id="layoutCatalogoUnidades">
+								<north maxsize="300" size="0%"
+									border="none" id="panelDatosCatalogUnidades" />
+								<center border="none"
+									id="panelControlCatalogUnidades">
+									<window border="none" height="100%"
+										width="100%" id="windowDatosUnidades">
+
+										<listbox vflex="1"
+											id="listUnidadesCatalogo"
+											emptyMessage="Por el momento no se encuentran unidades de medida registradas"
+											model="@load(cvm.unidadesDB)"
+											onSelect="@command('selectedUnidadMedidaList')"
+											selectedItem="@bind(cvm.unidad)">
+											<listhead>
+												<listheader width="50px"
+													style="@bind(cvm.styleGlobalLabelTableHeaderFont)" label="Clave" />
+												<listheader
+													style="@bind(cvm.styleGlobalLabelTableHeaderFont)" label="Unidad" />
+												<listheader
+													style="@bind(cvm.styleGlobalLabelTableHeaderFont)"
+													label="Abreviatura" width="90px" />
+												<listheader
+													style="@bind(cvm.styleGlobalLabelTableHeaderFont)"
+													label="Actualización" width="90px" />
+												<listheader
+													visible="false" style="@bind(cvm.styleGlobalLabelTableHeaderFont)"
+													align="center" width="40px" />
+											</listhead>
+											<template name="model"
+												var="unidad">
+												<listitem>
+													<listcell>
+														<label style="@bind(cvm.styleGlobalLabelTableContentFont)"
+															value="@bind(unidad.idUnidad)" />
+													</listcell>
+													<listcell>
+														<label style="@bind(cvm.styleGlobalLabelTableContentFont)"
+															value="@bind(unidad.nombre)" />
+													</listcell>
+													<listcell>
+														<label style="@bind(cvm.styleGlobalLabelTableContentFont)"
+															value="@bind(unidad.abreviatura)" />
+													</listcell>
+													<listcell>
+														<datebox style="@bind(cvm.styleGlobalLabelTableContentFont)"
+															readonly="true"
+															value="@bind(unidad.fechaActualizacionDate)"
+															buttonVisible="false" format="yyyy/MM/dd" width="100%" />
+													</listcell>
+													<listcell>
+														<button
+															image="/images/toolbar/remove16.png"
+															onClick="@command('removerUnidad', index=unidadStatus.index)"
+															zclass="find_button"
+															tooltiptext="Remover unidad de medida" />
+													</listcell>
+												</listitem>
+											</template>
+										</listbox>
+									</window>
+								</center>
+								<south border="none" size="35px">
+									<window width="100%" height="100%"
+										id="windowCtrlUnidades" sclass="middle-div"
+										border="none">
+										<grid sclass="my-grid">
+											<columns>
+												<column align="center"
+													width="40px" />
+												<column align="center"
+													width="50px" />
+												<column align="center"
+													width="150px" />
+												<column align="center" />
+												<column align="center"
+													width="150px" />
+												<column align="center"
+													width="70px" />
+												<column align="center"
+													width="40px" />
+											</columns>
+											<rows>
+												<row>
+													<button
+														id="btnNuevoUnidades" image="/images/toolbar/newDoc16.png"
+														onClick="@command('agregarNuevaUnidad')"
+														zclass="find_button"
+														tooltiptext="Agregar nueva unidad de medida" />
+													<button
+														id="btnUploadUnidades" upload="true"
+														image="/images/toolbar/uploadColor16.png"
+														onUpload="@command('onUploadExcelUnidadMedida',upEvent=event)"
+														tooltiptext="Importar catalogo de unidades de medida desde excel" />
+													<label style="@bind(cvm.styleGlobalLabelFont)"
+														value="Nombre de Presentacion:" />
+													<textbox style="@bind(cvm.styleGlobalLabelTableContentFont)"
+														value="@bind(cvm.unidad.nombre)" width="100%"
+														id="txtNombreUnidades" />
+													<label style="@bind(cvm.styleGlobalLabelFont)"
+														value="Abreviatura de Unidad:" />
+													<textbox style="@bind(cvm.styleGlobalLabelTableContentFont)"
+														value="@bind(cvm.unidad.abreviatura)" width="100%"
+														id="txtAbreviaturaUnidades" />
+													<button
+														id="btnSaveUnidades" zclass="find_button"
+														image="/images/toolbar/saveOff16.png"
+														onClick="@command('saveUnidadesMedida')"
+														tooltiptext="Guardar cambios" />
+												</row>
+											</rows>
+										</grid>
+									</window>
+								</south>
+							</borderlayout>
+						</tabpanel>
+						<tabpanel height="100%" id="tabPanel8_1"><!-- PRESENTACION -->
+							<borderlayout>
+								<north size="0%" border="none"/>
+								<center border="none">
+									<window border="none" height="100%"
+										width="100%">
+										<listbox vflex="1"
+											emptyMessage="Por el momento no se encuentran presentaciones registradas"
+											model="@load(cvm.presentaciones)"
+											onSelect="@command('selectedPresentacionesList')"
+											selectedItem="@bind(cvm.presentacion)">
+											<listhead>
+												<listheader width="50px" label="Clave" 
+													style="@bind(cvm.styleGlobalLabelTableHeaderFont)"/>
+												<listheader label="Presentacion" 
+													style="@bind(cvm.styleGlobalLabelTableHeaderFont)"/>
+												<listheader style="@bind(cvm.styleGlobalLabelTableHeaderFont)"
+													label="Descripcion"/>
+											</listhead>
+											<template name="model"
+												var="item">
+												<listitem>
+													<listcell>
+														<label style="@bind(cvm.styleGlobalLabelTableContentFont)"
+															value="@bind(item.clave)" />
+													</listcell>
+													<listcell>
+														<label style="@bind(cvm.styleGlobalLabelTableContentFont)"
+															value="@bind(item.nombre)" />
+													</listcell>
+													<listcell>
+														<label style="@bind(cvm.styleGlobalLabelTableContentFont)"
+															value="@bind(item.descripcion)" />
+													</listcell>
+												</listitem>
+											</template>
+										</listbox>
+									</window>
+								</center>
+								<south border="none" size="35px">
+									<window width="100%" height="100%"
+										sclass="middle-div" border="none">
+										<grid sclass="my-grid">
+											<columns>
+												<column align="center"
+													width="40px" />
+												<column align="center"
+													width="50px" />
+												<column align="center"
+													width="150px" />
+												<column align="center" />
+												<column align="center"
+													width="150px" />
+												<column align="center"
+													width="70px" />
+												<column align="center"
+													width="150px" />
+												<column align="center"
+													width="70px" />
+												<column align="center"
+													width="40px" />
+											</columns>
+											<rows>
+												<row>
+													<button
+														id="btnNuevoUnidades" image="/images/toolbar/newDoc16.png"
+														onClick="@command('agregarNuevaPresentacion')"
+														zclass="find_button"
+														tooltiptext="Agregar nueva unidad de medida" />
+													<button upload="true"
+														image="/images/toolbar/uploadColor16.png"
+														onUpload="@command('onUploadExcelPresentacion',upEvent=event)"
+														tooltiptext="Importar catalogo de unidades de medida desde excel" />
+													<label value="Nombre de Presentacion:" 
+														style="@bind(cvm.styleGlobalLabelFont)"/>
+													<textbox style="@bind(cvm.styleGlobalLabelTableContentFont)"
+														value="@bind(cvm.presentacion.nombre)" width="100%"/>
+													<label value="Clave:" 
+															style="@bind(cvm.styleGlobalLabelFont)"/>
+													<textbox style="@bind(cvm.styleGlobalLabelTableContentFont)"
+														value="@bind(cvm.presentacion.clave)" width="100%"/>
+													<label value="Descripcion:" 
+														style="@bind(cvm.styleGlobalLabelFont)"/>
+													<textbox style="@bind(cvm.styleGlobalLabelTableContentFont)"
+														value="@bind(cvm.presentacion.descripcion)" width="100%"/>
+													<button zclass="find_button"
+														image="/images/toolbar/saveOff16.png"
+														onClick="@command('savePresentacion')"
+														tooltiptext="Guardar cambios presentacion" />
+												</row>
+											</rows>
+										</grid>
+									</window>
+								</south>
+							</borderlayout>
+						</tabpanel>
+						<tabpanel height="100%" id="tabPanel9"><!-- GIROS -->
+							<borderlayout id="layoutCatalogoGiros">
+								<north maxsize="300" size="0%"
+									border="none" id="panelDatosCatalogGiros">
+								</north>
+								<center border="none"
+									id="panelControlCatalogGiros">
+									<window border="none" height="100%"
+										width="100%" id="windowDatosGiros">
+										<listbox vflex="1"
+											id="listGirosCatalogo"
+											emptyMessage="Por el momento no existe un catalogos de giros"
+											model="@load(cvm.giros)" selectedItem="@bind(cvm.giro)">
+											<listhead>
+												<listheader
+													style="@bind(cvm.styleGlobalLabelTableHeaderFont)" label="Clave"
+													width="50px" />
+												<listheader
+													style="@bind(cvm.styleGlobalLabelTableHeaderFont)" label="Nombre" />
+												<listheader
+													style="@bind(cvm.styleGlobalLabelTableHeaderFont)" label="Sector" />
+												<listheader
+													visible="false" style="@bind(cvm.styleGlobalLabelTableHeaderFont)"
+													align="center" width="40px" />
+											</listhead>
+											<template name="model"
+												var="giroVar">
+												<listitem>
+													<listcell>
+														<label style="@bind(cvm.styleGlobalLabelTableContentFont)"
+															value="@bind(giroVar.idGiro)" />
+													</listcell>
+													<listcell>
+														<label style="@bind(cvm.styleGlobalLabelTableContentFont)"
+															value="@bind(giroVar.nombre)" />
+													</listcell>
+													<listcell>
+														<label style="@bind(cvm.styleGlobalLabelTableContentFont)"
+															value="@bind(giroVar.sector)" />
+													</listcell>
+													<listcell>
+														<button
+															image="/images/toolbar/remove16.png"
+															onClick="@command('removerGiro', index=giroVarStatus.index)"
+															zclass="find_button" tooltiptext="Remover giro" />
+													</listcell>
+												</listitem>
+											</template>
+										</listbox>
+									</window>
+								</center>
+								<south border="none"
+									sclass="headerAreaBackgroud" size="35px">
+									<window width="100%" height="100%"
+										id="windowCtrlGiros" sclass="backgroundWindow middle-div"
+										border="none">
+										<grid sclass="my-grid">
+											<columns>
+												<column align="center"
+													width="40px" />
+												<column align="center"
+													width="50px" />
+
+												<column align="center"
+													width="150px" />
+												<column align="center" />
+												<column align="center"
+													width="150px" />
+												<column align="center" />
+
+												<column align="center"
+													width="40px" />
+											</columns>
+											<rows>
+												<row>
+													<button
+														id="btnNuevoGiros" image="/images/toolbar/newDoc16.png"
+														onClick="@command('agregarNuevaUnidad')"
+														zclass="find_button"
+														tooltiptext="Agregar nueva unidad de medida" />
+													<button
+														id="btnUploadGiros" upload="true"
+														image="/images/toolbar/uploadColor16.png"
+														onUpload="@command('onUploadExcelGiro',upEvent=event)"
+														tooltiptext="Importar catalogo de unidades de medida desde excel" />
+													<label style="@bind(cvm.styleGlobalLabelFont)"
+														value="Nombre del giro:" />
+													<textbox style="@bind(cvm.styleGlobalLabelTableContentFont)"
+														value="@bind(cvm.giro.nombre)" width="100%"
+														id="txtNombreGiros" />
+													<label style="@bind(cvm.styleGlobalLabelFont)"
+														value="Sector:" />
+													<textbox style="@bind(cvm.styleGlobalLabelTableContentFont)"
+														value="@bind(cvm.giro.sector)" width="100%"
+														id="txtSectorGiros" />
+													<button
+														id="btnSaveGiros" zclass="find_button"
+														image="/images/toolbar/saveOff16.png"
+														onClick="@command('saveGiros')"
+														tooltiptext="Guardar cambios" />
+												</row>
+											</rows>
+										</grid>
+									</window>
+								</south>
+							</borderlayout>
+						</tabpanel>
+						<tabpanel height="100%" id="tabPanel10"><!-- PRODUCTO NATURALEZA -->
+							<borderlayout
+								id="layoutCatalogoProductoNaturaleza">
+								<north maxsize="300" size="0%"
+									border="none" id="panelDatosCatalogProductoNaturaleza"/>
+								<center border="none"
+									id="panelControlCatalogProductoNaturaleza">
+									<window border="none" height="100%"
+										width="100%" id="windowDatosProductoNaturaleza">
+										<listbox vflex="1"
+											id="listProductoNaturalezaCatalogo"
+											emptyMessage="Por el momento no existe un catalogos de naturaleza de productos"
+											model="@load(cvm.productosNaturalezas)"
+											selectedItem="@bind(cvm.productoNaturaleza)">
+											<listhead>
+												<listheader
+													style="@bind(cvm.styleGlobalLabelTableHeaderFont)" label="Clave"
+													width="50px" />
+												<listheader
+													style="@bind(cvm.styleGlobalLabelTableHeaderFont)" label="Nombre" />
+												<listheader
+													style="@bind(cvm.styleGlobalLabelTableHeaderFont)"
+													label="Clave maestra" width="100px" />
+												<listheader
+													visible="false" style="@bind(cvm.styleGlobalLabelTableHeaderFont)"
+													align="center" width="40px" />
+											</listhead>
+											<template name="model"
+												var="naturalezaVar">
+												<listitem>
+													<listcell>
+														<label
+															style="@bind(cvm.styleGlobalLabelTableContentFont)"
+															value="@bind(naturalezaVar.idProductoNaturaleza)" />
+													</listcell>
+													<listcell>
+														<label style="@bind(cvm.styleGlobalLabelTableContentFont)"
+															value="@bind(naturalezaVar.nombre)" />
+													</listcell>
+													<listcell>
+														<label style="@bind(cvm.styleGlobalLabelTableContentFont)"
+															value="@bind(naturalezaVar.simbolo)" />
+													</listcell>
+													<listcell>
+														<button
+															image="/images/toolbar/remove16.png"
+															onClick="@command('removerNaturaleza', index=naturalezaVarStatus.index)"
+															zclass="find_button"
+															tooltiptext="Remover Naturaleza de producto" />
+													</listcell>
+												</listitem>
+											</template>
+										</listbox>
+									</window>
+								</center>
+								<south border="none"
+									sclass="headerAreaBackgroud" size="35px">
+									<window width="100%" height="100%"
+										id="windowCtrlProductoNaturaleza"
+										sclass="backgroundWindow middle-div" border="none">
+										<grid sclass="my-grid">
+											<columns>
+												<column align="center"
+													width="40px" />
+												<column align="center"
+													width="50px" />
+
+												<column align="center"
+													width="200px" />
+												<column align="center" />
+												<column align="center"
+													width="150px" />
+												<column align="center"
+													width="100px" />
+												<column align="center"
+													width="40px" />
+											</columns>
+											<rows>
+												<row>
+													<button
+														id="btnNuevoProductoNaturaleza"
+														image="/images/toolbar/newDoc16.png"
+														onClick="@command('agregarNuevaNaturaleza')"
+														zclass="find_button"
+														tooltiptext="Agregar nueva naturaleza de un producto" />
+
+													<button
+														id="btnUploadProductoNaturaleza" upload="true"
+														image="/images/toolbar/uploadColor16.png"
+														onUpload="@command('onUploadExcelNaturaleza',upEvent=event)"
+														tooltiptext="Importar catalogo de Naturalezas de productos desde excel" />
+													<label style="@bind(cvm.styleGlobalLabelFont)"
+														value="Nombre de la Naturaleza:" />
+													<textbox style="@bind(cvm.styleGlobalLabelTableContentFont)"
+														value="@bind(cvm.productoNaturaleza.nombre)" width="100%"
+														id="txtNombreProductoNaturaleza" />
+													<label style="@bind(cvm.styleGlobalLabelFont)"
+														value="Clave Maestra:" />
+													<textbox style="@bind(cvm.styleGlobalLabelTableContentFont)"
+														value="@bind(cvm.productoNaturaleza.simbolo)" width="100%"
+														id="txtClaveMaestraProductoNaturaleza" />
+													<button
+														id="btnSaveProductoNaturaleza" zclass="find_button"
+														image="/images/toolbar/saveOff16.png"
+														onClick="@command('saveProductoNatraleza')"
+														tooltiptext="Guardar cambios" />
+												</row>
+											</rows>
+										</grid>
+									</window>
+								</south>
+							</borderlayout>
+						</tabpanel>
+						<tabpanel height="100%" id="tabPanel11"><!-- LAYOUTS -->
+							<borderlayout>
+								<north maxsize="300" size="100%"
+									border="none">
+									<window width="100%" height="100%"
+										border="none">
+										<grid sclass="my-grid"
+											vflex="1">
+											<columns>
+												<column align="center"
+													visible="false" width="72px" />
+												<column align="center"
+													width="72px" />
+												<column width="15%" />
+												<column />
+											</columns>
+											<rows>
+												<row>
+													<button
+														upload="true"
+														image="/images/toolbar/uploadColorOrange32.png"
+														onUpload="@command('onUploadLayoutArea',upEvent=event)"
+														tooltiptext="Upload Layout Area" />
+
+													<button
+														image="/images/toolbar/downloadColor32.png"
+														sclass="web_button" onClick="@command('openLayoutAreas')"
+														tooltiptext="Descargar layout de proveedores" />
+													<label style="@bind(cvm.styleGlobalLabelFont)"
+														value="Areas (Unidades responsables)" />
+													<div></div>
+												</row>
+
+												<row>
+													<button
+														upload="true"
+														image="/images/toolbar/uploadColorOrange32.png"
+														onUpload="@command('onUploadLayoutBanco',upEvent=event)"
+														tooltiptext="Upload Layout Bancos" />
+													<button
+														image="/images/toolbar/downloadColor32.png"
+														sclass="web_button" onClick="@command('openLayoutBancos')"
+														tooltiptext="Descargar layout de Bancos" />
+													<label style="@bind(cvm.styleGlobalLabelFont)"
+														value="Bancos" />
+													<div></div>
+												</row>
+
+												<row>
+													<button
+														upload="true"
+														image="/images/toolbar/uploadColorOrange32.png"
+														onUpload="@command('onUploadLayoutGiro',upEvent=event)"
+														tooltiptext="Upload Layout Giros" />
+													<button
+														image="/images/toolbar/downloadColor32.png"
+														sclass="web_button" onClick="@command('openLayoutGiros')"
+														tooltiptext="Descargar layout de Giros" />
+													<label style="@bind(cvm.styleGlobalLabelFont)"
+														value="Giros" />
+													<div></div>
+												</row>
+
+												<row>
+													<button
+														upload="true"
+														image="/images/toolbar/uploadColorOrange32.png"
+														onUpload="@command('onUploadLayoutDivisas',upEvent=event)"
+														tooltiptext="Upload Layout Divisas" />
+													<button
+														image="/images/toolbar/downloadColor32.png"
+														sclass="web_button"
+														onClick="@command('openLayoutMonedas')"
+														tooltiptext="Descargar layout de Monedas" />
+													<label style="@bind(cvm.styleGlobalLabelFont)"
+														value="Divisas" />
+													<div></div>
+												</row>
+
+												<row>
+													<button
+														upload="true"
+														image="/images/toolbar/uploadColorOrange32.png"
+														onUpload="@command('onUploadLayoutPosiciones',upEvent=event)"
+														tooltiptext="Upload Layout Posiciones" />
+													<button
+														image="/images/toolbar/downloadColor32.png"
+														sclass="web_button"
+														onClick="@command('openLayoutPosiciones')"
+														tooltiptext="Descargar layout de Posiciones" />
+													<label style="@bind(cvm.styleGlobalLabelFont)"
+														value="Posiciones" />
+													<div></div>
+												</row>
+
+
+												<row>
+													<button
+														upload="true"
+														image="/images/toolbar/uploadColorOrange32.png"
+														onUpload="@command('onUploadLayoutProducto',upEvent=event)"
+														tooltiptext="Upload Layout Productos" />
+													<button
+														image="/images/toolbar/downloadColor32.png"
+														sclass="web_button"
+														onClick="@command('openLayoutProducto')"
+														tooltiptext="Descargar layout de productos" />
+													<label
+														sclass="colorLabel" value="Productos" />
+													<div>
+														<label
+															style="@bind(cvm.styleGlobalLabelFont)"
+															value="Considerar que los catalogos: UNIDAD, NATURALEZA, CLASIFICACION Y DIVISA contengan información para llevar a cabo la relación con los productos" />
+													</div>
+												</row>
+
+												<row>
+													<button
+														upload="true"
+														image="/images/toolbar/uploadColorOrange32.png"
+														onUpload="@command('onUploadLayoutNaturaleza',upEvent=event)"
+														tooltiptext="Upload Layout Naturaleza de producto" />
+													<button
+														image="/images/toolbar/downloadColor32.png"
+														sclass="web_button"
+														onClick="@command('openLayoutNaturaleza')"
+														tooltiptext="Descargar layout de Naturaleza de producto" />
+													<label style="@bind(cvm.styleGlobalLabelFont)"
+														value="Naturaleza de producto" />
+													<div></div>
+												</row>
+
+												<row>
+													<button
+														upload="true"
+														image="/images/toolbar/uploadColorOrange32.png"
+														onUpload="@command('onUploadLayoutProductoTipo',upEvent=event)"
+														tooltiptext="Upload Layout Tipos de producto" />
+													<button
+														image="/images/toolbar/downloadColor32.png"
+														sclass="web_button"
+														onClick="@command('openLayoutProductoTipo')"
+														tooltiptext="Descargar layout de Tipos de producto" />
+													<label style="@bind(cvm.styleGlobalLabelFont)"
+														value="Tipos de producto" />
+													<div></div>
+												</row>
+												<row>
+													<button
+														upload="true"
+														image="/images/toolbar/uploadColorOrange32.png"
+														onUpload="@command('onUploadLayoutProveedores',upEvent=event)"
+														tooltiptext="Upload Layout Proveedores" />
+													<button
+														image="/images/toolbar/downloadColor32.png"
+														sclass="web_button"
+														onClick="@command('openLayoutProveedores')"
+														tooltiptext="Descargar layout de proveedores" />
+													<label style="@bind(cvm.styleGlobalLabelFont)"
+														value="Proveedores" />
+													<div>
+														<label
+															style="@bind(cvm.styleGlobalLabelFont)"
+															value="Considerar que los catalogos: CUENTA PAGO (MONEDA), Y CUENTA PAGO (BANCO) contengan información para llevar a cabo la relación con los proveedores" />
+													</div>
+												</row>
+
+												<row>
+													<button
+														upload="true"
+														image="/images/toolbar/uploadColorOrange32.png"
+														onUpload="@command('onUploadLayoutUnidades',upEvent=event)"
+														tooltiptext="Upload Layout Unidades" />
+													<button
+														image="/images/toolbar/downloadColor32.png"
+														sclass="web_button"
+														onClick="@command('openLayoutUnidades')"
+														tooltiptext="Descargar layout de Unidades" />
+													<label style="@bind(cvm.styleGlobalLabelFont)"
+														value="Unidades de medida" />
+													<div></div>
+												</row>
+												
+												<row>
+													<button
+														upload="true"
+														image="/images/toolbar/uploadColorOrange32.png"
+														tooltiptext="Upload Layout Presentaciones" />
+													<button
+														image="/images/toolbar/downloadColor32.png"
+														sclass="web_button"
+														onClick="@command('openLayoutPresentaciones')"
+														tooltiptext="Descargar layout de Presentaciones" />
+													<label style="@bind(cvm.styleGlobalLabelFont)"
+														value="Presentaciones" />
+													<div></div>
+												</row>
+
+											</rows>
+										</grid>
+									</window>
+								</north>
+							</borderlayout>
+						</tabpanel>
+					</tabpanels>
+				</tabbox>
+
+			</north>
+		</borderlayout>
+
+
+	</window>
+</zk>

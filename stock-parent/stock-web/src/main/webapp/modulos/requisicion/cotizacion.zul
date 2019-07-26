@@ -1,0 +1,421 @@
+<?page contentType="text/html;charset=UTF-8"?>
+<zk>
+	<script src="/scripts/watermarks.js" type="text/javascript" />
+	<window apply="org.zkoss.bind.BindComposer" height="100%"
+		border="none"
+		viewModel="@id('rvm') @init('com.cplsystems.stock.app.vm.requisicion.CotizacionVM')">
+
+		<borderlayout>
+			<north maxsize="300" size="40px" border="none">
+				<window border="none">
+					<grid sclass="my-grid">
+						<columns>
+							<column align="left" />
+							<column align="center" width="145px" />
+							<column align="center" width="155px" />
+							<column align="center" width="160px" />
+							<column align="center" width="130px" />
+						</columns>
+						<rows>
+							<row>
+								<label
+									style="@bind(rvm.styleModuloFontTitle)"
+									value="Cotizaciones | cotización:" />
+								<button sclass="btnFormat btnSmoke"
+									onClick="@command('enviarCotizacion', compSendCot=self)"
+									label="Enviar cotización" />
+								<button sclass="btnFormat btnGreen"
+									onClick="@command('aceptarCotizacion', compAceptCot=self)"
+									label="Aprovar cotización" />
+								<button sclass="btnFormat btnRed"
+									onClick="@command('abrirVentanaCancelacion', compCancelCot=self)"
+									label="Cancelar cotización" />
+								<button sclass="btnFormat btnRedBlue"
+									onClick="@command('imprimirCotizacion', compPrintCot=self)"
+									label="Exportar a PDF" tooltiptext="Exportar documento" />
+							</row>
+						</rows>
+					</grid>
+				</window>
+			</north>
+			<center border="none">
+				<borderlayout>
+					<center flex="true">
+						<borderlayout>
+							<north maxsize="300" title="Buscar"
+								size="105px" border="none">
+								<window width="100%" height="100%"
+									border="none">
+									<grid sclass="my-grid">
+										<columns>
+											<column align="center" />
+											<column align="center" />
+											<column align="center" />
+											<column align="center" />
+										</columns>
+										<rows>
+											<row>
+
+												<button
+													image="/images/toolbar/searchNew16.png"
+													zclass="find_button" onClick="@command('checkNueva')"
+													tooltiptext="Cotizaciones nuevas" />
+
+												<button
+													image="/images/toolbar/searchCancel16.png"
+													zclass="find_button" onClick="@command('checkCancelada')"
+													tooltiptext="Cotizaciones Canceladas" />
+
+												<button
+													image="/images/toolbar/searchAccept16.png"
+													zclass="find_button" onClick="@command('checkAceptada')"
+													tooltiptext="Cotizaciones Aceptadas" />
+												<button
+													image="/images/toolbar/searchSend16.png"
+													zclass="find_button" onClick="@command('checkEnviada')"
+													tooltiptext="Cotizaciones Enviadas" />
+
+											</row>
+										</rows>
+									</grid>
+									<grid sclass="my-grid">
+										<columns>
+											<column />
+											<column width="14%" />
+										</columns>
+										<rows>
+											<row>
+												<textbox
+													id="buscarCotizacionId"
+													onOK="@command('buscaraCotizacionCadena')"
+													value="@bind(rvm.requisicion.buscarRequisicion)"
+													width="100%" />
+
+												<hlayout
+													style="text-align:center">
+
+													<button
+														image="/images/toolbar/find16x16.png" zclass="find_button"
+														onClick="@command('buscaraCotizacionCadena')"
+														tooltiptext="Buscar cotización" />
+												</hlayout>
+
+											</row>
+										</rows>
+									</grid>
+								</window>
+							</north>
+							<center border="none">
+								<!-- LISTA DE COTIZACIONES -->
+								<window height="100%" width="100%" border="none">
+									<listbox vflex="1"
+										model="@load(rvm.cotizacionesList)"
+										selectedItem="@bind(rvm.cotizacionSelected)"
+										onSelect="@command('mostrarProductosCotizacion')"
+										emptyMessage="No hay cotizaciones">
+										<listhead>
+											<listheader
+												style="@bind(rvm.styleGlobalLabelTableHeaderFont)"
+												label="Proveedor"
+												sort="auto(proveedor.nombre)" />
+											<listheader
+												style="@bind(rvm.styleGlobalLabelTableHeaderFont)"
+												align="center"
+												width="15%" />
+										</listhead>
+										<template name="model"
+											var="cotizacionVar">
+											<listitem
+												style="@bind(cotizacionVar.estatusRequisicion.color)">
+												<listcell>
+													<label
+														style="@bind(cotizacionVar.estatusRequisicion.colorFont)"
+														tooltiptext="@bind(cotizacionVar.folioCotizacion)"
+														value="@bind(cotizacionVar.proveedor.nombre)" />
+												</listcell>
+												<listcell>
+													<a href="#"
+														sclass="excelButton"
+														tooltiptext="importar cotizacion enviada a proveedor"
+														visible="@bind(cotizacionVar.activarBotonExcel)"
+														onClick="@command('openFileChooser', index=cotizacionVarStatus.index, compUserCp=self)">
+														<image
+															width="30px" height="auto"
+															src="/images/toolbar/excel32.png" />
+													</a>
+
+												</listcell>
+											</listitem>
+										</template>
+									</listbox>
+								</window>
+
+							</center>
+							<south size="40%" border="none"
+								title="Bandeja de entrada">
+								<window height="100%" border="none"
+									width="100%">
+									<listbox vflex="1"
+										model="@load(rvm.cotizacionesInbox)"
+										selectedItem="@bind(rvm.cotizacionInboxSeleccionada)"
+										emptyMessage="No hay cotizaciones" height="100%">
+										<listhead>
+											<listheader label="Folio"
+												style="@bind(rvm.styleGlobalLabelTableHeaderFont)" 
+												align="center" width="18%"/>
+											<listheader label="Proveedor"
+												style="@bind(rvm.styleGlobalLabelTableHeaderFont)"/>
+											<listheader width="15%"
+												style="@bind(rvm.styleGlobalLabelTableHeaderFont)"
+												label="Total" align="center" />
+										</listhead>
+										<template name="model"
+											var="cotizacion">
+											<listitem>
+												<listcell
+													style="@bind(rvm.styleGlobalLabelTableContentFont)"
+													onClick="@command('transferirCotizacionToFormular', index=cotizacionStatus.index)"
+													label="${cotizacion.cotizacion.requisicion.folio}" />
+												<listcell
+													style="@bind(rvm.styleGlobalLabelTableContentFont)"
+													onClick="@command('transferirCotizacionToFormular', index=cotizacionStatus.index)"
+													label="${cotizacion.cotizacion.proveedor.nombre}" />
+												<listcell
+													style="@bind(rvm.styleGlobalLabelTableContentFont)"
+													onClick="@command('transferirCotizacionToFormular', index=cotizacionStatus.index)"
+													label="${cotizacion.cotizacion.total}" />
+											</listitem>
+										</template>
+									</listbox>
+								</window>
+							</south>
+						</borderlayout>
+					</center>
+					<east size="70%" flex="true">
+						<!-- DETALLE DE LA INFORMACION -->
+						<borderlayout>
+							<north maxsize="300" border="none"
+								size="95px">
+								<window width="100%" height="100%"
+									border="none">
+									<!-- INFORMACION DEL PROVEEDOR -->
+									<grid sclass="my-grid">
+										<columns>
+											<column width="13%" />
+											<column />
+											<column width="13%" />
+											<column />
+										</columns>
+										<rows>
+											<row>
+												<label
+													style="@bind(rvm.styleGlobalLabelFont)"
+													value="Proveedor:"/>
+
+												<div
+													style="border-bottom-style: solid; border-bottom-width: 1px;">
+													<label
+														style="@bind(rvm.styleGlobalLabelFont)"
+														value="@bind(rvm.cotizacionSelected.proveedor.nombre)" />
+												</div>
+
+												<label value="Atención:"
+													style="@bind(rvm.styleGlobalLabelFont)"/>
+												<div
+													style="border-bottom-style: solid; border-bottom-width: 1px;">
+													<hlayout>
+
+														<label
+															style="@bind(rvm.styleGlobalLabelFont)"
+															value="@bind(rvm.cotizacionSelected.proveedor.representanteAteCliente.apellidoPaterno)" />
+														<label
+															style="@bind(rvm.styleGlobalLabelFont)" value=" " />
+														<label
+															style="@bind(rvm.styleGlobalLabelFont)"
+															value="@bind(rvm.cotizacionSelected.proveedor.representanteAteCliente.apellidoMaterno)" />
+														<label
+															style="@bind(rvm.styleGlobalLabelFont)" value=" " />
+														<label
+															style="@bind(rvm.styleGlobalLabelFont)"
+															value="@bind(rvm.cotizacionSelected.proveedor.representanteAteCliente.nombre)" />
+													</hlayout>
+												</div>
+
+											</row>
+										</rows>
+									</grid>
+
+									<grid sclass="my-grid">
+										<columns>
+											<column width="13%" />
+											<column />
+
+										</columns>
+										<rows>
+											<row>
+												<label
+													style="@bind(rvm.styleGlobalLabelFont)" value="Dirección:"/>
+												<div
+													style="border-bottom-style: solid; border-bottom-width: 1px;">
+
+													<hlayout>
+														<label
+															style="@bind(rvm.styleGlobalLabelFont)"
+															value="@bind(rvm.cotizacionSelected.proveedor.direccionFiscal.calle)" />
+
+														<label
+															style="@bind(rvm.styleGlobalLabelFont)"
+															value="@bind(rvm.cotizacionSelected.proveedor.direccionFiscal.numExt)" />
+
+														<label
+															style="@bind(rvm.styleGlobalLabelFont)"
+															value="@bind(rvm.cotizacionSelected.proveedor.direccionFiscal.colonia)" />
+
+														<label
+															style="@bind(rvm.styleGlobalLabelFont)"
+															value="@bind(rvm.cotizacionSelected.proveedor.direccionFiscal.cp)" />
+
+														<label
+															style="@bind(rvm.styleGlobalLabelFont)"
+															value="@bind(rvm.cotizacionSelected.proveedor.direccionFiscal.cuidad)" />
+
+														<label
+															style="@bind(rvm.styleGlobalLabelFont)"
+															value="@bind(rvm.cotizacionSelected.proveedor.direccionFiscal.estado.nombre)" />
+
+														<label
+															style="@bind(rvm.styleGlobalLabelFont)"
+															value="@bind(rvm.cotizacionSelected.proveedor.direccionFiscal.pais.nombre)" />
+
+													</hlayout>
+												</div>
+											</row>
+										</rows>
+									</grid>
+
+									<grid sclass="my-grid">
+										<columns>
+											<column width="13%" />
+											<column width="13%" />
+											<column width="7%" />
+											<column width="17%" />
+											<column width="13%" />
+											<column />
+											<column width="9%" />
+											<column />
+										</columns>
+										<rows>
+											<row>
+												<label value="Telefono:"
+													style="@bind(rvm.styleGlobalLabelFont)"/>
+												<div
+													style="border-bottom-style: solid; border-bottom-width: 1px;">
+													<label
+														style="@bind(rvm.styleGlobalLabelFont)"
+														value="@bind(rvm.cotizacionSelected.proveedor.representanteAteCliente.contacto.telefono.numero)" />
+												</div>
+												<label value="E-mail:"
+													style="@bind(rvm.styleGlobalLabelFont)"/>
+												<div
+													style="border-bottom-style: solid; border-bottom-width: 1px;">
+													<label
+														style="@bind(rvm.styleGlobalLabelFont)"
+														value="@bind(rvm.cotizacionSelected.proveedor.representanteAteCliente.contacto.email.email)" />
+												</div>
+
+												<label value="Fecha:"
+													style="@bind(rvm.styleGlobalLabelFont)"/>
+												<div
+													style="border-bottom-style: solid; border-bottom-width: 1px;">
+													<datebox
+														buttonVisible="false" value="@bind(rvm.fecha)"
+														readonly="true" />
+												</div>
+
+												<label value="Folio:"
+													style="@bind(rvm.styleGlobalLabelFont)"/>
+												<div
+													style="border-bottom-style: solid; border-bottom-width: 1px;">
+													<textbox
+														value="@bind(rvm.cotizacionSelected.folioCotizacion)"
+														readonly="true" />
+
+												</div>
+											</row>
+										</rows>
+									</grid>
+								</window>
+							</north>
+							<center border="none">
+								<!-- LISTA DE PRODUCTOS DEL PROVEEDOR -->
+								<window height="100%" width="100%"
+									border="none">
+									<listbox vflex="1"
+										model="@load(rvm.cotizacionesConProductos)"
+										emptyMessage="No hay productos para esta cotización">
+										<listhead>
+											<listheader
+												style="@bind(rvm.styleGlobalLabelTableHeaderFont)" label="No"
+												width="5%" />
+											<listheader
+												style="@bind(rvm.styleGlobalLabelTableHeaderFont)" label="Clave"
+												width="10%" sort="auto(producto.clave)" />
+											<listheader
+												style="@bind(rvm.styleGlobalLabelTableHeaderFont)" label="Producto"
+												sort="auto(proveedor.nombre)" />
+											<listheader
+												style="@bind(rvm.styleGlobalLabelTableHeaderFont)"
+												label="Partida generica" width="20%"
+												sort="auto(cofiaPartidaGenerica.nombre)" />
+											<listheader
+												style="@bind(rvm.styleGlobalLabelTableHeaderFont)" label="Cantidad"
+												width="10%" sort="auto(cantidad)" />
+											<listheader
+												style="@bind(rvm.styleGlobalLabelTableHeaderFont)" label="U/M"
+												width="10%" sort="auto(producto.unidad.nombre)" />
+										</listhead>
+										<template name="model">
+											<listitem>
+												<listcell>
+													<label
+														style="@bind(rvm.styleGlobalLabelTableContentFont)"
+														value="${forEachStatus.index + 1}" />
+												</listcell>
+												<listcell>
+													<label
+														style="@bind(rvm.styleGlobalLabelTableContentFont)"
+														value="@bind(each.producto.clave)" />
+												</listcell>
+												<listcell>
+													<label
+														style="@bind(rvm.styleGlobalLabelTableContentFont)"
+														value="@bind(each.producto.nombre)" />
+												</listcell>
+												<listcell>
+													<label
+														style="@bind(rvm.styleGlobalLabelTableContentFont)"
+														value="@bind(each.requisicionProducto.cofiaPartidaGenerica.nombre)"/>
+												</listcell>
+												<listcell>
+													<label
+														style="@bind(rvm.styleGlobalLabelTableContentFont)"
+														value="@bind(each.requisicionProducto.cantidad)" />
+												</listcell>
+												<listcell>
+													<label
+														style="@bind(rvm.styleGlobalLabelTableContentFont)"
+														value="@bind(each.producto.unidad.nombre)" />
+												</listcell>
+
+											</listitem>
+										</template>
+									</listbox>
+								</window>
+							</center>
+						</borderlayout>
+					</east>
+				</borderlayout>
+			</center>
+		</borderlayout>
+	</window>
+</zk>

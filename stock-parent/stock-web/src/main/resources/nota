@@ -1,0 +1,33 @@
+<!-- Configuration Data -->
+
+		
+			<!-- MySQL desarrollo Local -->
+			<property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
+			<property name="hibernate.connection.url">jdbc:mysql://localhost:3306/stock</property>
+			<property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
+			<property name="hibernate.connection.username">root</property>
+			<property name="hibernate.connection.password">root</property>
+			
+			
+	
+			<!-- SQL SERVER 2008 desarrollo Local -->  
+
+<!-- 		<property name="hibernate.connection.driver_class">net.sourceforge.jtds.jdbc.Driver</property> -->
+<!-- 		<property name="hibernate.connection.url">jdbc:jtds:sqlserver://localhost:1433/stock</property> -->
+<!-- 		<property name="hibernate.dialect">org.hibernate.dialect.SQLServer2008Dialect</property> -->
+<!-- 		<property name="connection.username">USUARIOSTOCK</property> -->
+<!-- 		<property name="connection.password">STOCK2014</property> -->
+
+<!--
+	<property name="hibernate.connection.url">jdbc:jtds:sqlserver://localhost:55291/stock;instance=SISTEMAS</property>
+	<property name="hibernate.connection.url">jdbc:jtds:sqlserver://legajo-virtual.com:55291/stock;instance=SISTEMAS</property>
+	conexion a base de datos de CAME con instancia SQL Server
+-->
+
+			<!-- SQL SERVER 2008 Productivo Local -->
+
+			<property name="hibernate.connection.driver_class">net.sourceforge.jtds.jdbc.Driver</property>
+			<property name="hibernate.connection.url">jdbc:jtds:sqlserver://localhost:55291/stock;instance=SISTEMAS</property>
+			<property name="hibernate.dialect">org.hibernate.dialect.SQLServer2008Dialect</property>
+			<property name="connection.username">stockadmin</property>
+			<property name="connection.password">St0ck2ol6</property>

@@ -1,0 +1,104 @@
+<?page title="" contentType="text/html;charset=UTF-8"?>
+
+<zk>
+	<window apply="org.zkoss.bind.BindComposer"
+		id="visorPdfVMModalDialog" onCancel="@command('confirm')"
+		viewModel="@id('fevm') @init('com.cplsystems.stock.app.utils.VisorPdfVM')"
+		width="80%" height="80%" position="center,center" closable="true">
+
+		<style>
+			.closeButton {
+				-moz-box-shadow:inset 0px 1px 0px 0px #cf866c;
+				-webkit-box-shadow:inset 0px 1px 0px 0px #cf866c;
+				box-shadow:inset 0px 1px 0px 0px #cf866c;
+				background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #d0451b), color-stop(1, #bc3315));
+				background:-moz-linear-gradient(top, #d0451b 5%, #bc3315 100%);
+				background:-webkit-linear-gradient(top, #d0451b 5%, #bc3315 100%);
+				background:-o-linear-gradient(top, #d0451b 5%, #bc3315 100%);
+				background:-ms-linear-gradient(top, #d0451b 5%, #bc3315 100%);
+				background:linear-gradient(to bottom, #d0451b 5%, #bc3315 100%);
+				filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#d0451b', endColorstr='#bc3315',GradientType=0);
+				background-color:#d0451b;
+				-moz-border-radius:3px;
+				-webkit-border-radius:3px;
+				border-radius:3px;
+				border:1px solid #942911;
+				display:inline-block;
+				cursor:pointer;
+				color:#ffffff;
+				font-family:Arial;
+				font-size:13px;
+				padding:6px 24px;
+				text-decoration:none;
+				text-shadow:0px 1px 0px #854629;
+			}
+			.closeButton:hover {
+				background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #bc3315), color-stop(1, #d0451b));
+				background:-moz-linear-gradient(top, #bc3315 5%, #d0451b 100%);
+				background:-webkit-linear-gradient(top, #bc3315 5%, #d0451b 100%);
+				background:-o-linear-gradient(top, #bc3315 5%, #d0451b 100%);
+				background:-ms-linear-gradient(top, #bc3315 5%, #d0451b 100%);
+				background:linear-gradient(to bottom, #bc3315 5%, #d0451b 100%);
+				filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#bc3315', endColorstr='#d0451b',GradientType=0);
+				background-color:#bc3315;
+			}
+			.closeButton:active {
+				position:relative;
+				top:1px;
+			}
+			
+			.titleBackgroud{
+				/* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#4c4c4c+0,595959+12,666666+25,474747+39,2c2c2c+50,000000+51,111111+60,2b2b2b+76,1c1c1c+91,131313+100;Black+Gloss+%231 */
+				background: rgb(76,76,76); /* Old browsers */
+				background: -moz-linear-gradient(top,  rgba(76,76,76,1) 0%, rgba(89,89,89,1) 12%, rgba(102,102,102,1) 25%, rgba(71,71,71,1) 39%, rgba(44,44,44,1) 50%, rgba(0,0,0,1) 51%, rgba(17,17,17,1) 60%, rgba(43,43,43,1) 76%, rgba(28,28,28,1) 91%, rgba(19,19,19,1) 100%); /* FF3.6-15 */
+				background: -webkit-linear-gradient(top,  rgba(76,76,76,1) 0%,rgba(89,89,89,1) 12%,rgba(102,102,102,1) 25%,rgba(71,71,71,1) 39%,rgba(44,44,44,1) 50%,rgba(0,0,0,1) 51%,rgba(17,17,17,1) 60%,rgba(43,43,43,1) 76%,rgba(28,28,28,1) 91%,rgba(19,19,19,1) 100%); /* Chrome10-25,Safari5.1-6 */
+				background: linear-gradient(to bottom,  rgba(76,76,76,1) 0%,rgba(89,89,89,1) 12%,rgba(102,102,102,1) 25%,rgba(71,71,71,1) 39%,rgba(44,44,44,1) 50%,rgba(0,0,0,1) 51%,rgba(17,17,17,1) 60%,rgba(43,43,43,1) 76%,rgba(28,28,28,1) 91%,rgba(19,19,19,1) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+				filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#4c4c4c', endColorstr='#131313',GradientType=0 ); /* IE6-9 */
+								
+			}
+			.formatoTextoTitle{
+				font-weight:bold;
+				text-transform:uppercase;
+				color:#FFFFFF;
+				letter-spacing:1pt;
+				word-spacing:2pt;
+				font-size:150%;
+				text-align:left;
+				font-family:arial black, sans-serif;
+				line-height:1;
+			}
+					
+		</style>
+
+		<borderlayout>
+			<north maxsize="300" size="39px">
+				<div sclass="titleBackgroud">
+					<grid sclass="my-grid">
+						<columns>
+							<column />
+							<column width="100px" align="center"/>
+						</columns>
+						<rows>
+							<row>
+								<label multiline="true" width="100%" sclass="formatoTextoTitle"
+									value="@bind(fevm.title)" />
+									<a href="#" class="closeButton" onClick="@command('confirm')">
+										Cerrar
+									</a>
+							</row>
+						</rows>
+					</grid>
+				</div>
+			</north>
+			<center border="0">
+				<window width="100%" height="100%">
+					<iframe height="100%" width="100%" id="reportframe"
+						content="@bind(fevm.fileContent)" />
+
+				</window>
+			</center>
+		</borderlayout>
+		<button label="Download PDF" visible="false"
+			onClick="@command('downloadPdf')" />
+	</window>
+</zk>

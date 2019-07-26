@@ -1,0 +1,195 @@
+<?page contentType="text/html;charset=UTF-8"?>
+<zk>
+	<window apply="org.zkoss.bind.BindComposer" height="100%"
+		border="none" id="mainWin"
+		viewModel="@id('vm') @init('com.cplsystems.stock.app.vm.menu.MenuVM')">
+
+
+		<timer id="timer" delay="5000" repeats="true"
+			onTimer="@command('updateImage')" />
+
+		<borderlayout sclass="menuBorderLayout">
+			<north border="none" visible="@load(vm.mostrarRequisiones)" 
+				maxsize="300" size="60px">
+				<window height="100%" border="none" width="100%">
+					<listbox vflex="1"
+						model="@load(vm.moduloRequisiciones)"
+						selectedItem="@bind(vm.moduloRequisicionSelected)">
+						<listhead>
+							<listheader width="100%" />
+							<listheader />
+						</listhead>
+						<template name="model" var="itemVar">
+							<listitem>
+								<listcell image="@bind(itemVar.csrIcon)"
+									onClick="@command('menuRequisicionSelected', index=itemVarStatus.index, compItemSelect=self)">
+									<label value="@bind(itemVar.nombre)"
+										width="100%" style="@bind(vm.styleFontSubMenu)"/>
+								</listcell>
+							</listitem>
+						</template>
+					</listbox>
+				</window>
+			</north>
+			<center border="none">
+				<borderlayout>
+					<north border="none"
+						visible="@load(vm.mostrarCotizacionesAutorizaciones)"
+						title="@load(vm.TAG_MENUVM_SUBTITLE2_COTIZACIONES)" maxsize="300"
+						size="55px">
+						<window border="none" height="100%"
+							width="100%">
+							<listbox vflex="1"
+								model="@load(vm.moduloCotizaciones)"
+								selectedItem="@bind(vm.moduloCotizacionSelected)">
+								<listhead>
+									<listheader width="100%" />
+									<listheader />
+								</listhead>
+								<template name="model" var="itemVar">
+									<listitem>
+										<listcell
+											image="@bind(itemVar.csrIcon)"
+											onClick="@command('menuCotizacionItemSelected', index=itemVarStatus.index)">
+											<label
+												value="@bind(itemVar.nombre)" width="100%"
+												style="@bind(vm.styleFontSubMenu)" />
+										</listcell>
+									</listitem>
+								</template>
+							</listbox>
+						</window>
+					</north>
+					<center border="none">
+						<borderlayout>
+							<north border="none"
+								visible="@load(vm.mostrarOrdenesCompra)"
+								title="@load(vm.TAG_MENUVM_SUBTITLE3_ORDENCOMPRA)" maxsize="300"
+								size="112px">
+								<window border="none" height="100%"
+									width="100%">
+									<listbox vflex="1"
+										model="@load(vm.moduloOrdenesCompra)"
+										selectedItem="@bind(vm.moduloOrdenesCompraSelected)">
+										<listhead>
+											<listheader width="100%" />
+											<listheader />
+										</listhead>
+										<template name="model"
+											var="itemVar">
+											<listitem>
+												<listcell
+													image="@bind(itemVar.csrIcon)"
+													onClick="@command('menuOrdenCompraSelected', index=itemVarStatus.index)">
+													<label
+														value="@bind(itemVar.nombre)" width="100%"
+														style="@bind(vm.styleFontSubMenu)" />
+												</listcell>
+											</listitem>
+										</template>
+									</listbox>
+								</window>
+							</north>
+							<center border="none">
+								<borderlayout>
+									<north border="none"
+										visible="@load(vm.mostrarPanelControl)"
+										title="@load(vm.TAG_MENUVM_SUBTITLE4_PANELCONTROL)"
+										maxsize="300" size="170px">
+										<window border="none"
+											height="100%" width="100%">
+											<listbox vflex="1"
+												model="@load(vm.moduloPanelControl)"
+												selectedItem="@bind(vm.moduloPanelControlSelected)">
+												<listhead>
+													<listheader
+														width="100%" />
+													<listheader />
+												</listhead>
+												<template name="model"
+													var="itemVar">
+													<listitem>
+														<listcell
+															image="@bind(itemVar.csrIcon)"
+															onClick="@command('menuPanelControlSelected', index=itemVarStatus.index)">
+															<label
+																value="@bind(itemVar.nombre)" width="100%"
+																style="@bind(vm.styleFontSubMenu)" />
+														</listcell>
+													</listitem>
+												</template>
+											</listbox>
+										</window>
+									</north>
+									<center border="none">
+										<borderlayout>
+											<north border="none"
+												visible="@load(vm.mostrarPerfil)"
+												title="@load(vm.TAG_MENUVM_SUBTITLE5_PERFIL)" maxsize="300"
+												size="55px">
+												<window border="none"
+													height="100%" width="100%">
+													<listbox vflex="1"
+														model="@load(vm.moduloPerfiles)"
+														selectedItem="@bind(vm.moduloPerfilSelected)">
+														<listhead>
+															<listheader
+																width="100%" />
+															<listheader />
+														</listhead>
+														<template
+															name="model" var="itemVar">
+															<listitem>
+																<listcell
+																	image="@bind(itemVar.csrIcon)"
+																	onClick="@command('menuPerfilSelected', index=itemVarStatus.index)">
+																	<label
+																		value="@bind(itemVar.nombre)" width="100%"
+																		style="@bind(vm.styleFontSubMenu)" />
+																</listcell>
+															</listitem>
+														</template>
+													</listbox>
+												</window>
+											</north>
+											<center border="none"
+												sclass="backgroundColorGeneral">
+												<borderlayout>
+													<north size="0%"
+														border="none" sclass="backgroundColorGeneral" />
+													<center
+														border="none" sclass="backgroundColorGeneral">
+														<div
+															style="margin-left: 5px; margin-right: 5px; margin-top: 5px; margin-bottom: 5px;"
+															sclass="middle-div">
+															<a
+																href="@bind(vm.urlBAnner)" target="_blank">
+																<image
+																	width="100%" height="auto"
+																	content="@bind(vm.bannerGlobalAImage)" />
+															</a>
+														</div>
+													</center>
+													<south border="none"
+														sclass="backgroundColorGeneral" size="13px">
+														<div
+															align="center">
+															<label
+																style="@bind(vm.styleFontSubMenu)"
+																value="@bind(vm.versionSistema)" />
+														</div>
+													</south>
+												</borderlayout>
+											</center>
+										</borderlayout>
+									</center>
+								</borderlayout>
+							</center>
+						</borderlayout>
+					</center>
+				</borderlayout>
+			</center>
+
+		</borderlayout>
+	</window>
+</zk>

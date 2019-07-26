@@ -1,0 +1,236 @@
+<?page title="" contentType="text/html;charset=UTF-8"?>
+<zk>
+	<script src="/scripts/watermarks.js" type="text/javascript" />
+
+
+	<window apply="org.zkoss.bind.BindComposer" height="100%"
+		id="clientesWindowContainer" border="none"
+		viewModel="@id('evm') @init('com.cplsystems.stock.app.vm.controlpanel.UsuarioVM')"
+		form="@id('fx') @save(evm, before='saveChanges')
+              @validator('com.cplsystems.stock.app.vm.controlpanel.utils.UsuarioValidator')"
+		validationMessages="@id('vmsgs')">
+
+
+
+		<borderlayout id="borderLayoutProncipal">
+			<north maxsize="300"
+				border="none" size="40px" id="northMenuCommand">
+				<window border="none" id="windowMenuCommand">
+					<grid sclass="my-grid">
+						<columns>
+							<column align="left" />
+							<column align="center" width="120px" />
+							<column align="center" width="205px" />
+							<column align="center" width="130px" />
+						</columns>
+						<rows>
+							<row>
+								<label
+									style="@bind(evm.styleModuloFontTitle)"
+									value="Panel de control | Clientes:" />
+								<button sclass="btnFormat btnBlueLow" id="btnClienteNuevaOrg"
+									onClick="@command('nuevaOrganizacion')" label="Nuevo cliente"
+									tooltiptext="Registrar nuevo cliente" />
+								<button sclass="btnFormat btnBlueTurq" id="btnClienteSaveOrg"
+									onClick="@command('saveChanges')"
+									label="Actualizar/Guardar Cliente" />
+								<button sclass="btnFormat btnRed" id="btnClienteDeleteOrg"
+									onClick="@command('delete')" label="Eliminar cliente" />
+								<button visible="false"
+									image="/images/toolbar/find.png" sclass="web_button"
+									onClick="@command('buscarOrganizacion')"
+									tooltiptext="Buscar clientes" />
+							</row>
+						</rows>
+					</grid>
+				</window>
+			</north>
+
+			<center border="none" id="centerOperatingClientes">
+				<borderlayout id="borderLayoutDetailOperating">
+					<center flex="true" id="centerBuscadorClientes">
+						<borderlayout id="borderLayoutOrdenarBusqueda">
+							<north maxsize="300" border="none" title="Buscador"
+								size="75px" id="northFiltrandoBusqueda">
+								<window width="100%" height="100%" id="windowFilteringBusqueda"
+									border="none">
+									<grid sclass="my-grid">
+										<columns>
+											<column />
+											<column width="14%" />
+										</columns>
+										<rows>
+											<row>
+												<textbox
+													id="txtBuscarClientes" onOK="@command('realizarBusqueda')"
+													value="@bind(evm.busquedaFilter)" width="100%" />
+												<hlayout
+													style="text-align:center">
+													<button id="btnBuscrClientes"
+														image="/images/toolbar/find16x16.png" zclass="find_button"
+														onClick="@command('realizarBusqueda')"
+														tooltiptext="Buscar clientes" />
+												</hlayout>
+											</row>
+										</rows>
+									</grid>
+								</window>
+							</north>
+							<center border="none" id="centerResultQuery">
+								<!-- LISTA DE CLIENTES -->
+								<window height="100%" width="100%" id="windowResultQuery">
+									<listbox vflex="1" id="listResultadosClientes"
+										emptyMessage="No hay clientes registrados"
+										model="@load(evm.usuarioList)"
+										onClick="@command('showInfoUsuarioSelected')"
+										selectedItem="@bind(evm.usuario)">
+										<listhead>
+											<listheader label="Usuario" align="center"
+												style="@bind(evm.styleGlobalLabelTableHeaderFont)"
+												width="30%" />
+											<listheader
+												style="@bind(evm.styleGlobalLabelTableHeaderFont)"
+												label="Organización" />
+
+										</listhead>
+										<template name="model"
+											var="usuarioVar">
+											<listitem>
+												<listcell>
+													<label
+														style="font-size: 80%;" value="@bind(usuarioVar.benDec)"
+														width="100%" />
+												</listcell>
+												<listcell>
+													<label
+														style="font-size: 80%;"
+														value="@bind(usuarioVar.organizacion.nombre)"
+														width="100%" />
+												</listcell>
+											</listitem>
+										</template>
+									</listbox>
+								</window>
+							</center>
+						</borderlayout>
+					</center>
+					<east size="75%" flex="true" id="eastDetailInfoClient"
+						title="Información del cliente">
+						<window width="100%" height="100%" id="windowDetailInfoClient"
+							border="none">
+							<!-- INFORMACION -->
+							<grid sclass="my-grid">
+								<columns>
+									<column width="15%" />
+									<column />
+									<column width="15%" />
+									<column width="15%" />
+								</columns>
+								<rows>
+									<row>
+										<label sclass="colorLabel" value="Compañía:" />
+										<textbox cols="80" zclass="tBox" id="txtNombreOrganizacion" readonly="true"
+											width="100%" value="@bind(evm.usuario.organizacion.nombre)" />
+
+										<label sclass="colorLabel" 
+											value="Fecha de caducidad:" />
+										<datebox format="long" id="dateBoxFechaCaducidad"
+											width="100%" value="@bind(evm.usuario.fechaCaducidad)"
+											onCreate="self.value = new Date()" locale="mx" />
+									</row>
+								</rows>
+							</grid>
+							<grid sclass="my-grid">
+								<columns>
+									<column width="15%" />
+									<column />
+									<column width="7%" />
+									<column />
+									<column width="7%" />
+									<column />
+								</columns>
+								<rows>
+									<row>
+										<label value="Direccion" sclass="colorLabel" />
+										<textbox cols="60" zclass="tBox" id="txtCalleOrg"
+											width="100%" value="@bind(evm.usuario.organizacion.direccion.calle)" />
+										<label value="C.P:" sclass="colorLabel"/>
+										<textbox cols="9" zclass="tBox" id="txtCp" readonly="true"
+											width="100%" value="@bind(evm.usuario.organizacion.direccion.cp)" />
+										<label value="RFC:" sclass="colorLabel"/>
+										<textbox maxlength="13" zclass="upperCase" id="txtRfc" readonly="true"
+											width="100%" value="@bind(evm.usuario.organizacion.rfc)" />
+									</row>
+								</rows>
+							</grid>
+
+							<!-- INFORMACION DE ADMINISTRADOR -->
+							<div sclass="divTitleDimension">
+								<label
+									value="Información del Administrador" sclass="divTitleFormat" />
+							</div>
+							<grid sclass="my-grid">
+								<columns>
+									<column width="15%" />
+									<column />
+								</columns>
+								<rows>
+									<row>
+										<label value="Nombre: " sclass="colorLabel"/>
+										<textbox width="100%"
+											readonly="true" id="txtNombreUsuario"
+											value="@bind(evm.usuario.persona.nombreCompleto)" />
+									</row>
+								</rows>
+							</grid>
+							<grid sclass="my-grid">
+								<columns>
+									<column width="15%" />
+									<column />
+									<column width="15%" />
+									<column />
+									<column width="15%" />
+									<column />
+									<column width="35px" />
+								</columns>
+								<rows>
+									<row>
+										<hlayout>
+											<label value="*"
+												style="color:red" />
+											<label value="Usuario" sclass="colorLabel"/>
+										</hlayout>
+										<textbox cols="80" zclass="tBox" id="txtUsuarioAlias"
+											width="100%" value="@bind(evm.usuario.benDec)" />
+
+										<hlayout>
+											<label value="*"
+												style="color:red" />
+											<label value="Contraseña" sclass="colorLabel"/>
+										</hlayout>
+										<textbox width="100%" id="txtContrasena1"
+											type="@bind(evm.typePassword)" maxlength="24"
+											value="@bind(evm.usuario.kenDec)" />
+										<hlayout>
+											<label value="*"
+												style="color:red" />
+											<label
+												value="Repetir contraseña" sclass="colorLabel"/>
+										</hlayout>
+										<textbox width="100%" id="txtContrasena2"
+											type="@bind(evm.typePassword)" maxlength="24"
+											value="@bind(evm.usuario.retypeKennwort)" />
+										<checkbox id="checkViewContrasena"
+											tooltiptext="Ver contraseña" label=""
+											onClick="@command('verContrasena')"
+											checked="@bind(evm.checkPass)" />
+									</row>
+								</rows>
+							</grid>
+						</window>
+					</east>
+				</borderlayout>
+			</center>
+		</borderlayout>
+	</window>
+</zk>

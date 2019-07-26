@@ -1,0 +1,307 @@
+<?page title="" contentType="text/html;charset=UTF-8"?>
+<zk>
+	<?script type="text/javascript" src="/scripts/watermarks.js"?>
+	<?script type="style" src="/styles/home/styleGlobal.css" ?>
+	<?script type="style" src="/styles/home/styleHome.css" ?>
+
+	<window apply="org.zkoss.bind.BindComposer"
+		id="registrarProveedorModalDialog" onCancel="@command('closeDialog')"
+		viewModel="@id('vm') @init('com.cplsystems.stock.app.vm.producto.RegistrarProveedorVM')"
+		width="50%" height="550px" position="center,center" closable="true">
+
+		<style>
+			@import
+			url('https://fonts.googleapis.com/css?family=Orbitron');
+			.btnFormat{ border-radius: 5px; cursor:pointer; padding:
+			6px; font-family: 'Orbitron', sans-serif; }
+
+			.btnGreen{ background: linear-gradient(to bottom, #11b76b
+			0%,#056f41 100%); color: #ffffff; }
+
+			.btnRed{ background: linear-gradient(to bottom, #d42626
+			0%,#990000 100%); color: #ffffff; }
+		</style>
+		<borderlayout>
+			<north title="Registro de proveedor" maxsize="300"
+				size="100%" border="none">
+				<window height="100%" width="100%" border="none">
+
+					<groupbox closable="false">
+						<caption>Información</caption>
+						<grid sclass="my-grid">
+							<columns>
+								<column width="15%" />
+								<column />
+								<column width="15%" />
+								<column />
+							</columns>
+							<rows>
+								<row>
+
+
+									<hlayout>
+										<label value="*"
+											style="color:red" />
+										<label
+											value="Nombre de la empresa:" />
+									</hlayout>
+									<textbox width="100%"
+										value="@bind(vm.proveedorSelected.nombre)" />
+									<label value="Razon social:" />
+									<textbox width="100%"
+										value="@bind(vm.proveedorSelected.razonSocial)" type="text" />
+								</row>
+								<row>
+									<hlayout>
+										<label value="*"
+											style="color:red" />
+										<label value="RFC:" />
+									</hlayout>
+									<textbox type="text" width="100%"
+										value="@bind(vm.proveedorSelected.rfc)" maxlength="13"
+										zclass="upperCase" />
+									<label value="Giro" />
+									<combobox model="@bind(vm.giros)"
+										autocomplete="true"
+										selectedItem="@bind(vm.proveedorSelected.giro)"
+										width="100%">
+										<template name="model">
+											<comboitem
+												label="@load(each.nombre)" />
+										</template>
+									</combobox>
+								</row>
+							</rows>
+						</grid>
+					</groupbox>
+
+					<groupbox closable="false">
+						<caption>Contacto</caption>
+						<grid sclass="my-grid">
+							<columns>
+								<column width="15%" />
+								<column />
+								<column width="15%" />
+								<column />
+								<column width="15%" />
+								<column />
+							</columns>
+							<rows>
+								<row>
+									<hlayout>
+										<label value="*"
+											style="color:red" />
+										<label value="Calle:" />
+									</hlayout>
+									<textbox width="100%"
+										value="@bind(vm.proveedorSelected.direccionFiscal.calle)" />
+
+									<hlayout>
+										<label value="*"
+											style="color:red" />
+										<label value="Num. ext:" />
+									</hlayout>
+									<textbox width="100%"
+										value="@bind(vm.proveedorSelected.direccionFiscal.numExt)" />
+
+									<label value="Num int.:" />
+									<textbox width="100%"
+										value="@bind(vm.proveedorSelected.direccionFiscal.numInt)" />
+								</row>
+								<row>
+									<hlayout>
+										<label value=" " />
+										<label value="C.P.:" />
+									</hlayout>
+									<grid sclass="my-grid">
+										<columns>
+											<column align="center" />
+											<column align="center"
+												width="38px" />
+										</columns>
+										<rows>
+											<row>
+												<textbox width="100%"
+													onOK="@command('getInformacionDireccionFromCp', compOrgCp=self)"
+													value="@bind(vm.proveedorSelected.direccionFiscal.cp)" />
+												<button
+													image="/images/toolbar/find16x16.png" zclass="find_button"
+													onClick="@command('getInformacionDireccionFromCp', compOrgCp=self)"
+													tooltiptext="Buscar Informacion del codigo postal" />
+											</row>
+										</rows>
+									</grid>
+
+									<hlayout>
+										<label value=" " />
+										<label value="Colonia:" />
+									</hlayout>
+									<textbox width="100%"
+										tooltiptext="@bind(vm.proveedorSelected.direccionFiscal.colonia)"
+										value="@bind(vm.proveedorSelected.direccionFiscal.colonia)" />
+									<label value="Ciudad:" />
+									<textbox width="100%"
+										value="@bind(vm.proveedorSelected.direccionFiscal.cuidad)" />
+								</row>
+
+								<row>
+									<hlayout>
+										<label value=" " />
+										<label value="Pais:" />
+									</hlayout>
+									<combobox model="@bind(vm.paises)"
+										selectedItem="@bind(vm.proveedorSelected.direccionFiscal.pais)"
+										width="100%">
+										<template name="model">
+											<comboitem
+												label="@load(each.nombre)" />
+										</template>
+									</combobox>
+
+									<hlayout>
+										<label value=" " />
+										<label value="Estado" />
+									</hlayout>
+									<combobox model="@bind(vm.estados)"
+										autocomplete="true"
+										onSelect="@command('getMunicipiosSelectedEstadoItem')"
+										selectedItem="@bind(vm.proveedorSelected.direccionFiscal.estado)"
+										width="100%">
+										<template name="model">
+											<comboitem
+												label="@load(each.nombre)" />
+										</template>
+									</combobox>
+
+									<label value="Municipio" />
+									<combobox
+										model="@bind(vm.municipios)" autocomplete="true"
+										selectedItem="@bind(vm.proveedorSelected.direccionFiscal.municipio)"
+										width="100%">
+										<template name="model">
+											<comboitem
+												label="@load(each.nombre)" />
+										</template>
+									</combobox>
+								</row>
+
+								<row>
+									<hlayout>
+										<label value=" " />
+										<label value="Telefono:" />
+									</hlayout>
+									<textbox
+										value="@bind(vm.proveedorSelected.contacto.telefono.numero)"
+										maxlength="10" width="100%"
+										tooltiptext="telefono del proveedor" />
+
+									<hlayout>
+										<label value="*"
+											style="color:red" />
+										<label value="Email:" />
+									</hlayout>
+									<textbox type="text"
+										value="@bind(vm.proveedorSelected.contacto.email.email)"
+										maxlength="27" width="100%"
+										constraint="/.+@.+\.[a-z]+/: por favor ingrése una direccion de correo valida"
+										tooltiptext="email del proveedor" />
+
+									<label value="Pagina web:" />
+									<textbox type="text"
+										value="@bind(vm.proveedorSelected.paginaWeb)" cols="30"
+										maxlength="20" width="100%" />
+								</row>
+							</rows>
+						</grid>
+					</groupbox>
+
+					<groupbox closable="false">
+						<caption>Usuario</caption>
+
+						<grid sclass="my-grid">
+							<columns>
+								<column width="15%" />
+								<column />
+								<column width="15%" />
+								<column />
+								<column width="15%" />
+								<column />
+								<column width="38px" />
+							</columns>
+							<rows>
+								<row>
+									<hlayout>
+										<label value="*"
+											style="color:red" />
+										<label value="Usuario:" />
+									</hlayout>
+									<textbox
+										onOK="@command('comprobarDisponibilidad', compDisponible=self)"
+										onChange="@command('comprobarDisponibilidad', compDisponible=self)"
+										value="@bind(vm.proveedorUser)" width="100%" />
+
+									<hlayout>
+										<label value="*"
+											style="color:red" />
+										<label value="Contraseña:" />
+									</hlayout>
+									<textbox
+										onOK="@command('comprobarContrasena', compContra=self))"
+										onChange="@command('comprobarContrasena', compContra=self))"
+										value="@bind(vm.proveedorContrasena)" width="100%" />
+
+									<hlayout>
+										<label value="*"
+											style="color:red" />
+										<label
+											value="Repetir contraseña:" />
+									</hlayout>
+									<textbox
+										onOK="@command('comprobarContrasena', compContra=self))"
+										onChange="@command('comprobarContrasena', compContra=self))"
+										value="@bind(vm.proveedorContrasenaRepetir)" width="100%" />
+									<button
+										image="/images/toolbar/find16x16.png" zclass="find_button"
+										onClick="@command('comprobarDisponibilidad', compDisponible=self)"
+										tooltiptext="Comprobar disponibilidad de usuario" />
+								</row>
+							</rows>
+						</grid>
+					</groupbox>
+
+					<groupbox closable="false">
+						<caption>Acerca de la empresa</caption>
+						<textbox multiline="true" rows="10"
+							value="@bind(vm.proveedorSelected.comentario)" width="100%" />
+					</groupbox>
+
+
+					<grid sclass="my-grid">
+						<columns>
+							<column align="left" />
+							<column align="center" width="100px" />
+							<column align="center" width="100px" />
+						</columns>
+						<rows>
+							<row>
+								<label width="100%" value="" />
+								<button
+									label="@bind(vm.GENERICZUL_COMMAND_CANCELAR)"
+									onClick="@command('closeDialog')" sclass="btnFormat btnRed" />
+								<button label="Registrar"
+									onClick="@command('transfer', compRegistra=self)"
+									sclass="btnFormat btnGreen" />
+							</row>
+						</rows>
+					</grid>
+				</window>
+			</north>
+		</borderlayout>
+
+
+
+
+
+
+	</window>
+</zk>

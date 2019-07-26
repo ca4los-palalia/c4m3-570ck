@@ -1,0 +1,139 @@
+<?page title="Identificacion de usuario" contentType="text/html;charset=UTF-8"?>
+<?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
+<zk>
+	<!-- 
+		<style src="/styles/home/styleLogin.css" />
+		<style src="/styles/proveedores/styleProveedor.css" />
+	-->
+	<style>
+		@import url('https://fonts.googleapis.com/css?family=Orbitron');
+		@import
+		url('https://fonts.googleapis.com/css?family=Russo+One');
+
+		.btnFormat{ border-radius: 5px; cursor:pointer; padding: 2px;
+		font-family: 'Orbitron', sans-serif; }
+
+		.btnBlueTurq{ background: linear-gradient(to bottom, #0da7b9
+		0%,#006899 100%); color: #ffffff; }
+
+
+
+	</style>
+
+
+	<window height="100%" apply="org.zkoss.bind.BindComposer"
+		border="none" style="text-align:center"
+		viewModel="@id('vm') @init('com.cplsystems.stock.app.vm.LoginVM')">
+
+		<window mode="popup" id="proveedoresSesion"
+			style="padding-top:40px; padding-right: 100px;"
+			width="@bind(vm.porcentajeWidth)" visible="false"
+			position="right,top">
+
+			<vlayout style="text-align:center; padding-top:5px;">
+				<textbox type="text"
+					onOK="@command('autenticarProveedor', compAcces=self)"
+					value="@bind(vm.proveedorUser)" zclass="textbox"
+					tooltiptext="@bind(vm.TAG_LOGINVM_USUARIO)" />
+				<textbox type="password"
+					onOK="@command('autenticarProveedor', compAcces=self)"
+					value="@bind(vm.proveedorContrasena)" zclass="textboxPassword"
+					tooltiptext="@bind(vm.TAG_LOGINVM_CONTRA)" />
+
+				<hlayout style="text-align:center;">
+					<button label="@bind(vm.TAG_LOGINVM_ACCE)"
+						tooltiptext="@bind(vm.TAG_LOGINVM_AUTENT)" zclass="button"
+						onClick="@command('autenticarProveedor', compAcces=self)" />
+					<button label="Registrarse" zclass="button"
+						onClick="@command('registrarProveedor')" />
+				</hlayout>
+
+			</vlayout>
+		</window>
+
+		<borderlayout>
+			<north style="@bind(vm.styleLoginHeader)" size="35px" border="none">
+				<grid sclass="my-grid">
+					<columns>
+						<column align="left" />
+						<column align="right" width="120px" />
+					</columns>
+					<rows>
+						<row>
+							<label value="@bind(vm.encabezadoLogin)"
+								style="color: #FFFFFF; font-family: 'Russo One', sans-serif; font-size: 150%;" />
+							<button sclass="btnFormat btnBlueTurq"
+								visible="@bind(vm.activarProveedorCheck)"
+								label="@bind(vm.TAG_LOGINVM_PROVEEDORES)" height="25px"
+								onClick="proveedoresSesion.doPopup();" />
+						</row>
+					</rows>
+				</grid>
+			</north>
+			<center border="none" style="@bind(vm.styleLoginContenedor)">
+				<borderlayout>
+					<north size="0%" border="none" />
+					<center style="padding: 3%;" border="none">
+						<image width="100%" height="auto"
+							content="@bind(vm.logotipoAImage)" />
+					</center>
+					<south size="30%" border="none">
+						<borderlayout>
+							<north size="42%" border="none" style="padding-top: 3px; padding-bottom: 3px;">
+								<textbox id="user" type="text" sclass="textbox"
+									height= "100%" width ="100%"
+									style="font-size: 200%;"
+									onOK="@command('authenticateUser')"
+									value="@bind(vm.user)" tooltiptext="Usuario" />
+							</north>
+							<center border="none" style="padding-top: 3px; padding-bottom: 3px;">
+								<textbox id="password" type="password" sclass="textboxPassword"
+									onOK="@command('authenticateUser')" value="@bind(vm.password)"
+									style="font-size: 200%;"
+									height="100%" width="100%"
+									tooltiptext="@bind(vm.TAG_LOGINVM_CONTRA)" />
+							</center>
+							<south style="padding-top: 3px; padding-bottom: 3px;" border="none">
+								<button width="100%" label="Accesar" sclass="btnFormat btnBlueTurq"/>
+							</south>
+							
+						</borderlayout>
+					</south>
+				</borderlayout>
+
+			</center>
+			<south style="@bind(vm.styleLoginFooter)" size="35px" border="none">
+				<grid sclass="my-grid">
+					<columns>
+						<column width="32px" align="center" />
+						<column align="left" />
+
+						<column width="32px" align="center" />
+						<column align="left" />
+
+						<column width="32px" align="center" />
+						<column align="left" width="150px" />
+					</columns>
+					<rows>
+						<row>
+							<image width="100%" height="auto"
+								src="/images/toolbar/footerOrganization.png" />
+							<a style="color: white;"
+								onClick="@command('openUrl')" label="@bind(vm.footerNameOrg)" />
+							<image
+								tooltiptext="@bind(vm.TAG_LOGINVM_ESCRIBENOS)" width="100%"
+								height="auto" src="/images/toolbar/footerEmail.png" />
+							<label value="@bind(vm.footerEmail)"
+								style="color: white;" />
+
+							<image width="100%" height="auto"
+								src="/images/toolbar/footerPhone.png" />
+							<label value="@bind(vm.footerTemefonoOrg)"
+								style="color: white;" />
+						</row>
+					</rows>
+				</grid>
+			</south>
+		</borderlayout>
+	</window>
+</zk>

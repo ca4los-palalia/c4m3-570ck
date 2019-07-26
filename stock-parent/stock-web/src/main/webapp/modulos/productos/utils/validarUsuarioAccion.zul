@@ -1,0 +1,66 @@
+<?page title="" contentType="text/html;charset=UTF-8"?>
+<zk>
+	<?script type="text/javascript" src="/scripts/watermarks.js"?>
+	<?script type="style" src="/styles/home/styleGlobal.css" ?>
+	<?script type="style" src="/styles/home/styleHome.css" ?>
+
+	<window apply="org.zkoss.bind.BindComposer"
+		id="validarUsuarioAccionVMModalDialog"
+		viewModel="@id('bpvm') @init('com.cplsystems.stock.app.vm.producto.ValidarUsuarioAccionVM')"
+		width="20%" height="40%" position="center,center" closable="true">
+
+		
+
+
+		<borderlayout visible="false">
+			<north title="Seleccionar Area (Unidad responsable)"
+				maxsize="300" size="90%" style="border-style: hidden;">
+				<grid sclass="fgrid">
+					<columns>
+						<column align="center" />
+						<column align="center" />
+					</columns>
+					<rows>
+						<row>
+							<label width="100%" value="Nombre:" />
+							<textbox />
+							<label width="100%" value="Contraseña:" />
+							<textbox />
+						</row>
+					</rows>
+				</grid>
+			</north>
+			<center style="border-style: hidden;">
+				<borderlayout>
+					<center style="border-style: hidden;">
+						<div sclass="middle-div">
+
+							<grid sclass="fgrid">
+								<columns>
+									<column align="left" width="68%" />
+									<column align="center" />
+									<column align="center" />
+								</columns>
+								<rows>
+									<row>
+										<label width="100%" value="" />
+										<button label="Cancelar"
+											onClick="@command('closeDialog')" />
+										<button label="Aceptar"
+											onClick="@command('transfer')" />
+									</row>
+								</rows>
+							</grid>
+						</div>
+					</center>
+				</borderlayout>
+			</center>
+		</borderlayout>
+
+
+
+
+
+
+	</window>
+</zk>

@@ -1,0 +1,241 @@
+<?page contentType="text/html;charset=UTF-8"?>
+<zk>
+	<script src="/scripts/watermarks.js" type="text/javascript" />
+	<window apply="org.zkoss.bind.BindComposer" height="100%" border="none"
+		viewModel="@id('rvm') @init('com.cplsystems.stock.app.vm.requisicion.concentradoVM')">
+
+
+		<borderlayout>
+			<north maxsize="300" size="40px">
+				<window border="none">
+					<grid sclass="my-grid">
+						<columns>
+							<column align="left" />
+							<column align="center" width="160px" />
+						</columns>
+						<rows>
+							<row>
+								<label
+									style="@bind(rvm.styleModuloFontTitle)"
+									value="Requisiciones | Concentrado:" />
+								<button sclass="btnFormat btnBlueTurq"
+									label="@bind(rvm.CONCENTRADOZUL_TIP_GENERAR_COTIZACION)"
+									onClick="@command('autorizar')" />
+
+							</row>
+						</rows>
+					</grid>
+				</window>
+			</north>
+
+
+			<center border="none">
+				<borderlayout>
+					<center border="none" flex="true">
+						<!-- BUSQUEDAS -->
+						<borderlayout>
+							<north maxsize="300" border="none"
+								title="@bind(rvm.GENERICZUL_LABEL_BUSCADOR)" size="105px">
+
+								<window width="100%" height="100%"
+									border="none">
+
+									<grid sclass="my-grid">
+										<columns>
+											<column width="20%" />
+											<column />
+										</columns>
+										<rows>
+											<row>
+												<label
+													style="@bind(rvm.styleGlobalLabelFont)" value="Area(UR): " />
+												<combobox
+													readonly="true" model="@load(rvm.areas)" width="100%"
+													selectedItem="@bind(rvm.areaBuscar)"
+													onSelect="@command('buscarPorArearequisicion')">
+													<template
+														name="model" var="area">
+														<comboitem
+															width="100%" label="@bind(area.nombre)" />
+													</template>
+												</combobox>
+											</row>
+										</rows>
+									</grid>
+
+									<grid sclass="my-grid">
+										<columns>
+											<column />
+											<column align="center"
+												width="35px" />
+											<column align="center"
+												width="35px" />
+										</columns>
+										<rows>
+											<row>
+												<textbox
+													id="buscadorConcentradoId"
+													onOK="@command('filtrarProductoPorRequisicion')"
+													value="@bind(rvm.requisicion.buscarRequisicion)"
+													width="100%" />
+												<button
+													image="/images/toolbar/find16x16.png" zclass="find_button"
+													onClick="@command('filtrarProductoPorRequisicion')"
+													tooltiptext="@bind(rvm.GENERICZUL_TIP_BUSCADOR)" />
+												<button
+													image="/images/toolbar/saveOff16.png" zclass="find_button"
+													onClick="@command('guardarCambios')"
+													tooltiptext="Salvar cambios" />
+											</row>
+										</rows>
+									</grid>
+
+								</window>
+							</north>
+							<center border="none">
+								<!-- LISTA DE COTIZACIONES -->
+								<window border="none" height="100%"
+									width="100%">
+									<listbox vflex="1"
+										model="@load(rvm.requisicionProductos)"
+										onSelect="@command('cargarProveedoresProducto')"
+										selectedItem="@bind(rvm.requisicionProductoSeleccionado)"
+										emptyMessage="@bind(rvm.REQUISICIONZUL_BUSQUEDA_VACIA)">
+										<listhead>
+											<listheader
+												style="@bind(rvm.styleGlobalLabelTableHeaderFont)"
+												width="38px" />
+											<listheader width="90px"
+												label="@bind(rvm.GENERICZUL_COLUMN_FOLIO_REQ)"
+												style="@bind(rvm.styleGlobalLabelTableHeaderFont)"
+												sort="auto(requisicion.folio)" />
+											<listheader
+												label="@bind(rvm.GENERICZUL_COLUMN_UR)"
+												style="@bind(rvm.styleGlobalLabelTableHeaderFont)"
+												sort="auto(requisicion.area.nombre)" />
+											<listheader
+												label="@bind(rvm.GENERICZUL_COLUMN_CVL_PR)"
+												tooltiptext="@bind(rvm.GENERICZUL_TIP_CLAVE_PRODUCTO)"
+												style="@bind(rvm.styleGlobalLabelTableHeaderFont)"
+												sort="auto(producto.nombre)" />
+											<listheader
+												label="@bind(rvm.GENERICZUL_COLUMN_CANTIDAD_ABR)"
+												style="@bind(rvm.styleGlobalLabelTableHeaderFont)"
+												width="14%" />
+
+										</listhead>
+										<template name="model"
+											var="requisicionProducto">
+											<listitem>
+												<listcell>
+													<button
+														image="/images/toolbar/remove16.png"
+														onClick="@command('removerProductoDeListaGeneralDeProductos', index=requisicionProductoStatus.index)"
+														zclass="find_button"
+														tooltiptext="@bind(rvm.REQUISICIONZUL_TIP_REMOVE_PRODUCTO)" />
+												</listcell>
+												<listcell>
+													<label
+														tooltiptext="@bind(rvm.GENERICZUL_TIP_FOLIO_REQUISICION)"
+														style="@bind(rvm.styleGlobalLabelTableContentFont)"
+														value="@bind(requisicionProducto.requisicion.folio)" />
+												</listcell>
+												<listcell>
+													<label
+														tooltiptext="@bind(rvm.GENERICZUL_TIP_CLAVE_AREA)"
+														style="@bind(rvm.styleGlobalLabelTableContentFont)"
+														value="@bind(requisicionProducto.requisicion.area.nombre)" />
+												</listcell>
+												<listcell>
+													<label
+														tooltiptext="@bind(requisicionProducto.producto.nombre)"
+														style="@bind(rvm.styleGlobalLabelTableContentFont)"
+														value="@bind(requisicionProducto.producto.clave)" />
+												</listcell>
+												<listcell>
+													<intbox
+														disabled="@bind(requisicionProducto.deshabilitar)"
+														tooltiptext="@bind(rvm.GENERICZUL_TIP_CANTIDAD_PRODUCTO)"
+														style="@bind(rvm.styleGlobalLabelTableContentFont)"
+														inplace="true"
+														value="@bind(requisicionProducto.cantidad)" />
+												</listcell>
+
+											</listitem>
+										</template>
+									</listbox>
+								</window>
+							</center>
+						</borderlayout>
+
+					</center>
+					<east size="70%" border="none" flex="true"
+						title="@bind(rvm.CONCENTRADOZUL_TITLE_MAIN_PANEL)">
+						<!-- DETALLE DE LA INFORMACION -->
+						<!-- LISTA DE PROVEEDORES -->
+						<window height="100%" border="none"
+							width="100%">
+
+							<listbox
+								model="@load(rvm.proveedorProductos)" vflex="1"
+								selectedItem="@bind(rvm.proveedorProducto)"
+								onSelect="@command('seleccionarProveedor')">
+								<listhead>
+									<listheader
+										style="@bind(rvm.styleGlobalLabelTableHeaderFont)"
+										width="40px" label="" />
+									<listheader
+										style="@bind(rvm.styleGlobalLabelTableHeaderFont)"
+										label="@bind(rvm.GENERICZUL_COLUMN_PROVEEDOR)" />
+									<listheader
+										style="@bind(rvm.styleGlobalLabelTableHeaderFont)"
+										label="@bind(rvm.GENERICZUL_COLUMN_ARTICULO)" />
+									<listheader
+										style="@bind(rvm.styleGlobalLabelTableHeaderFont)"
+										label="@bind(rvm.GENERICZUL_COLUMN_PRECIO)" width="10%" />
+									<listheader
+										style="@bind(rvm.styleGlobalLabelTableHeaderFont)"
+										label="@bind(rvm.GENERICZUL_COLUMN_STOCK)" width="7%" />
+								</listhead>
+								<template name="model"
+									var="proveedor">
+									<listitem>
+										<listcell>
+											<checkbox
+												disabled="@bind(proveedor.deshabilitar)"
+												checked="@bind(proveedor.seleccionar)"
+												onCheck="@command('proveedorCheckBox', index=proveedorStatus.index)" />
+										</listcell>
+										<listcell>
+											<label width="100%"
+												style="@bind(rvm.styleGlobalLabelTableContentFont)"
+												value="@bind(proveedor.proveedor.nombre)" />
+										</listcell>
+
+										<listcell>
+											<label width="100%"
+												style="@bind(rvm.styleGlobalLabelTableContentFont)"
+												value="@bind(proveedor.producto.nombre)" />
+										</listcell>
+										<listcell>
+											<doublebox width="100%"
+												style="@bind(rvm.styleGlobalLabelTableContentFont)"
+												format="###,###,###.00" readonly="true"
+												value="@bind(proveedor.producto.precio)" />
+										</listcell>
+										<listcell>
+											<label width="100%"
+												style="@bind(rvm.styleGlobalLabelTableContentFont)"
+												value="@bind(proveedor.producto.enExistencia)" />
+										</listcell>
+									</listitem>
+								</template>
+							</listbox>
+						</window>
+					</east>
+				</borderlayout>
+
+			</center>
+		</borderlayout>
+	</window>
+</zk>

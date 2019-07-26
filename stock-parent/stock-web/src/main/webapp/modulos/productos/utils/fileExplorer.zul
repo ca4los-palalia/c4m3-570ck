@@ -1,0 +1,379 @@
+<?page title="" contentType="text/html;charset=UTF-8"?>
+<zk>
+
+	<window apply="org.zkoss.bind.BindComposer" id="fileModalDialog" onCancel="@command('closeDialog')"
+		viewModel="@id('fevm') @init('com.cplsystems.stock.app.utils.FileExplorerVM')"
+		width="70%" height="80%" position="center,center" closable="true" sclass="mybutton square blue">
+
+		<style>
+			
+			
+			.mybutton.z-button .z-button-cm {
+			  background-image: none;
+			  color: white;
+			  font-weight : bolder;
+			}
+			
+			.mybutton.z-button .z-button-tm, .z-button .z-button-bm { background-image: none; }
+
+			.mybutton.z-button .z-button-cl, .z-button .z-button-cr { background-image: none; }
+			
+			.mybutton.z-button .z-button-tl { background-image: none; }
+			
+			.mybutton.z-button .z-button-bl { background-image: none; }
+			
+			.mybutton.z-button .z-button-tr { background-image: none; }
+			
+			.mybutton.z-button .z-button-br { background-image: none; }
+			
+			.button {
+			  display: inline-block;
+			  zoom: 1; /* zoom and *display = ie7 hack for display:inline-block */
+			  *display: inline;
+			  vertical-align: baseline;
+			  margin: 0 2px;
+			  outline: none;
+			  cursor: pointer;
+			  text-align: center;
+			  text-decoration: none;
+			  font: 14px/100% Arial, Helvetica, sans-serif;
+			  padding: .5em 2em .55em;
+			  text-shadow: 0 1px 1px rgba(0,0,0,.3);
+			  -webkit-border-radius: .5em;
+			  -moz-border-radius: .5em;
+			  border-radius: .5em;
+			  -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.2);
+			  -moz-box-shadow: 0 1px 2px rgba(0,0,0,.2);
+			  box-shadow: 0 1px 2px rgba(0,0,0,.2);
+			}
+			.button:hover { text-decoration: none; }
+			.button:active { position: relative; top: 1px; }
+			
+			.bigrounded {
+			  -webkit-border-radius: 2em;
+			  -moz-border-radius: 2em;
+			  border-radius: 2em;
+			}
+			
+			.square {
+			  -webkit-border-radius: 0em;
+			  -moz-border-radius: 0em;
+			  border-radius: 0em;
+			}
+			
+			.medium {
+				  font-size: 12px;
+				  padding: .4em 1.5em .42em;
+				}
+				.small {
+				  font-size: 11px;
+				  padding: .2em 1em .275em;
+				}
+			.excelColor{
+			  -moz-box-shadow:inset 0px 1px 0px 0px #9acc85;
+				-webkit-box-shadow:inset 0px 1px 0px 0px #9acc85;
+				box-shadow:inset 0px 1px 0px 0px #9acc85;
+				background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #74ad5a), color-stop(1, #68a54b));
+				background:-moz-linear-gradient(top, #74ad5a 5%, #68a54b 100%);
+				background:-webkit-linear-gradient(top, #74ad5a 5%, #68a54b 100%);
+				background:-o-linear-gradient(top, #74ad5a 5%, #68a54b 100%);
+				background:-ms-linear-gradient(top, #74ad5a 5%, #68a54b 100%);
+				background:linear-gradient(to bottom, #74ad5a 5%, #68a54b 100%);
+				filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#74ad5a', endColorstr='#68a54b',GradientType=0);
+				background-color:#74ad5a;
+				border:1px solid #3b6e22;
+				display:inline-block;
+				cursor:pointer;
+				color:#ffffff;
+				font-family:Arial;
+				font-size:13px;
+				font-weight:bold;
+				padding:2px 2px;
+				text-decoration:none;
+			}
+			
+			.excelColor:hover {
+				background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #68a54b), color-stop(1, #74ad5a));
+				background:-moz-linear-gradient(top, #68a54b 5%, #74ad5a 100%);
+				background:-webkit-linear-gradient(top, #68a54b 5%, #74ad5a 100%);
+				background:-o-linear-gradient(top, #68a54b 5%, #74ad5a 100%);
+				background:-ms-linear-gradient(top, #68a54b 5%, #74ad5a 100%);
+				background:linear-gradient(to bottom, #68a54b 5%, #74ad5a 100%);
+				filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#68a54b', endColorstr='#74ad5a',GradientType=0);
+				background-color:#68a54b;
+			}
+			
+			.excelColor:active {
+				position:relative;
+				top:1px;
+			}
+			
+			.closeButton {
+				-moz-box-shadow:inset 0px 1px 0px 0px #cf866c;
+				-webkit-box-shadow:inset 0px 1px 0px 0px #cf866c;
+				box-shadow:inset 0px 1px 0px 0px #cf866c;
+				background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #d0451b), color-stop(1, #bc3315));
+				background:-moz-linear-gradient(top, #d0451b 5%, #bc3315 100%);
+				background:-webkit-linear-gradient(top, #d0451b 5%, #bc3315 100%);
+				background:-o-linear-gradient(top, #d0451b 5%, #bc3315 100%);
+				background:-ms-linear-gradient(top, #d0451b 5%, #bc3315 100%);
+				background:linear-gradient(to bottom, #d0451b 5%, #bc3315 100%);
+				filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#d0451b', endColorstr='#bc3315',GradientType=0);
+				background-color:#d0451b;
+				-moz-border-radius:3px;
+				-webkit-border-radius:3px;
+				border-radius:3px;
+				border:1px solid #942911;
+				display:inline-block;
+				cursor:pointer;
+				color:#ffffff;
+				font-family:Arial;
+				font-size:13px;
+				padding:6px 24px;
+				text-decoration:none;
+				text-shadow:0px 1px 0px #854629;
+			}
+			.closeButton:hover {
+				background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #bc3315), color-stop(1, #d0451b));
+				background:-moz-linear-gradient(top, #bc3315 5%, #d0451b 100%);
+				background:-webkit-linear-gradient(top, #bc3315 5%, #d0451b 100%);
+				background:-o-linear-gradient(top, #bc3315 5%, #d0451b 100%);
+				background:-ms-linear-gradient(top, #bc3315 5%, #d0451b 100%);
+				background:linear-gradient(to bottom, #bc3315 5%, #d0451b 100%);
+				filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#bc3315', endColorstr='#d0451b',GradientType=0);
+				background-color:#bc3315;
+			}
+			.closeButton:active {
+				position:relative;
+				top:1px;
+			}
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			.acceptButton {
+				-moz-box-shadow: 0px 1px 0px 0px #f0f7fa;
+				-webkit-box-shadow: 0px 1px 0px 0px #f0f7fa;
+				box-shadow: 0px 1px 0px 0px #f0f7fa;
+				background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #33bdef), color-stop(1, #019ad2));
+				background:-moz-linear-gradient(top, #33bdef 5%, #019ad2 100%);
+				background:-webkit-linear-gradient(top, #33bdef 5%, #019ad2 100%);
+				background:-o-linear-gradient(top, #33bdef 5%, #019ad2 100%);
+				background:-ms-linear-gradient(top, #33bdef 5%, #019ad2 100%);
+				background:linear-gradient(to bottom, #33bdef 5%, #019ad2 100%);
+				filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#33bdef', endColorstr='#019ad2',GradientType=0);
+				background-color:#33bdef;
+				-moz-border-radius:3px;
+				-webkit-border-radius:3px;
+				border-radius:3px;
+				border:1px solid #942911;
+				display:inline-block;
+				cursor:pointer;
+				color:#ffffff;
+				font-family:Arial;
+				font-size:13px;
+				padding:6px 24px;
+				text-decoration:none;
+				text-shadow:0px 1px 0px #854629;
+			}
+			.acceptButton:hover {
+				background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #019ad2), color-stop(1, #33bdef));
+				background:-moz-linear-gradient(top, #019ad2 5%, #33bdef 100%);
+				background:-webkit-linear-gradient(top, #019ad2 5%, #33bdef 100%);
+				background:-o-linear-gradient(top, #019ad2 5%, #33bdef 100%);
+				background:-ms-linear-gradient(top, #019ad2 5%, #33bdef 100%);
+				background:linear-gradient(to bottom, #019ad2 5%, #33bdef 100%);
+				filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#019ad2', endColorstr='#33bdef',GradientType=0);
+				background-color:#019ad2;
+			}
+			.acceptButton:active {
+				position:relative;
+				top:1px;
+			}
+			
+		</style>
+
+		<borderlayout>
+			<north title="Abrir archivo" maxsize="300" size="94%">
+				<borderlayout>
+					<west title="productos en sistema" size="50%"
+						flex="true" style="background:#B8D335" maxsize="250">
+						<window height="100%" width="100%">
+							<listbox vflex="1"
+								model="@load(fevm.productosSistema)"
+								emptyMessage="No hay productos para esta cotización">
+								<listhead>
+									<listheader label="No" width="5%" />
+									<listheader label="Clave"
+										width="10%" sort="auto(producto.clave)" />
+									<listheader label="Producto"
+										sort="auto(proveedor.nombre)" />
+									<listheader label="Partida generica"
+										width="20%" sort="auto(cofiaPartidaGenerica.nombre)" />
+
+									<listheader label="Cantidad"
+										width="10%" sort="auto(cantidad)" />
+									<listheader label="U/M" width="10%"
+										sort="auto(producto.unidad.nombre)" />
+								</listhead>
+								<template name="model">
+									<listitem>
+										<listcell>
+											<label
+												style="font-size:smaller;"
+												value="${forEachStatus.index + 1}" />
+										</listcell>
+
+										<listcell>
+											<label
+												style="font-size:smaller;"
+												value="@bind(each.producto.clave)" />
+										</listcell>
+										<listcell>
+											<label
+												value="@bind(each.producto.nombre)" />
+										</listcell>
+										<listcell>
+											<label
+												value="@bind(each.requisicionProducto.cofiaPartidaGenerica.nombre)"
+												style="font-size:smaller;" />
+										</listcell>
+										<listcell>
+											<label
+												value="@bind(each.requisicionProducto.cantidad)" />
+										</listcell>
+										<listcell>
+											<label
+												value="@bind(each.producto.unidad.nombre)" />
+										</listcell>
+
+									</listitem>
+								</template>
+							</listbox>
+						</window>
+
+					</west>
+					<center title="productos cotizados por el proveedor (archivo de excel)"
+						style="background:#E6D92C">
+						<window height="100%" width="100%">
+							<listbox vflex="1"
+								emptyMessage="No se ha importado informacion desde excel"
+								model="@load(fevm.productosImportados)">
+
+								<listhead>
+									<listheader width="10%"
+										label="Clave" />
+									<listheader label="Nombre" />
+									<listheader width="60px"
+										label="Cantidad" />
+									<listheader width="15%"
+										label="Modelo" />
+									<listheader width="15%"
+										label="Marca" />
+									<listheader width="50px"
+										label="Prec. U" />
+									<listheader width="45px"
+										label="Total" />
+								</listhead>
+								<template name="model" var="proVar">
+									<listitem>
+										<listcell>
+											<label
+												value="@bind(proVar.clave)" />
+										</listcell>
+										<listcell>
+											<label
+												value="@bind(proVar.nombre)" />
+										</listcell>
+										<listcell>
+											<label
+												value="@bind(proVar.enExistencia)" />
+										</listcell>
+										<listcell>
+											<label
+												value="@bind(proVar.modelo)" />
+										</listcell>
+										<listcell>
+											<label
+												value="@bind(proVar.marca)" />
+										</listcell>
+										<listcell>
+											<label
+												value="@bind(proVar.precio)" />
+										</listcell>
+										<listcell>
+											<label
+												value="@bind(proVar.costoUltimo)" />
+										</listcell>
+									</listitem>
+								</template>
+							</listbox>
+
+
+							<tree id="tree" vflex="1" visible="false"
+								model="@bind(fevm.directoryModel)"
+								onSelect="@command('updateSelectedDirectory')">
+								<treecols>
+									<treecol />
+								</treecols>
+								<template name="model" var="node"
+									status="s">
+									<treeitem open="@load(node.open)">
+										<treerow>
+											<treecell
+												image="@bind(node.data._icon)"
+												label="@bind(node.data.name)" />
+										</treerow>
+									</treeitem>
+								</template>
+							</tree>
+
+						</window>
+
+					</center>
+
+				</borderlayout>
+			</north>
+			<center border="0">
+				<borderlayout>
+					<center>
+						<grid sclass="fgrid">
+							<columns>
+								<column align="left"/>
+								<column align="right" width="125px"/>
+								<column align="right" width="120px"/>
+								<column align="right" width="120px" />
+							</columns>
+							<rows>
+								<row>
+									<label/>
+									<button id="button" upload="true" sclass="mybutton square excelColor" label="Subir excel"
+										onUpload="@command('onUploadFileRecived',upEvent=event)"
+										tooltiptext="Importar Productos de proveedor" />
+										
+										
+									<a class="closeButton" onClick="@command('closeDialog')">
+										Cancelar
+									</a>
+									<a class="acceptButton" onClick="@command('transferProduct')">
+										Aceptar
+									</a>
+								</row>
+							</rows>
+						</grid>
+					</center>
+				</borderlayout>
+			</center>
+		</borderlayout>
+	</window>
+</zk>

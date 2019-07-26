@@ -1,0 +1,76 @@
+<?page title="" contentType="text/html;charset=UTF-8"?>
+<zk>
+	<?script type="text/javascript" src="/scripts/watermarks.js"?>
+	<?script type="style" src="/styles/home/styleGlobal.css" ?>
+	<?script type="style" src="/styles/home/styleHome.css" ?>
+	
+	<window apply="org.zkoss.bind.BindComposer" id="urModalDialog" onCancel="@command('closeDialog')"
+		viewModel="@id('bpvm') @init('com.cplsystems.stock.app.vm.producto.SelectUrVM')"
+		width="30%" height="50%" position="center,center" closable="true">
+		
+		<style>
+			@import url('https://fonts.googleapis.com/css?family=Orbitron');
+			.btnFormat{ border-radius: 5px; cursor:pointer; padding: 6px;
+			font-family: 'Orbitron', sans-serif; }
+			
+			.btnGreen{ background: linear-gradient(to bottom, #11b76b
+			0%,#056f41 100%); color: #ffffff; }
+			
+			.btnRed{ background:
+			linear-gradient(to bottom, #d42626 0%,#990000 100%); color:
+			#ffffff; }
+		</style>
+
+		<borderlayout>
+			<north title="@bind(bpvm.WINDOW_SELECT_UR_TITLE)"
+				maxsize="300" size="90%" border="none">
+				<window height="100%" width="100%" border="none">
+					<listbox model="@load(bpvm.catalogoAreas)" vflex="1"
+						selectedItem="@bind(bpvm.area)"
+						emptyMessage="@bind(bpvm.WINDOW_SELECT_UR_EMPTY)">
+
+						<listhead>
+							<listheader label="@bind(bpvm.GENERICZUL_COLUMN_CLAVE)" sort="auto(clave)" width="20%"
+								align="center" style="color: #ffffff; font-size:smaller;"/>
+							<listheader label="@bind(bpvm.GENERICZUL_COLUMN_NOMBRE)" sort="auto(nombre)" 
+								style="color: #ffffff; font-size:smaller;"/>
+						</listhead>
+						<template name="model">
+							<listitem onDoubleClick="@command('transfer')">
+								<listcell label="${each.clave}" />
+								<listcell label="${each.nombre}" />
+							</listitem>
+						</template>
+					</listbox>
+				</window>
+			</north>
+			<center border="none">
+				<borderlayout>
+					<center border="none" sclass="backgroundWindow">
+						<div sclass="middle-div">
+
+							<grid sclass="my-grid">
+								<columns>
+									<column align="left" width="62%" />
+									<column align="center" />
+									<column align="center" />
+								</columns>
+								<rows>
+									<row>
+										<label width="100%" value="" />
+										<button label="@bind(bpvm.GENERICZUL_COMMAND_CANCELAR)"
+											onClick="@command('closeDialog')" 
+											sclass="btnFormat btnRed"/>
+										<button label="@bind(bpvm.GENERICZUL_COMMAND_ACEPTAR)"
+											onClick="@command('transfer')" 
+											sclass="btnFormat btnGreen"/>
+									</row>
+								</rows>
+							</grid>
+						</div>
+					</center>
+				</borderlayout>
+			</center>
+		</borderlayout>
+	</window>
+</zk>

@@ -1,0 +1,105 @@
+<?page title="" contentType="text/html;charset=UTF-8"?>
+<zk>
+	<?script type="text/javascript" src="/scripts/watermarks.js"?>
+
+	<window apply="org.zkoss.bind.BindComposer"
+		id="productosModalDialog" onCancel="@command('closeDialog')"
+		viewModel="@id('bpvm') @init('com.cplsystems.stock.app.vm.producto.BuscarProductoVM')"
+		width="50%" height="80%" position="center,center" closable="true">
+		
+		<style>
+			@import url('https://fonts.googleapis.com/css?family=Orbitron');
+			.btnFormat{ border-radius: 5px; cursor:pointer; padding: 6px;
+			font-family: 'Orbitron', sans-serif; }
+			
+			.btnGreen{ background: linear-gradient(to bottom, #11b76b
+			0%,#056f41 100%); color: #ffffff; }
+			
+			.btnRed{ background:
+			linear-gradient(to bottom, #d42626 0%,#990000 100%); color:
+			#ffffff; }
+		</style>
+
+		<borderlayout>
+			<north title="@bind(bpvm.WINDOW_BUSCADOR_PRODUCTOS_TITLE)" maxsize="300" size="94%" border="none">
+				<borderlayout>
+					<north size="30px" border="none" sclass="backgroundWindow">
+						<grid sclass="my-grid">
+							<columns>
+								<column width="10%" />
+								<column />
+								<column width="10%" />
+								<column />
+								<column width="7%" align="center" />
+							</columns>
+							<rows>
+								<row>
+									<label value="@bind(bpvm.GENERICZUL_LABEL_CLAVE)" sclass="colorLabel"/>
+									<textbox id="keyProductoModal"
+										width="100%" onOK="@command('searchItemByKeyOrName')"
+										value="@bind(bpvm.claveProducto)" />
+									<label value="@bind(bpvm.GENERICZUL_LABEL_NOMBRE)" sclass="colorLabel"/>
+									<textbox id="nameProductoModal"
+										width="100%" onOK="@command('searchItemByKeyOrName')"
+										value="@bind(bpvm.nombreProducto)" />
+									<button
+										image="/images/toolbar/search32.png"
+										onClick="@command('searchItemByKeyOrName', compUserCp=self)" />
+								</row>
+							</rows>
+						</grid>
+					</north>
+					<center border="none" flex="true">
+						<window height="100%" width="100%" border="none">
+							<listbox model="@load(bpvm.productos)"
+								vflex="1" selectedItem="@bind(bpvm.productoSeleccionado)"
+								emptyMessage="@bind(bpvm.WINDOW_BUSCADOR_PRODUCTOS_EMPTY)">
+								
+								<listhead>
+									<listheader label="@bind(bpvm.GENERICZUL_COLUMN_CLAVE)" width="10%"
+										align="center" style="color: #ffffff; font-size:smaller;"/>
+									<listheader label="@bind(bpvm.GENERICZUL_COLUMN_NOMBRE)"
+										style="color: #ffffff; font-size:smaller;"/>
+									<listheader label="@bind(bpvm.GENERICZUL_COLUMN_MARCA)" width="20%"
+										style="color: #ffffff; font-size:smaller;"/>
+								</listhead>
+								<template name="model">
+									<listitem onDoubleClick="@command('transferProduct')">
+										<listcell label="${each.clave}" />
+										<listcell
+											label="${each.nombre}" />
+										<listcell label="${each.marca}" />
+									</listitem>
+								</template>
+							</listbox>
+						</window>
+					</center>
+				</borderlayout>
+			</north>
+			<center border="none">
+				<borderlayout>
+					<center border="none" sclass="backgroundWindow">
+						<grid sclass="my-grid">
+							<columns>
+								<column align="left" width="68%" />
+								<column align="center" />
+								<column align="center" />
+							</columns>
+							<rows>
+								<row>
+									<label width="100%" value="" />
+									<button label="@bind(bpvm.GENERICZUL_COMMAND_CANCELAR)"
+										onClick="@command('closeDialog')" 
+										sclass="btnFormat btnRed"/>
+									<button label="@bind(bpvm.GENERICZUL_COMMAND_ACEPTAR)"
+										onClick="@command('transferProduct')" 
+										sclass="btnFormat btnGreen"/>
+								</row>
+							</rows>
+						</grid>
+					</center>
+				</borderlayout>
+			</center>
+		</borderlayout>
+	</window>
+</zk>

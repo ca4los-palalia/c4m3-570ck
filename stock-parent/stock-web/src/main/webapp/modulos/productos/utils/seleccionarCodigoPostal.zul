@@ -1,0 +1,78 @@
+<?page title="" contentType="text/html;charset=UTF-8"?>
+<zk>
+
+	<window apply="org.zkoss.bind.BindComposer" id="fileModalDialog" onCancel="@command('closeDialog')"
+		viewModel="@id('fevm') @init('com.cplsystems.stock.app.utils.SeleccionarCodigoPostalVM')"
+		width="30%" height="50%" position="center,center" closable="true">
+
+		<style>
+			@import url('https://fonts.googleapis.com/css?family=Orbitron');
+			.btnFormat{ border-radius: 5px; cursor:pointer; padding: 6px;
+			font-family: 'Orbitron', sans-serif; }
+			
+			.btnGreen{ background: linear-gradient(to bottom, #11b76b
+			0%,#056f41 100%); color: #ffffff; }
+			
+			.btnRed{ background:
+			linear-gradient(to bottom, #d42626 0%,#990000 100%); color:
+			#ffffff; }
+		</style>
+
+		<borderlayout>
+			<north title="@bind(fevm.titleWindow)" maxsize="300" size="92%" border="none">
+				<window height="100%" width="100%" border="none">
+					<listbox vflex="1" model="@load(fevm.colonias)"
+						emptyMessage="No hay colonias"
+						selectedItem="@bind(fevm.coloniaSeleccionada)">
+						<listhead>
+							<listheader label="No" width="10%"
+								align="center" style="color: #ffffff; font-size:smaller;"/>
+							<listheader label="Colonia" 
+								style="color: #ffffff; font-size:smaller;"/>
+						</listhead>
+						<template name="model">
+							<listitem onDoubleClick="@command('transferProduct')">
+								<listcell>
+									<label style="font-size:smaller;"
+										value="${forEachStatus.index + 1}" />
+								</listcell>
+
+								<listcell>
+									<label style="font-size:smaller;"
+										value="@bind(each)" />
+								</listcell>
+							</listitem>
+						</template>
+					</listbox>
+				</window>
+			</north>
+			<center border="none">
+				<borderlayout>
+					<center border="none" sclass="backgroundWindow">
+						<div sclass="middle-div">
+
+							<grid sclass="my-grid">
+								<columns>
+									<column align="center" width="62%"/>
+									<column align="center" />
+									<column align="center" />
+								</columns>
+								<rows>
+									<row>
+										<label value=""/>
+										<button label="Cancelar"
+											width="100%" onClick="@command('closeDialog')" 
+											sclass="btnFormat btnRed"/>
+										<button label="Aceptar"
+											width="100%" onClick="@command('transferProduct')"
+											sclass="btnFormat btnGreen"/>
+									</row>
+								</rows>
+							</grid>
+						</div>
+					</center>
+				</borderlayout>
+			</center>
+		</borderlayout>
+	</window>
+</zk>
