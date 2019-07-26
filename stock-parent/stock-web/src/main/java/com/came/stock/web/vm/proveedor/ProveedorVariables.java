@@ -1,11 +1,10 @@
-package com.cplsystems.stock.app.vm.proveedor;
-
-import com.cplsystems.stock.app.utils.StockUtils;
-import com.cplsystems.stock.app.vm.BasicStructure;
-import com.cplsystems.stock.domain.Contrato;
-import com.cplsystems.stock.domain.ProveedorProducto;
+package com.came.stock.web.vm.proveedor;
 
 import java.util.Date;
+
+import com.came.stock.model.domain.ProveedorProducto;
+import com.came.stock.utilidades.StockUtils;
+import com.came.stock.web.vm.BasicStructure;
 
 public abstract class ProveedorVariables extends BasicStructure {
 	private static final long serialVersionUID = -806765252363100225L;

@@ -1,4 +1,4 @@
-package com.cplsystems.stock.app.vm.proveedor.utils;
+package com.came.stock.web.vm.proveedor.utils;
 
 public class MenuButtonsActivated {
 	private String nombre;

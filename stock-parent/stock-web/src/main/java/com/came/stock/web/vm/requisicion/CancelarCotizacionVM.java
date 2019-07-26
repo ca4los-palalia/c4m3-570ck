@@ -20,6 +20,7 @@ import org.zkoss.zul.Window;
 import com.came.stock.model.domain.Cotizacion;
 import com.came.stock.model.domain.CotizacionInbox;
 import com.came.stock.model.domain.EstatusRequisicion;
+import com.came.stock.model.domain.Requisicion;
 import com.came.stock.model.domain.RequisicionProducto;
 import com.came.stock.utilidades.StockUtils;
 import com.came.stock.web.vm.requisicion.utils.RequisicionVariables;
@@ -91,7 +92,6 @@ public class CancelarCotizacionVM extends RequisicionVariables {
 	private void actualizarRequisicion(String clave){
 		EstatusRequisicion estatus = (EstatusRequisicion) estatusRequisicionRest.getByClave(clave).getSingle();
 		cotizacionSelected.getRequisicion().setEstatusRequisicion(estatus);
-		cotizacionSelected.setRequisicion()
-		requisicionRest.save(cotizacionSelected.getRequisicion());
+		cotizacionSelected.setRequisicion((Requisicion) requisicionRest.save(cotizacionSelected.getRequisicion()).getSingle());
 	}
 }

@@ -1,4 +1,4 @@
-package com.cplsystems.stock.app.vm.proveedor;
+package com.came.stock.web.vm.proveedor;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -31,16 +31,18 @@ import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
 
-import com.cplsystems.stock.app.utils.ReportesBuild;
-import com.cplsystems.stock.app.utils.StockUtils;
-import com.cplsystems.stock.domain.Banco;
-import com.cplsystems.stock.domain.Direccion;
-import com.cplsystems.stock.domain.Justificacion;
-import com.cplsystems.stock.domain.Organizacion;
-import com.cplsystems.stock.domain.Producto;
-import com.cplsystems.stock.domain.Proveedor;
-import com.cplsystems.stock.domain.ProveedorProducto;
-import com.cplsystems.stock.domain.Usuarios;
+import com.came.stock.model.domain.Banco;
+import com.came.stock.model.domain.CuentaPago;
+import com.came.stock.model.domain.Direccion;
+import com.came.stock.model.domain.Justificacion;
+import com.came.stock.model.domain.Organizacion;
+import com.came.stock.model.domain.Pais;
+import com.came.stock.model.domain.Producto;
+import com.came.stock.model.domain.Proveedor;
+import com.came.stock.model.domain.ProveedorProducto;
+import com.came.stock.model.domain.Usuarios;
+import com.came.stock.utilidades.StockUtils;
+import com.came.stock.web.utils.ReportesBuild;
 
 @VariableResolver({ DelegatingVariableResolver.class })
 public class ProveedoresVM extends ProveedorMetaClass {
@@ -55,7 +57,7 @@ public class ProveedoresVM extends ProveedorMetaClass {
 		organizacion = (Organizacion) sessionUtils.getFromSession("FIRMA");
 		completeBancos = bancosDB;
 		paises = new ArrayList();
-		paises.add(paisService.findById(Long.valueOf(157L)));
+		paises.add((Pais) paisRest.getById(Long.valueOf(157L)).getSingle());
 		getStylesGlobal();
 	}
 
@@ -63,7 +65,7 @@ public class ProveedoresVM extends ProveedorMetaClass {
 	@NotifyChange({ "*" })
 	public void newRecord() {
 		if (this.nuevoProveedor.getNombre() != null) {
-			List<Proveedor> validarExistencia = this.proveedorService.getByNombre(this.nuevoProveedor.getNombre());
+			List<Proveedor> validarExistencia = (List<Proveedor>) proveedorRest.getByNombre(nuevoProveedor.getNombre(), organizacion).getSingle();
 			if (validarExistencia == null) {
 				String mensajeValidacion = validarEntradaDatosProveedor();
 				if (mensajeValidacion.equals("")) {
@@ -99,7 +101,7 @@ public class ProveedoresVM extends ProveedorMetaClass {
 				if(bancoSeleccionado != null)
 					cuentaPago.setBanco(bancoSeleccionado);
 				cuentaPago.setProveedor(proveedorSelected);
-				cuentasPagoService.save(cuentaPago);
+				cuentaPago = (CuentaPago) cuentasPagoRest.save(cuentaPago).getSingle();
 			}
 			actualizarProveedorCambios();
 			
@@ -123,15 +125,13 @@ public class ProveedoresVM extends ProveedorMetaClass {
 							if (((Integer) event.getData()).intValue() == 1) {
 								ProveedoresVM.this.proveedorSelected.setProveedorActivo(false);
 
-								ProveedoresVM.this.proveedorService.save(ProveedoresVM.this.proveedorSelected);
-
-								ProveedoresVM.this.proveedoresLista.remove(ProveedoresVM.this.proveedorSelected);
+								proveedorSelected = (Proveedor) proveedorRest.save(proveedorSelected).getSingle();
+								proveedoresLista.remove(proveedorSelected);
 
 								StockUtils.showSuccessmessage(
-										ProveedoresVM.this.proveedorSelected.getNombre() + " ha sido eliminado", "info",
-										Integer.valueOf(0), null);
-
-								ProveedoresVM.this.proveedorSelected = null;
+										proveedorSelected.getNombre() + " ha sido eliminado", "info",
+										0, null);
+								proveedorSelected = null;
 								return;
 							}
 						}

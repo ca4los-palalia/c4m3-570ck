@@ -1,4 +1,4 @@
-package com.cplsystems.stock.app.vm.proveedor.dashboard;
+package com.came.stock.web.vm.proveedor.dashboard;
 
 import java.io.FileInputStream;
 import java.net.URL;
@@ -20,7 +20,7 @@ import org.zkoss.zkplus.spring.DelegatingVariableResolver;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Include;
 
-import com.cplsystems.stock.app.utils.StockConstants;
+import com.came.stock.constantes.StockConstants;
 
 @VariableResolver({ DelegatingVariableResolver.class })
 public class HomeDashboardVM {

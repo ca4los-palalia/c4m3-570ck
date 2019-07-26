@@ -1,30 +1,32 @@
-package com.cplsystems.stock.app.vm.proveedor;
+package com.came.stock.web.vm.proveedor;
 
-import com.cplsystems.stock.app.utils.StockUtils;
-import com.cplsystems.stock.domain.Banco;
-import com.cplsystems.stock.domain.Contacto;
-import com.cplsystems.stock.domain.Contrato;
-import com.cplsystems.stock.domain.CuentaPago;
-import com.cplsystems.stock.domain.Direccion;
-import com.cplsystems.stock.domain.Email;
-import com.cplsystems.stock.domain.Estado;
-import com.cplsystems.stock.domain.Giro;
-import com.cplsystems.stock.domain.Moneda;
-import com.cplsystems.stock.domain.Municipio;
-import com.cplsystems.stock.domain.Organizacion;
-import com.cplsystems.stock.domain.Pais;
-import com.cplsystems.stock.domain.Persona;
-import com.cplsystems.stock.domain.Producto;
-import com.cplsystems.stock.domain.Proveedor;
-import com.cplsystems.stock.domain.ProveedorProducto;
-import com.cplsystems.stock.domain.Telefono;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
+
+import com.came.stock.model.domain.Banco;
+import com.came.stock.model.domain.Contacto;
+import com.came.stock.model.domain.Contrato;
+import com.came.stock.model.domain.CuentaPago;
+import com.came.stock.model.domain.Direccion;
+import com.came.stock.model.domain.Email;
+import com.came.stock.model.domain.Estado;
+import com.came.stock.model.domain.Giro;
+import com.came.stock.model.domain.Moneda;
+import com.came.stock.model.domain.Municipio;
+import com.came.stock.model.domain.Organizacion;
+import com.came.stock.model.domain.Pais;
+import com.came.stock.model.domain.Persona;
+import com.came.stock.model.domain.Producto;
+import com.came.stock.model.domain.Proveedor;
+import com.came.stock.model.domain.ProveedorProducto;
+import com.came.stock.model.domain.Telefono;
+import com.came.stock.utilidades.StockUtils;
 
 public abstract class ProveedorMetaClass extends ProveedorVariables {
 	private static final long serialVersionUID = -4078164796340868446L;
@@ -92,15 +94,15 @@ public abstract class ProveedorMetaClass extends ProveedorVariables {
 	}
 
 	public void initProperties() {
-		contratos = contratoService.getAll();
-		estados = estadoService.getAll();
-		paises = paisService.getAll();
-		municipios = municipioService.getAll();
-		bancosDB = bancoService.getAll();
-		monedasDB = monedaService.getAll();
-		paisProveedor = paisService.findById(Long.valueOf(157L));
-		giros = giroService.getAll();
-		proveedoresLista = proveedorService.getAll();
+		contratos = (List<Contrato>) contratoRest.getAll(organizacion).getSingle();
+		estados = (List<Estado>) estadoRest.getAll().getSingle();
+		paises = (List<Pais>) paisRest.getAll().getSingle();
+		municipios = (List<Municipio>) municipioRest.getAll().getSingle();
+		bancosDB = (List<Banco>) bancoRest.getAll(organizacion).getSingle();
+		monedasDB = (List<Moneda>) monedaRest.getAll(organizacion).getSingle();
+		paisProveedor = (Pais) paisRest.getById(Long.valueOf(157L)).getSingle();
+		giros = (List<Giro>) giroRest.getAll(organizacion).getSingle();
+		proveedoresLista = (List<Proveedor>) proveedorRest.getAll(organizacion).getSingle();
 	}
 
 	
@@ -175,31 +177,32 @@ public abstract class ProveedorMetaClass extends ProveedorVariables {
 	public void guardarProveedor() {
 		nuevoProveedor.getContacto().getEmail().getEmail();
 		if (!guardadoEmailProveedor) {
-			emailService.save(nuevoProveedor.getContacto().getEmail());
+			nuevoProveedor.getContacto().setEmail((Email) emailRest.save(nuevoProveedor.getContacto().getEmail()).getSingle() );
 			guardadoEmailProveedor = true;
 		}
 		if (!guardadoEmailContacto) {
-			emailService.save(nuevoProveedor.getRepresentanteAteCliente().getContacto().getEmail());
+			nuevoProveedor.getRepresentanteAteCliente().getContacto().setEmail( (Email) emailRest.save(nuevoProveedor.getRepresentanteAteCliente().getContacto().getEmail()).getSingle());
 			guardadoEmailContacto = true;
 		}
 		if (!guardadoTelefonoProveedor) {
-			telefonoService.save(nuevoProveedor.getContacto().getTelefono());
+			nuevoProveedor.getContacto().setTelefono( (Telefono) telefonoRest.save(nuevoProveedor.getContacto().getTelefono()).getSingle());
 			guardadoTelefonoProveedor = true;
 		}
 		if (!guardadoTelefonoContacto) {
-			telefonoService.save(nuevoProveedor.getRepresentanteAteCliente().getContacto().getTelefono());
+			nuevoProveedor.getRepresentanteAteCliente().getContacto().setTelefono((Telefono) telefonoRest.save(nuevoProveedor.getRepresentanteAteCliente().getContacto().getTelefono()).getSingle());
+			
 			guardadoTelefonoContacto = true;
 		}
 		if (!guardadoContactoProveedor) {
 			contactoProveedor.setTelefono(nuevoProveedor.getContacto().getTelefono());
 			contactoProveedor.setEmail(nuevoProveedor.getContacto().getEmail());
-			contactoService.save(contactoProveedor);
+			contactoProveedor = (Contacto) contactoRest.save(contactoProveedor).getSingle();
 			guardadoContactoProveedor = true;
 		}
 		if (!guardadoContactoContacto) {
 			contactoContacto.setEmail(nuevoProveedor.getRepresentanteAteCliente().getContacto().getEmail());
 			contactoContacto.setTelefono(nuevoProveedor.getRepresentanteAteCliente().getContacto().getTelefono());
-			contactoService.save(contactoContacto);
+			contactoContacto = (Contacto) contactoRest.save(contactoContacto).getSingle();
 			guardadoContactoContacto = true;
 		}
 		if (!guardadoDireccionProveedor) {
@@ -210,21 +213,21 @@ public abstract class ProveedorMetaClass extends ProveedorVariables {
 			if (nuevoProveedor.getDireccionFiscal().getNumInt() != null) {
 				direccionProveedor.setNumInt(nuevoProveedor.getDireccionFiscal().getNumInt().toUpperCase());
 			}
-			direccionService.save(direccionProveedor);
+			direccionProveedor = (Direccion) direccionRest.save(direccionProveedor).getSingle();
 			guardadoDireccionProveedor = true;
 		}
 		if (!guardadorepResentanteLegalProveedor) {
 			representanteLegal.setNombre(nuevoProveedor.getNombre());
 			representanteLegal.setContacto(contactoProveedor);
 			representanteLegal.setDireccion(direccionProveedor);
-			personaService.save(representanteLegal);
+			representanteLegal = (Persona) personaRest.save(representanteLegal).getSingle();
 			guardadorepResentanteLegalProveedor = true;
 		}
 		if (!guardadoPersonaContacto) {
 			personaContacto.setCurp(proveedorSelected.getRepresentanteAteCliente().getCurp().toUpperCase());
 			personaContacto.setRfc(proveedorSelected.getRepresentanteAteCliente().getRfc().toUpperCase());
 			personaContacto.setContacto(contactoContacto);
-			personaService.save(personaContacto);
+			personaContacto = (Persona) personaRest.save(personaContacto).getSingle();
 			guardadoPersonaContacto = true;
 		}
 		if (!guardadoNuevoProveedor) {
@@ -238,19 +241,19 @@ public abstract class ProveedorMetaClass extends ProveedorVariables {
 					+ estadoProveedor.getNombre().substring(0, 1).toUpperCase());
 
 			nuevoProveedor.setFechaActualizacion(Calendar.getInstance());
-			proveedorService.save(nuevoProveedor);
+			nuevoProveedor = (Proveedor) proveedorRest.save(nuevoProveedor).getSingle();
 			guardadoNuevoProveedor = true;
 		}
 		if (!guardadoCuentaPago) {
 			cuentaPago.setProveedor(nuevoProveedor);
 			cuentaPago.setBanco(bancoSeleccionado);
 			cuentaPago.setMoneda(monedaSeleccionada);
-			cuentasPagoService.save(cuentaPago);
+			cuentaPago = (CuentaPago) cuentasPagoRest.save(cuentaPago).getSingle();
 			guardadoCuentaPago = true;
 		}
 		if ((contrato != null) && (contrato.getFechaVigenciaInicio() != null)
 				&& (contrato.getFechaVigenciaFin() != null)) {
-			contratoService.save(contrato);
+			contrato = (Contrato) contratoRest.save(contrato).getSingle();
 			nuevoProveedor.setContrato(contrato);
 		}
 	}
@@ -259,7 +262,7 @@ public abstract class ProveedorMetaClass extends ProveedorVariables {
 		if (proveedorSelected != null) {
 			Organizacion org = (Organizacion) sessionUtils.getFromSession("FIRMA");
 			proveedorSelected.setOrganizacion(org);
-			proveedorService.save(proveedorSelected);
+			proveedorSelected = (Proveedor) proveedorRest.save(proveedorSelected).getSingle();
 		}
 	}
 
@@ -274,8 +277,8 @@ public abstract class ProveedorMetaClass extends ProveedorVariables {
 			if (productosDB != null) {
 				for (Producto productoSeleccionado : productosDB) {
 					if (productoSeleccionado.isSeleccionar()) {
-						List<ProveedorProducto> proveedorProducto = proveedorProductoService
-								.getByProductoProveedor(productoSeleccionado, proveedoresAsociacionSelected);
+						List<ProveedorProducto> proveedorProducto = (List<ProveedorProducto>) proveedorProductoRest
+								.getByProductoProveedor(productoSeleccionado, proveedoresAsociacionSelected).getSingle();
 
 						boolean guardarProducto = true;
 						if ((proveedorProducto != null) && (proveedorProducto.size() > 0)) {
@@ -288,7 +291,7 @@ public abstract class ProveedorMetaClass extends ProveedorVariables {
 
 							nuevoProveedorProducto.setProducto(productoSeleccionado);
 
-							proveedorProductoService.save(nuevoProveedorProducto);
+							nuevoProveedorProducto = (ProveedorProducto) proveedorProductoRest.save(nuevoProveedorProducto).getSingle();
 
 							localInteger1 = actualizados;
 							Integer localInteger2 = actualizados = Integer.valueOf(actualizados.intValue() + 1);
@@ -304,7 +307,7 @@ public abstract class ProveedorMetaClass extends ProveedorVariables {
 						producto.setSeleccionar(false);
 					}
 				}
-				proveedorProductos = proveedorProductoService.getByProveedor(proveedoresAsociacionSelected);
+				proveedorProductos = (List<ProveedorProducto>) proveedorProductoRest.getByProveedor(proveedoresAsociacionSelected).getSingle();
 				if (noActualizados.intValue() > 0) {
 					mensajeNoActualizado = "Se detectaron productos existentes para este proveedor [" + noActualizados
 							+ "].";
@@ -334,13 +337,13 @@ public abstract class ProveedorMetaClass extends ProveedorVariables {
 					if (proveedorProducto.getProducto().isSeleccionar()) {
 						removerProductos.add(proveedorProducto);
 
-						proveedorProductoService.delete(proveedorProducto);
+						proveedorProductoRest.delete(proveedorProducto);
 						localInteger1 = registrosRemovidos;
 						Integer localInteger2 = registrosRemovidos = Integer.valueOf(registrosRemovidos.intValue() + 1);
 					}
 					proveedorProducto.getProducto().setSeleccionar(false);
 				}
-				proveedorProductos = proveedorProductoService.getByProveedor(proveedoresAsociacionSelected);
+				proveedorProductos = (List<ProveedorProducto>) proveedorProductoRest.getByProveedor(proveedoresAsociacionSelected).getSingle();
 
 				String mensaje = "";
 				if (registrosRemovidos.intValue() > 0) {
@@ -386,19 +389,19 @@ public abstract class ProveedorMetaClass extends ProveedorVariables {
 		if (proveedorSelected != null) {
 
 			if (proveedorSelected.getGiro() != null)
-				proveedorSelected.setGiro(getGiroByIdFromList(proveedorSelected.getGiro().getIdGiro(), giros));
+				proveedorSelected.setGiro(iteratorList.getGiroByIdFromList(proveedorSelected.getGiro().getIdGiro(), giros));
 			if (proveedorSelected.getDireccionFiscal() != null) {
 				Direccion dir = proveedorSelected.getDireccionFiscal();
-				paisProveedor = getPaisFromList(dir.getPais().getIdPais());
-				estadoProveedor = getEstadoFromList(dir.getEstado().getIdEstado());
-				municipioProveedor = getMunicipioFromList(dir.getMunicipio().getIdMunicipio());
+				paisProveedor = iteratorList.getPaisFromList(paises, dir.getPais().getIdPais());
+				estadoProveedor = iteratorList.getEstadoFromList(estados, dir.getEstado().getIdEstado());
+				municipioProveedor = iteratorList.getMunicipioFromList(municipios, dir.getMunicipio().getIdMunicipio());
 			}
 
-			List<CuentaPago> cp = cuentasPagoService.getByProveedor(proveedorSelected);
+			List<CuentaPago> cp = (List<CuentaPago>) cuentasPagoRest.getByProveedor(proveedorSelected).getSingle();
 			if (cp != null) {
 				cuentaPago = ((CuentaPago) cp.get(0));
-				monedaSeleccionada = getMonedaFromList(cuentaPago.getMoneda().getIdMoneda());
-				bancoSeleccionado = getBancoByIdFromList(cuentaPago.getBanco().getIdBanco(), bancosDB);
+				monedaSeleccionada = iteratorList.getMonedaFromList(monedasDB, cuentaPago.getMoneda().getIdMoneda());
+				bancoSeleccionado = iteratorList.getBancoByIdFromList(cuentaPago.getBanco().getIdBanco(), bancosDB);
 			}
  			if (proveedorSelected.getContrato() != null) {
 				contratoVigenciaInicio = new StockUtils()
@@ -410,7 +413,7 @@ public abstract class ProveedorMetaClass extends ProveedorVariables {
 			if (proveedorProductos == null) {
 				proveedorProductos = new ArrayList();
 			}
-			proveedorProductos = proveedorProductoService.getByProveedor(proveedorSelected);
+			proveedorProductos = (List<ProveedorProducto>) proveedorProductoRest.getByProveedor(proveedorSelected).getSingle();
 		}
 	}
 
@@ -418,7 +421,7 @@ public abstract class ProveedorMetaClass extends ProveedorVariables {
 	@NotifyChange({ "proveedorProductos" })
 	public void seleccionarProveedorRelacionProducto() {
 		if (proveedoresAsociacionSelected != null) {
-			proveedorProductos = proveedorProductoService.getByProveedor(proveedoresAsociacionSelected);
+			proveedorProductos = (List<ProveedorProducto>) proveedorProductoRest.getByProveedor(proveedoresAsociacionSelected).getSingle();
 		}
 	}
 
@@ -496,9 +499,9 @@ public abstract class ProveedorMetaClass extends ProveedorVariables {
 			valor = String.valueOf(valorDePropiedad);
 			if ((!valor.equalsIgnoreCase("NULL")) && (!valor.isEmpty())) {
 				if (valor.contains(".0")) {
-					valor = removerPuntoCero(valor);
+					valor = stockUtilString.removerPuntoCero(valor);
 				}
-				Giro giroEntrada = giroService.getById(Long.valueOf(valor));
+				Giro giroEntrada = (Giro) giroRest.getById(Long.valueOf(valor), organizacion).getSingle();
 				nuevoProveedor.setGiro(giroEntrada);
 			}
 			break;
@@ -518,13 +521,13 @@ public abstract class ProveedorMetaClass extends ProveedorVariables {
 			valor = String.valueOf(valorDePropiedad);
 			if ((!valor.equalsIgnoreCase("NULL")) && (!valor.isEmpty())) {
 				if (valor.contains(".0")) {
-					valor = removerPuntoCero(valor);
+					valor = stockUtilString.removerPuntoCero(valor);
 				}
 				Direccion direccionFiscal = nuevoProveedor.getDireccionFiscal();
 				if (direccionFiscal == null) {
 					direccionFiscal = new Direccion();
 				}
-				Pais paisEntrada = paisService.findById(Long.valueOf(valor));
+				Pais paisEntrada = (Pais) paisRest.getById(Long.valueOf(valor)).getSingle();
 				direccionFiscal.setPais(paisEntrada);
 				nuevoProveedor.setDireccionFiscal(direccionFiscal);
 			}
@@ -533,13 +536,13 @@ public abstract class ProveedorMetaClass extends ProveedorVariables {
 			valor = String.valueOf(valorDePropiedad);
 			if ((!valor.equalsIgnoreCase("NULL")) && (!valor.isEmpty())) {
 				if (valor.contains(".0")) {
-					valor = removerPuntoCero(valor);
+					valor = stockUtilString.removerPuntoCero(valor);
 				}
 				Direccion direccionFiscal = nuevoProveedor.getDireccionFiscal();
 				if (direccionFiscal == null) {
 					direccionFiscal = new Direccion();
 				}
-				Estado estadoEntrada = estadoService.getById(Long.valueOf(valor));
+				Estado estadoEntrada = (Estado) estadoRest.getById(Long.valueOf(valor)).getSingle();
 				direccionFiscal.setEstado(estadoEntrada);
 				nuevoProveedor.setDireccionFiscal(direccionFiscal);
 			}
@@ -559,13 +562,13 @@ public abstract class ProveedorMetaClass extends ProveedorVariables {
 			valor = String.valueOf(valorDePropiedad);
 			if ((!valor.equalsIgnoreCase("NULL")) && (!valor.isEmpty())) {
 				if (valor.contains(".0")) {
-					valor = removerPuntoCero(valor);
+					valor = stockUtilString.removerPuntoCero(valor);
 				}
 				Direccion direccionFiscal = nuevoProveedor.getDireccionFiscal();
 				if (direccionFiscal == null) {
 					direccionFiscal = new Direccion();
 				}
-				Municipio municipioEntrada = municipioService.getById(Long.valueOf(valor));
+				Municipio municipioEntrada = (Municipio) municipioRest.getById(Long.valueOf(valor)).getSingle();
 
 				direccionFiscal.setMunicipio(municipioEntrada);
 				nuevoProveedor.setDireccionFiscal(direccionFiscal);
@@ -598,7 +601,7 @@ public abstract class ProveedorMetaClass extends ProveedorVariables {
 			if ((!valor.equalsIgnoreCase("NULL")) && (!valor.isEmpty())) {
 				try {
 					if (valor.contains(".0")) {
-						valor = removerPuntoCero(valor);
+						valor = stockUtilString.removerPuntoCero(valor);
 					}
 					Integer a = Integer.valueOf(Integer.parseInt(valor));
 					valor = String.valueOf(a);
@@ -618,7 +621,7 @@ public abstract class ProveedorMetaClass extends ProveedorVariables {
 			if ((!valor.equalsIgnoreCase("NULL")) && (!valor.isEmpty())) {
 				try {
 					if (valor.contains(".0")) {
-						valor = removerPuntoCero(valor);
+						valor = stockUtilString.removerPuntoCero(valor);
 					}
 					Integer a = Integer.valueOf(Integer.parseInt(valor));
 					valor = String.valueOf(a);
@@ -661,7 +664,7 @@ public abstract class ProveedorMetaClass extends ProveedorVariables {
 				try {
 					valor = String.valueOf(valorDePropiedad);
 					if (valor.contains(".0")) {
-						valor = removerPuntoCero(valor);
+						valor = stockUtilString.removerPuntoCero(valor);
 					}
 					Integer a = Integer.valueOf(Integer.parseInt(valor));
 					valor = String.valueOf(a);
@@ -690,7 +693,7 @@ public abstract class ProveedorMetaClass extends ProveedorVariables {
 				try {
 					valor = String.valueOf(valorDePropiedad);
 					if (valor.contains(".0")) {
-						valor = removerPuntoCero(valor);
+						valor = stockUtilString.removerPuntoCero(valor);
 					}
 					Integer a = Integer.valueOf(Integer.parseInt(valor));
 					valor = String.valueOf(a);
@@ -719,7 +722,7 @@ public abstract class ProveedorMetaClass extends ProveedorVariables {
 				try {
 					valor = String.valueOf(valorDePropiedad);
 					if (valor.contains(".0")) {
-						valor = removerPuntoCero(valor);
+						valor = stockUtilString.removerPuntoCero(valor);
 					}
 					Integer a = Integer.valueOf(Integer.parseInt(valor));
 					valor = String.valueOf(a);
@@ -819,7 +822,7 @@ public abstract class ProveedorMetaClass extends ProveedorVariables {
 				try {
 					valor = String.valueOf(valorDePropiedad);
 					if (valor.contains(".0")) {
-						valor = removerPuntoCero(valor);
+						valor = stockUtilString.removerPuntoCero(valor);
 					}
 					Integer a = Integer.valueOf(Integer.parseInt(valor));
 					valor = String.valueOf(a);
@@ -884,7 +887,7 @@ public abstract class ProveedorMetaClass extends ProveedorVariables {
 				}
 				try {
 					if (valor.contains(".0")) {
-						valor = removerPuntoCero(valor);
+						valor = stockUtilString.removerPuntoCero(valor);
 					}
 					Integer a = Integer.valueOf(Integer.parseInt(valor));
 					valor = String.valueOf(a);
@@ -1000,14 +1003,14 @@ public abstract class ProveedorMetaClass extends ProveedorVariables {
 				}
 				try {
 					if (valor.contains(".0")) {
-						valor = removerPuntoCero(valor);
+						valor = stockUtilString.removerPuntoCero(valor);
 					}
 					Integer a = Integer.valueOf(Integer.parseInt(valor));
 					valor = String.valueOf(a);
 				} catch (Exception e) {
 					valor = String.valueOf(valorDePropiedad);
 				}
-				Moneda monedaEntrada = monedaService.getById(Long.valueOf(valor));
+				Moneda monedaEntrada = (Moneda) monedaRest.getById(Long.valueOf(valor), organizacion).getSingle();
 
 				cuentaPagoEntrada.setMoneda(monedaEntrada);
 				nuevoProveedor.setCuentaPago(cuentaPagoEntrada);
@@ -1022,14 +1025,14 @@ public abstract class ProveedorMetaClass extends ProveedorVariables {
 				}
 				try {
 					if (valor.contains(".0")) {
-						valor = removerPuntoCero(valor);
+						valor = stockUtilString.removerPuntoCero(valor);
 					}
 					Integer a = Integer.valueOf(Integer.parseInt(valor));
 					valor = String.valueOf(a);
 				} catch (Exception e) {
 					valor = String.valueOf(valorDePropiedad);
 				}
-				Banco bancoEntrada = bancoService.getById(Long.valueOf(valor));
+				Banco bancoEntrada = (Banco) bancoRest.getById(Long.valueOf(valor), organizacion).getSingle();
 				cuentaPagoEntrada.setBanco(bancoEntrada);
 				nuevoProveedor.setCuentaPago(cuentaPagoEntrada);
 			}
@@ -1043,7 +1046,7 @@ public abstract class ProveedorMetaClass extends ProveedorVariables {
 				}
 				try {
 					if (valor.contains(".0")) {
-						valor = removerPuntoCero(valor);
+						valor = stockUtilString.removerPuntoCero(valor);
 					}
 					Integer a = Integer.valueOf(Integer.parseInt(valor));
 					valor = String.valueOf(a);
