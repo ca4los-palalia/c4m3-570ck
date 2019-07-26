@@ -1,12 +1,8 @@
-package com.cplsystems.stock.app.vm.requisicion;
+package com.came.stock.web.vm.requisicion;
 
-import com.cplsystems.stock.app.utils.StockUtils;
-import com.cplsystems.stock.app.vm.requisicion.utils.RequisicionVariables;
-import com.cplsystems.stock.domain.Cotizacion;
-import com.cplsystems.stock.domain.CotizacionInbox;
-import com.cplsystems.stock.domain.EstatusRequisicion;
-import com.cplsystems.stock.domain.RequisicionProducto;
 import java.util.Calendar;
+import java.util.List;
+
 import org.zkoss.bind.annotation.AfterCompose;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.ContextParam;
@@ -20,6 +16,13 @@ import org.zkoss.zk.ui.select.annotation.VariableResolver;
 import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zkplus.spring.DelegatingVariableResolver;
 import org.zkoss.zul.Window;
+
+import com.came.stock.model.domain.Cotizacion;
+import com.came.stock.model.domain.CotizacionInbox;
+import com.came.stock.model.domain.EstatusRequisicion;
+import com.came.stock.model.domain.RequisicionProducto;
+import com.came.stock.utilidades.StockUtils;
+import com.came.stock.web.vm.requisicion.utils.RequisicionVariables;
 
 @VariableResolver({ DelegatingVariableResolver.class })
 public class CancelarCotizacionVM extends RequisicionVariables {
@@ -52,22 +55,21 @@ public class CancelarCotizacionVM extends RequisicionVariables {
 		if ((this.cotizacionSelected != null) && (this.cotizacionSelected.getCancelarDescripcion() != null)
 				&& (!this.cotizacionSelected.getCancelarDescripcion().isEmpty())) {
 			try {
-				EstatusRequisicion estado = this.estatusRequisicionService.getByClave("COC");
+				EstatusRequisicion estado = (EstatusRequisicion) estatusRequisicionRest.getByClave("COC").getSingle();
 
-				this.cotizacionSelected.setEstatusRequisicion(estado);
-
-				this.cotizacionService.save(this.cotizacionSelected);
+				cotizacionSelected.setEstatusRequisicion(estado);
+				cotizacionSelected = (Cotizacion) cotizacionRest.save(cotizacionSelected).getSingle();
 				CotizacionInbox inbox = new CotizacionInbox();
 				inbox.setFechaRegistro(this.stockUtils.convertirCalendarToDate(Calendar.getInstance()));
 				inbox.setCotizacion(this.cotizacionSelected);
 				inbox.setLeido(Boolean.valueOf(false));
-				this.cotizacionInboxService.save(inbox);
+				inbox = (CotizacionInbox) cotizacionInboxRest.save(inbox).getSingle();
 				
-				this.requisicionProductos = this.requisicionProductoService
-						.getByRequisicion(this.cotizacionSelected.getRequisicion());
+				requisicionProductos = (List<RequisicionProducto>) requisicionProductoRest
+						.getByRequisicion(cotizacionSelected.getRequisicion(), organizacion).getSingle();
 				for (RequisicionProducto item : this.requisicionProductos) {
 					item.setDescripcion("Cotizaci�n cancelada");
-					this.requisicionProductoService.save(item);
+					item = (RequisicionProducto) requisicionProductoRest.save(item).getSingle();
 				}
 				actualizarRequisicion("RQT");
 				this.win.detach();
@@ -87,8 +89,9 @@ public class CancelarCotizacionVM extends RequisicionVariables {
 	}
 	
 	private void actualizarRequisicion(String clave){
-		EstatusRequisicion estatus = estatusRequisicionService.getByClave(clave);
+		EstatusRequisicion estatus = (EstatusRequisicion) estatusRequisicionRest.getByClave(clave).getSingle();
 		cotizacionSelected.getRequisicion().setEstatusRequisicion(estatus);
-		requisicionService.save(cotizacionSelected.getRequisicion());
+		cotizacionSelected.setRequisicion()
+		requisicionRest.save(cotizacionSelected.getRequisicion());
 	}
 }

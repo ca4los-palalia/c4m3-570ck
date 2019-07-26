@@ -1,24 +1,14 @@
-package com.cplsystems.stock.app.vm.controlpanel.utils;
+package com.came.stock.web.vm.controlpanel.utils;
 
-import com.cplsystems.stock.app.utils.StockUtils;
-import com.cplsystems.stock.app.vm.controlpanel.UsuariosClientesVM;
-import com.cplsystems.stock.domain.Contacto;
-import com.cplsystems.stock.domain.Email;
-import com.cplsystems.stock.domain.Persona;
-import com.cplsystems.stock.domain.Usuarios;
-import com.cplsystems.stock.services.UsuarioService;
 import java.util.Map;
+
 import org.zkoss.bind.Property;
 import org.zkoss.bind.ValidationContext;
-import org.zkoss.bind.annotation.AfterCompose;
-import org.zkoss.bind.annotation.ContextParam;
-import org.zkoss.bind.annotation.ContextType;
 import org.zkoss.bind.validator.AbstractValidator;
-import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.Page;
-import org.zkoss.zk.ui.select.Selectors;
 import org.zkoss.zk.ui.util.Clients;
-import org.zkoss.zul.Window;
+
+import com.came.stock.utilidades.StockUtils;
+import com.came.stock.web.vm.controlpanel.UsuariosClientesVM;
 
 public class UsuarioClientesValidator extends AbstractValidator {
 	private Map<String, Property> beanProps;

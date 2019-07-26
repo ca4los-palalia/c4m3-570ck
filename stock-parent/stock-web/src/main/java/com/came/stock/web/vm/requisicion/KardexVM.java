@@ -30,7 +30,6 @@ import com.came.stock.model.domain.Producto;
 import com.came.stock.model.domain.Usuarios;
 import com.came.stock.utilidades.StockUtils;
 import com.came.stock.web.vm.BasicStructure;
-import com.cplsystems.stock.app.utils.ConexionManual;
 
 @VariableResolver({ DelegatingVariableResolver.class })
 public class KardexVM extends BasicStructure {

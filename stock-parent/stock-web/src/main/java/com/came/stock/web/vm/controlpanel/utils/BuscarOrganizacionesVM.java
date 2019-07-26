@@ -1,14 +1,10 @@
-package com.cplsystems.stock.app.vm.controlpanel.utils;
+package com.came.stock.web.vm.controlpanel.utils;
 
-import com.cplsystems.stock.app.utils.StockUtils;
-import com.cplsystems.stock.domain.Organizacion;
-import com.cplsystems.stock.domain.Usuarios;
-import com.cplsystems.stock.services.OrganizacionService;
-import com.cplsystems.stock.services.UsuarioService;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.zkoss.bind.BindUtils;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.ContextParam;
@@ -21,6 +17,10 @@ import org.zkoss.zk.ui.select.annotation.VariableResolver;
 import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zkplus.spring.DelegatingVariableResolver;
 import org.zkoss.zul.Window;
+
+import com.came.stock.model.domain.Organizacion;
+import com.came.stock.model.domain.Usuarios;
+import com.came.stock.utilidades.StockUtils;
 
 @VariableResolver({ DelegatingVariableResolver.class })
 public class BuscarOrganizacionesVM extends BuscarOrganizacionesVariables {
@@ -41,16 +41,14 @@ public class BuscarOrganizacionesVM extends BuscarOrganizacionesVariables {
 	@NotifyChange({ "companias" })
 	public void buscarCompania() {
 		if ((this.compania != null) && (!this.compania.isEmpty())) {
-			if ((this.rfc != null) && (!this.rfc.isEmpty())) {
-				this.companias = this.organizacionService.getCompaniasByNombreRFC(this.compania, this.rfc);
-			} else {
-				this.companias = this.organizacionService.getCompaniasByNombre(this.compania);
-			}
+			if ((this.rfc != null) && (!this.rfc.isEmpty()))
+				companias = (List<Organizacion>) organizacionRest.getCompaniasByNombreRFC(compania, rfc).getSingle();
+			else
+				companias = (List<Organizacion>) organizacionRest.getCompaniasByNombre(this.compania).getSingle();
 		} else if ((this.rfc != null) && (!this.rfc.isEmpty())) {
-			this.companias = this.organizacionService.getCompaniasByRFC(this.rfc);
-		} else {
-			this.companias = this.organizacionService.getAll();
-		}
+			companias = (List<Organizacion>) organizacionRest.getCompaniasByRFC(this.rfc).getSingle();
+		} else
+			companias = (List<Organizacion>) organizacionRest.getAll().getSingle();
 	}
 
 	@Command
@@ -61,8 +59,8 @@ public class BuscarOrganizacionesVM extends BuscarOrganizacionesVariables {
 
 			return;
 		}
-		this.usuariosOrganizacion = new ArrayList();
-		this.usuariosOrganizacion = this.usuarioService.getUsuariosByOrganizacionAll(this.organizacionSeleccionada);
+		usuariosOrganizacion = new ArrayList();
+		usuariosOrganizacion = (List<Usuarios>) usuarioRest.getUsuariosByOrganizacionAll(this.organizacionSeleccionada).getSingle();
 
 		this.companiasModalDialog.detach();
 		Map<String, Object> args = new HashMap();

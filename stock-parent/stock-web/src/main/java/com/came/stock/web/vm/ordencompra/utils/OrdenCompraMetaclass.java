@@ -1,8 +1,9 @@
-package com.cplsystems.stock.app.vm.ordencompra.utils;
+package com.came.stock.web.vm.ordencompra.utils;
 
 import java.io.File;
 import java.io.StringWriter;
 import java.util.Calendar;
+import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -16,11 +17,11 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.zkoss.bind.annotation.Init;
 
-import com.cplsystems.stock.domain.Cotizacion;
-import com.cplsystems.stock.domain.OrdenCompra;
-import com.cplsystems.stock.domain.OrdenCompraInbox;
-import com.cplsystems.stock.domain.Organizacion;
-import com.cplsystems.stock.domain.SistemaOperativo;
+import com.came.stock.beans.SistemaOperativo;
+import com.came.stock.model.domain.Cotizacion;
+import com.came.stock.model.domain.OrdenCompra;
+import com.came.stock.model.domain.OrdenCompraInbox;
+import com.came.stock.model.domain.Organizacion;
 
 public class OrdenCompraMetaclass extends OrdenCompraVariables {
 	private static final long serialVersionUID = 5093877120990395398L;
@@ -40,8 +41,8 @@ public class OrdenCompraMetaclass extends OrdenCompraVariables {
 	}
 
 	private void loadOrdenesCompraInbox() {
-		ordenesCompraInbox = ordenCompraInboxService
-				.getAll((Organizacion) sessionUtils.getFromSession("FIRMA"));
+		ordenesCompraInbox = (List<OrdenCompraInbox>) ordenCompraInboxRest
+				.getAll((Organizacion) sessionUtils.getFromSession("FIRMA")).getSingle();
 
 		ordenCompraInboxSeleccionada = new OrdenCompraInbox();
 		for (OrdenCompraInbox compraInbox : ordenesCompraInbox) {

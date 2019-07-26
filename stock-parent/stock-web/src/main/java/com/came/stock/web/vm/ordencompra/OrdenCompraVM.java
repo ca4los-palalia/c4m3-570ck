@@ -1,4 +1,4 @@
-package com.cplsystems.stock.app.vm.ordencompra;
+package com.came.stock.web.vm.ordencompra;
 
 
 
@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.beanutils.converters.ShortConverter;
 import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.Init;
@@ -19,23 +18,21 @@ import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zkplus.spring.DelegatingVariableResolver;
 import org.zkoss.zul.Window;
 
-import com.cplsystems.stock.app.utils.ReportesBuild;
-import com.cplsystems.stock.app.utils.StockUtils;
-import com.cplsystems.stock.app.utils.UserPrivileges;
-import com.cplsystems.stock.app.vm.ordencompra.utils.OrdenCompraMetaclass;
-import com.cplsystems.stock.domain.Cotizacion;
-import com.cplsystems.stock.domain.EstatusRequisicion;
-import com.cplsystems.stock.domain.Kardex;
-import com.cplsystems.stock.domain.KardexProveedor;
-import com.cplsystems.stock.domain.OrdenCompra;
-import com.cplsystems.stock.domain.OrdenCompraInbox;
-import com.cplsystems.stock.domain.Organizacion;
-import com.cplsystems.stock.domain.Privilegios;
-import com.cplsystems.stock.domain.ProductoPrecios;
-import com.cplsystems.stock.domain.Requisicion;
-import com.cplsystems.stock.domain.RequisicionProducto;
-import com.cplsystems.stock.domain.Usuarios;
-import com.cplsystems.stock.services.EstatusRequisicionService;
+import com.came.stock.model.domain.Cotizacion;
+import com.came.stock.model.domain.EstatusRequisicion;
+import com.came.stock.model.domain.Kardex;
+import com.came.stock.model.domain.KardexProveedor;
+import com.came.stock.model.domain.OrdenCompra;
+import com.came.stock.model.domain.OrdenCompraInbox;
+import com.came.stock.model.domain.Organizacion;
+import com.came.stock.model.domain.Privilegios;
+import com.came.stock.model.domain.Requisicion;
+import com.came.stock.model.domain.RequisicionProducto;
+import com.came.stock.model.domain.Usuarios;
+import com.came.stock.utilidades.StockUtils;
+import com.came.stock.utilidades.UserPrivileges;
+import com.came.stock.web.utils.ReportesBuild;
+import com.came.stock.web.vm.ordencompra.utils.OrdenCompraMetaclass;
 
 @VariableResolver({ DelegatingVariableResolver.class })
 public class OrdenCompraVM extends OrdenCompraMetaclass {
@@ -49,11 +46,11 @@ public class OrdenCompraVM extends OrdenCompraMetaclass {
 		organizacion = (Organizacion) sessionUtils.getFromSession("FIRMA");
 		
 		checkBuscarNueva = true;
-		EstatusRequisicion req = estatusRequisicionService.getByClave("OCN");
+		EstatusRequisicion req = (EstatusRequisicion) estatusRequisicionRest.getByClave("OCN").getSingle();
 		List<EstatusRequisicion> input = new ArrayList<>();
 		input.add(req);
 		
-		ordenesCompras = ordenCompraService.getOrdenesByEstatusAndFolioOr("", input);
+		ordenesCompras = (List<OrdenCompra>) ordenCompraRest.getByEstatusAndFolioOr("", input, organizacion).getSingle();
 		getStylesGlobal();
 	}
 
@@ -117,7 +114,7 @@ public class OrdenCompraVM extends OrdenCompraMetaclass {
 			OrdenCompraInbox toLoad = (OrdenCompraInbox) ordenesCompraInbox.get(index.intValue());
 			if ((toLoad.getLeido() != null) && (!toLoad.getLeido().booleanValue())) {
 				toLoad.setLeido(Boolean.valueOf(true));
-				ordenCompraInboxService.save(toLoad);
+				toLoad = (OrdenCompraInbox) ordenCompraInboxRest.save(toLoad).getSingle();
 				toLoad.setIcono("/images/toolbar/openedEmail.png");
 			}
 		}
@@ -129,15 +126,12 @@ public class OrdenCompraVM extends OrdenCompraMetaclass {
 		if ((checkBuscarNueva) || (checkBuscarCancelada) || (checkBuscarEnviada)
 				|| (checkBuscarAceptada)) {
 			lista = new ArrayList();
-			if (checkBuscarNueva) {
-				lista.add(estatusRequisicionService.getByClave("OCN"));
-			}
-			if (checkBuscarCancelada) {
-				lista.add(estatusRequisicionService.getByClave("OCC"));
-			}
-			if (checkBuscarAceptada) {
-				lista.add(estatusRequisicionService.getByClave("OCT"));
-			}
+			if (checkBuscarNueva)
+				lista.add((EstatusRequisicion) estatusRequisicionRest.getByClave("OCN").getSingle());
+			if (checkBuscarCancelada)
+				lista.add((EstatusRequisicion) estatusRequisicionRest.getByClave("OCC").getSingle());
+			if (checkBuscarAceptada)
+				lista.add((EstatusRequisicion) estatusRequisicionRest.getByClave("OCT").getSingle());
 		}
 		return lista;
 	}
@@ -150,8 +144,8 @@ public class OrdenCompraVM extends OrdenCompraMetaclass {
 				|| ((requisicion != null) && (requisicion.getBuscarRequisicion() != null)
 						&& (!requisicion.getBuscarRequisicion().isEmpty()))) {
 			List<EstatusRequisicion> listaEstatus = generarListaEstatusIN();
-			listaExtraer = ordenCompraService
-					.getOrdenesByEstatusAndFolioOr(requisicion.getBuscarRequisicion(), listaEstatus);
+			listaExtraer = (List<OrdenCompra>) ordenCompraRest
+					.getByEstatusAndFolioOr(requisicion.getBuscarRequisicion(), listaEstatus, organizacion).getSingle();
 			if (cotizacionesList == null) {
 			}
 		} else {
@@ -168,9 +162,9 @@ public class OrdenCompraVM extends OrdenCompraMetaclass {
 		
 		cotizacionSelected = ordenCompra.getCotizacion();
 		if (cotizacionSelected != null) {
-			cotizacionesConProductos = cotizacionService.getByProveedorFolioCotizacionNueva(
+			cotizacionesConProductos = (List<Cotizacion>) cotizacionRest.getByProveedorFolioCotizacionNueva(
 					cotizacionSelected.getProveedor(), cotizacionSelected.getFolioCotizacion(),
-					cotizacionSelected.getEstatusRequisicion());
+					cotizacionSelected.getEstatusRequisicion(), organizacion).getSingle();
 
 			numeroProductos = Integer.valueOf(cotizacionesConProductos.size());
 			precioTotal = Float.valueOf(0.0F);
@@ -227,10 +221,10 @@ public class OrdenCompraVM extends OrdenCompraMetaclass {
 			if (ordenCompra.getEstatusRequisicion().getClave().equals("OCN")) {
 		
 				if(enviarXmlToConffya(construirXmlOrden(ordenCompra))){
-					EstatusRequisicion estado = estatusRequisicionService.getByClave("OCT");
+					EstatusRequisicion estado = (EstatusRequisicion) estatusRequisicionRest.getByClave("OCT").getSingle();
 
 					ordenCompra.setEstatusRequisicion(estado);
-					ordenCompraService.save(ordenCompra);
+					ordenCompra = (OrdenCompra) ordenCompraRest.save(ordenCompra).getSingle();
 					
 					
 					buildKardexList(ordenCompra);
@@ -269,9 +263,9 @@ public class OrdenCompraVM extends OrdenCompraMetaclass {
 	private List<Kardex> buildKardexList(OrdenCompra ordenCompra) {
 		Cotizacion cotizacionItem = ordenCompra.getCotizacion();
 		
-		List<Cotizacion> listOrdenCompra = cotizacionService.getByProveedorFolioCotizacionNueva(
+		List<Cotizacion> listOrdenCompra = (List<Cotizacion>) cotizacionRest.getByProveedorFolioCotizacionNueva(
 				cotizacionItem.getProveedor(), cotizacionItem.getFolioCotizacion(),
-				cotizacionItem.getEstatusRequisicion());
+				cotizacionItem.getEstatusRequisicion(), organizacion).getSingle();
 		
 		List<Kardex> tempList = null;
 		if (listOrdenCompra != null) {
@@ -292,7 +286,7 @@ public class OrdenCompraVM extends OrdenCompraMetaclass {
 				tempList.add(temObject);
 			}
 			if(tempList != null && tempList.size() > 0){
-				EstatusRequisicion estadoKardex = estatusRequisicionService.getByClave("KXN");
+				EstatusRequisicion estadoKardex = (EstatusRequisicion) estatusRequisicionRest.getByClave("KXN").getSingle();
 				
 				KardexProveedor kardexProveedor = new KardexProveedor();
 				kardexProveedor.setOrganizacion(organizacion);
@@ -300,14 +294,14 @@ public class OrdenCompraVM extends OrdenCompraMetaclass {
 				kardexProveedor.setProveedor(cotizacionItem.getProveedor());
 				kardexProveedor.setEstatusRequisicion(estadoKardex);
 				kardexProveedor.setOrdenCompra(ordenCompra);
-				kardexProveedorService.save(kardexProveedor);
+				kardexProveedor = (KardexProveedor) kardexProveedorRest.save(kardexProveedor).getSingle();
 				
 				for (Kardex kardexItem : tempList) {
 					kardexItem.setEstatusRequisicion(estadoKardex);
 					kardexItem.setUsuario(usuario);
 					kardexItem.setOrganizacion(organizacion);
 					kardexItem.setKardexProveedor(kardexProveedor);
-					kardexService.save(kardexItem);
+					kardexItem = (Kardex) kardexRest.save(kardexItem).getSingle();
 				}
 				
 			}
@@ -343,13 +337,13 @@ public class OrdenCompraVM extends OrdenCompraMetaclass {
 	}
 
 	private List<Privilegios> getEmailsUsuariosCotizacion() {
-		List<Privilegios> usuarios = privilegioService.getUsuariosByPrivilegio(UserPrivileges.COTIZAR_AUTORIZAR);
+		List<Privilegios> usuarios = (List<Privilegios>) privilegioRest.getUsuariosByPrivilegio(UserPrivileges.COTIZAR_AUTORIZAR, organizacion).getSingle();
 
 		return usuarios;
 	}
 
 	private void actualizarRequisicion(String clave){
-		List<RequisicionProducto> listaProductosRequisicion = requisicionProductoService.getByRequisicion(ordenCompra.getCotizacion().getRequisicion());
+		List<RequisicionProducto> listaProductosRequisicion = (List<RequisicionProducto>) requisicionProductoRest.getByRequisicion(ordenCompra.getCotizacion().getRequisicion(), organizacion).getSingle();
 		for (RequisicionProducto requisicionProducto : listaProductosRequisicion) {
 			for (Cotizacion itemCotizacion : cotizacionesConProductos) {
 				if(requisicionProducto.getProducto().getClave().equals(itemCotizacion.getProducto().getClave())){ 
@@ -358,9 +352,10 @@ public class OrdenCompraVM extends OrdenCompraMetaclass {
 			}
 		}
 		
-		EstatusRequisicion estatus = estatusRequisicionService.getByClave(clave);
+		EstatusRequisicion estatus = (EstatusRequisicion) estatusRequisicionRest.getByClave(clave).getSingle();
 		ordenCompra.getCotizacion().getRequisicion().setEstatusRequisicion(estatus);
-		requisicionService.save(ordenCompra.getCotizacion().getRequisicion());
+		ordenCompra.getCotizacion().setRequisicion((Requisicion) requisicionRest.save(ordenCompra.getCotizacion().getRequisicion()).getSingle());
+		
 	}
 
 	private boolean enviarXmlToConffya(String compromisoXml) {

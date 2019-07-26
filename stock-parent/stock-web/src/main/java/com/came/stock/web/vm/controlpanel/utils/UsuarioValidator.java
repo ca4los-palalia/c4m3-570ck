@@ -1,13 +1,15 @@
-package com.cplsystems.stock.app.vm.controlpanel.utils;
+package com.came.stock.web.vm.controlpanel.utils;
 
-import com.cplsystems.stock.app.utils.StockUtils;
-import com.cplsystems.stock.app.vm.controlpanel.UsuarioVM;
 import java.io.Serializable;
 import java.util.Map;
+
 import org.zkoss.bind.Property;
 import org.zkoss.bind.ValidationContext;
 import org.zkoss.bind.validator.AbstractValidator;
 import org.zkoss.zk.ui.util.Clients;
+
+import com.came.stock.utilidades.StockUtils;
+import com.came.stock.web.vm.controlpanel.UsuarioVM;
 
 public class UsuarioValidator extends AbstractValidator implements Serializable {
 	private static final long serialVersionUID = 876922188396805982L;
