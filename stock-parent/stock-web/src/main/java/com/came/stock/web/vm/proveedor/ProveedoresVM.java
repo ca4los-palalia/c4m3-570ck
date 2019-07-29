@@ -34,7 +34,10 @@ import org.zkoss.zul.Window;
 import com.came.stock.model.domain.Banco;
 import com.came.stock.model.domain.CuentaPago;
 import com.came.stock.model.domain.Direccion;
+import com.came.stock.model.domain.Estado;
 import com.came.stock.model.domain.Justificacion;
+import com.came.stock.model.domain.Moneda;
+import com.came.stock.model.domain.Municipio;
 import com.came.stock.model.domain.Organizacion;
 import com.came.stock.model.domain.Pais;
 import com.came.stock.model.domain.Producto;
@@ -147,10 +150,9 @@ public class ProveedoresVM extends ProveedorMetaClass {
 	public void performSearch() {
 		if ((this.buscarProveedor.getNombre() != null) && (!this.buscarProveedor.getNombre().isEmpty())) {
 			if (this.buscarProveedor.getNombre().equals("*")) {
-				this.proveedoresLista = this.proveedorService.getAll();
-			} else {
-				this.proveedoresLista = this.proveedorService.getBysClaveNombreRfc(this.buscarProveedor.getNombre());
-			}
+				proveedoresLista = (List<Proveedor>) proveedorRest.getAll(organizacion).getSingle();
+			} else
+				proveedoresLista = (List<Proveedor>) proveedorRest.getByClaveNombreRfc(buscarProveedor.getNombre(), organizacion).getSingle();
 			if (this.proveedoresLista != null) {
 				String mensaje = "";
 				if (this.proveedoresLista.size() == 1) {
@@ -184,10 +186,10 @@ public class ProveedoresVM extends ProveedorMetaClass {
 		this.proveedoresAsociacionSelected = null;
 		if ((this.buscarProveedorAsociar.getNombre() != null) && (!this.buscarProveedorAsociar.getNombre().isEmpty())) {
 			if (this.buscarProveedorAsociar.getNombre().equals("*")) {
-				this.proveedoresAsociacion = this.proveedorService.getAll();
+				proveedoresAsociacion = (List<Proveedor>) proveedorRest.getAll(organizacion).getSingle();
 			} else {
-				this.proveedoresAsociacion = this.proveedorService
-						.getBysClaveNombreRfc(this.buscarProveedorAsociar.getNombre());
+				proveedoresAsociacion = (List<Proveedor>) proveedorRest
+						.getByClaveNombreRfc(this.buscarProveedorAsociar.getNombre(), organizacion).getSingle();
 			}
 			if (this.proveedoresAsociacion != null) {
 				String mensaje = "";
@@ -221,9 +223,9 @@ public class ProveedoresVM extends ProveedorMetaClass {
 	public void performSearchProductoAsociacion() {
 		if ((this.buscarProducto.getNombre() != null) && (!this.buscarProducto.getNombre().isEmpty())) {
 			if (this.buscarProducto.getNombre().equals("*")) {
-				this.productosDB = this.productoService.getAll();
+				productosDB = (List<Producto>) productoRest.getAll(organizacion).getSingle();
 			} else {
-				this.productosDB = this.productoService.getByClaveNombre(this.buscarProducto.getNombre());
+				productosDB = (List<Producto>) productoRest.getByClaveNombre(buscarProducto.getNombre(), organizacion).getSingle();
 			}
 			if (this.productosDB != null) {
 				String mensaje = "";
@@ -253,7 +255,7 @@ public class ProveedoresVM extends ProveedorMetaClass {
 	@Command
 	@NotifyChange({ "*" })
 	public void mostrarProductosDeProveedor() {
-		this.proveedorProductos = this.proveedorProductoService.getByProveedor(this.proveedoresAsociacionSelected);
+		proveedorProductos = (List<ProveedorProducto>) proveedorProductoRest.getByProveedor(proveedoresAsociacionSelected).getSingle();
 	}
 
 	public static List<Banco> getCompleteBancos() {
@@ -303,11 +305,11 @@ public class ProveedoresVM extends ProveedorMetaClass {
 		windowModalView.doModal();
 		*/
 		
-		estados = estadoService.getAll();
-		municipios = municipioService.getAll();
-		paises = paisService.getAll();
+		estados = (List<Estado>) estadoRest.getAll().getSingle();
+		municipios = (List<Municipio>) municipioRest.getAll().getSingle();
+		paises = (List<Pais>) paisRest.getAll().getSingle();
 		
-		productosDB = productoService.getAllNativeSQL();
+		productosDB = (List<Producto>) productoRest.getAllNativeSQL(organizacion).getSingle();
 		
 		try {
 			workBook = new XSSFWorkbook(getStreamMediaExcel(ctx));
@@ -377,7 +379,7 @@ public class ProveedoresVM extends ProveedorMetaClass {
 		}
 		if(direccionTemp.size() > 0){
 			for (Direccion item : direccionTemp) {
-				direccionService.save(item);
+				item = (Direccion) direccionRest.save(item).getSingle();
 			}
 			
 			direccionesList = direccionTemp;
@@ -413,7 +415,7 @@ public class ProveedoresVM extends ProveedorMetaClass {
 		}
 		if(proveedorTemp.size() > 0){
 			for (Proveedor item : proveedorTemp) {
-				proveedorService.save(item);
+				item = (Proveedor) proveedorRest.save(item).getSingle();
 			}
 			proveedoresLista = proveedorTemp;
 		}
@@ -449,7 +451,7 @@ public class ProveedoresVM extends ProveedorMetaClass {
 		}
 		if(proveedorProductoTemp.size() > 0){
 			for (ProveedorProducto item : proveedorProductoTemp) {
-				proveedorProductoService.save(item);
+				item = (ProveedorProducto) proveedorProductoRest.save(item).getSingle();
 			}
 			proveedorProductos = proveedorProductoTemp;
 		}
@@ -487,26 +489,26 @@ public class ProveedoresVM extends ProveedorMetaClass {
 		case 6:
 			if ((valor != null) && (!valor.isEmpty()) && (!valor.equalsIgnoreCase("NULL"))){
 				if (valor.contains(".0")) {
-					valor = removerPuntoCero(valor);
+					valor = stockUtilString.removerPuntoCero(valor);
 				}
-				direccion.setEstado(getEstadoFromList(Long.parseLong(valor)));
+				direccion.setEstado(iteratorList.getEstadoFromList(estados, Long.parseLong(valor)));
 			}
 				
 			break;
 		case 7:
 			if ((valor != null) && (!valor.isEmpty()) && (!valor.equalsIgnoreCase("NULL"))){
 				if (valor.contains(".0")) {
-					valor = removerPuntoCero(valor);
+					valor = stockUtilString.removerPuntoCero(valor);
 				}
-				direccion.setMunicipio(getMunicipioFromList(Long.parseLong(valor)));
+				direccion.setMunicipio(iteratorList.getMunicipioFromList(municipios, Long.parseLong(valor)));
 			}
 			break;
 		case 8:
 			if ((valor != null) && (!valor.isEmpty()) && (!valor.equalsIgnoreCase("NULL"))){
 				if (valor.contains(".0")) {
-					valor = removerPuntoCero(valor);
+					valor = stockUtilString.removerPuntoCero(valor);
 				}
-				direccion.setPais(getPaisFromList(Long.parseLong(valor)));
+				direccion.setPais(iteratorList.getPaisFromList(paises, Long.parseLong(valor)));
 			}
 			break;
 		
@@ -525,7 +527,7 @@ public class ProveedoresVM extends ProveedorMetaClass {
 		case 1:
 			if ((valor != null) && (!valor.isEmpty()) && (!valor.equalsIgnoreCase("NULL"))) {
 				if (valor.contains(".0")) {
-					valor = removerPuntoCero(valor);
+					valor = stockUtilString.removerPuntoCero(valor);
 				}
 				proveedor.setCuentaCargo(Long.parseLong(valor));
 			}
@@ -541,15 +543,15 @@ public class ProveedoresVM extends ProveedorMetaClass {
 		case 4:
 			if ((valor != null) && (!valor.isEmpty()) && (!valor.equalsIgnoreCase("NULL"))){
 				if (valor.contains(".0")) {
-					valor = removerPuntoCero(valor);
-					proveedor.setDireccionFiscal(getDireccionFromList(Long.parseLong(valor)));
+					valor = stockUtilString.removerPuntoCero(valor);
+					proveedor.setDireccionFiscal(iteratorList.getDireccionFromList(direccionesList, Long.parseLong(valor)));
 				}
 			}
 			break;
 		case 5:
 			if ((valor != null) && (!valor.isEmpty()) && (!valor.equalsIgnoreCase("NULL"))){
 				if (valor.contains(".0")) {
-					valor = removerPuntoCero(valor);
+					valor = stockUtilString.removerPuntoCero(valor);
 					if(valor.equals("1"))
 						proveedor.setProveedorActivo(true);
 					else
@@ -571,21 +573,21 @@ public class ProveedoresVM extends ProveedorMetaClass {
 			case 0:
 				if ((valor != null) && (!valor.isEmpty()) && (!valor.equalsIgnoreCase("NULL"))) {
 					if (valor.contains(".0"))
-						valor = removerPuntoCero(valor);				
-					proveedorProducto.setProducto(getProductoFromList(Long.parseLong(valor), productosDB));
+						valor = stockUtilString.removerPuntoCero(valor);				
+					proveedorProducto.setProducto(iteratorList.getProductoFromList(Long.parseLong(valor), productosDB));
 				}
 				break;
 			case 1:
 				if ((valor != null) && (!valor.isEmpty()) && (!valor.equalsIgnoreCase("NULL"))) {
 					if (valor.contains(".0"))
-						valor = removerPuntoCero(valor);				
-					proveedorProducto.setProveedor(getProveedorFromList(Long.parseLong(valor), proveedoresLista));
+						valor = stockUtilString.removerPuntoCero(valor);				
+					proveedorProducto.setProveedor(iteratorList.getProveedorFromList(Long.parseLong(valor), proveedoresLista));
 				}
 				break;
 			case 2:
 				if ((valor != null) && (!valor.isEmpty()) && (!valor.equalsIgnoreCase("NULL"))) {
 					if (valor.contains(".0"))
-						valor = removerPuntoCero(valor);
+						valor = stockUtilString.removerPuntoCero(valor);
 					proveedorProducto.setCantidad(valor);
 				}
 				break;
@@ -603,7 +605,7 @@ public class ProveedoresVM extends ProveedorMetaClass {
 	@NotifyChange({ "*" })
 	public void seleccionarComboEstado() {
 		if (this.estadoProveedor != null) {
-			this.municipios = this.municipioService.getByEstado(this.estadoProveedor);
+			municipios = (List<Municipio>) municipioRest.getByEstado(estadoProveedor).getSingle();
 			System.err.println("cargando municipios de " + this.estadoProveedor.getNombre());
 		}
 	}
@@ -611,7 +613,7 @@ public class ProveedoresVM extends ProveedorMetaClass {
 	@Command
 	@NotifyChange({ "monedasDB" })
 	public void selectTabCuentaPago() {
-		monedasDB = monedaService.getAll();
+		monedasDB = (List<Moneda>) monedaRest.getAll(organizacion).getSingle();
 	}
 	
 	@Command
@@ -619,7 +621,7 @@ public class ProveedoresVM extends ProveedorMetaClass {
 	public void selectTabProductos() {
 		if(proveedorSelected != null && proveedorSelected.getIdProveedor() != null){
 			if(productosDB == null){
-				productosDB = productoService.getAllNativeSQL();
+				productosDB = (List<Producto>) productoRest.getAllNativeSQL(organizacion).getSingle();
 			}
 		}
 	}
@@ -649,7 +651,7 @@ public class ProveedoresVM extends ProveedorMetaClass {
 			if (self.getParent().getId().equals("right")) {// se arrastra a: derecha |
 				productosDB.remove(movingItem);
 				
-				movingItem = productoService.getById(movingItem.getIdProducto());
+				movingItem = (Producto) productoRest.getById(movingItem.getIdProducto(), organizacion).getSingle();
 				if(!verificarProductoNoSeEncuentreEnLaLista(movingItem)){
 					ProveedorProducto objetoDerecha = new ProveedorProducto();
 					objetoDerecha.setFechaActualizacion(Calendar.getInstance());
@@ -658,7 +660,7 @@ public class ProveedoresVM extends ProveedorMetaClass {
 					objetoDerecha.setProducto(movingItem);
 					objetoDerecha.setProveedor(proveedorSelected);
 					
-					proveedorProductoService.save(objetoDerecha);
+					objetoDerecha = (ProveedorProducto) proveedorProductoRest.save(objetoDerecha).getSingle();
 					
 					proveedorProductos.add(objetoDerecha);
 				}else
@@ -666,10 +668,10 @@ public class ProveedoresVM extends ProveedorMetaClass {
 							Clients.NOTIFICATION_TYPE_WARNING, 0, dragged);
 				
 			} else if (self.getParent().getId().equals("left")) {
-				movingItem = productoService.getById(movingItem2.getProducto().getIdProducto());
+				movingItem = (Producto) productoRest.getById(movingItem2.getProducto().getIdProducto(), organizacion).getSingle();
 				productosDB.add(movingItem);
 				proveedorProductos.remove(movingItem2);
-				proveedorProductoService.delete(movingItem2);
+				proveedorProductoRest.delete(movingItem2);
 
 				StockUtils.showSuccessmessage(movingItem.getNombre() + " ha sido removido --->",
 						Clients.NOTIFICATION_TYPE_INFO, 0, dragged);

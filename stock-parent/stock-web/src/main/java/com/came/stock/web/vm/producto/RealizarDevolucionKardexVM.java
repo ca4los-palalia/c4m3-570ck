@@ -1,35 +1,26 @@
-package com.cplsystems.stock.app.vm.producto;
+package com.came.stock.web.vm.producto;
 
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
 import org.zkoss.bind.BindUtils;
 import org.zkoss.bind.annotation.AfterCompose;
-import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.ContextParam;
 import org.zkoss.bind.annotation.ContextType;
 import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
-import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.select.Selectors;
 import org.zkoss.zk.ui.select.annotation.VariableResolver;
 import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zkplus.spring.DelegatingVariableResolver;
-import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Window;
 
-import com.cplsystems.stock.app.utils.StockUtils;
-import com.cplsystems.stock.app.vm.BasicStructure;
-import com.cplsystems.stock.domain.ControlUeps;
-import com.cplsystems.stock.domain.DevelopmentTool;
-import com.cplsystems.stock.domain.Kardex;
+import com.came.stock.utilidades.StockUtils;
+import com.came.stock.web.vm.BasicStructure;
 
 @VariableResolver({ DelegatingVariableResolver.class })
 public class RealizarDevolucionKardexVM extends BasicStructure {
@@ -168,11 +159,5 @@ public class RealizarDevolucionKardexVM extends BasicStructure {
 	public void setDevolucionSalida(boolean devolucionSalida) {
 		devolcionGlobal = false;
 		this.devolucionSalida = devolucionSalida;
-	}
-
-	
-	
-	
-	
-	
+	}	
 }

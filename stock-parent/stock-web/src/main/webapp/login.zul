@@ -23,7 +23,7 @@
 
 	<window height="100%" apply="org.zkoss.bind.BindComposer"
 		border="none" style="text-align:center"
-		viewModel="@id('vm') @init('com.cplsystems.stock.app.vm.LoginVM')">
+		viewModel="@id('vm') @init('com.came.stock.web.vm.LoginVM')">
 
 		<window mode="popup" id="proveedoresSesion"
 			style="padding-top:40px; padding-right: 100px;"

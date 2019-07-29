@@ -28,8 +28,8 @@ import com.came.stock.model.domain.Persona;
 import com.came.stock.model.domain.Privilegios;
 import com.came.stock.model.domain.Usuarios;
 import com.came.stock.utilidades.StockUtils;
+import com.came.stock.web.utils.ConexionManual;
 import com.came.stock.web.vm.controlpanel.utils.UsuarioVariables;
-import com.cplsystems.stock.app.utils.ConexionManual;
 
 @VariableResolver({ DelegatingVariableResolver.class })
 public class UsuarioVM extends UsuarioVariables {
@@ -39,7 +39,6 @@ public class UsuarioVM extends UsuarioVariables {
 	public void init() {
 		super.init();
 		ConexionManual cn = new ConexionManual();
-		usuarioRest.get
 		usuarioList = cn.getUsuariosActivos();
 		cn.cerrar();
 		getStylesGlobal();
@@ -64,7 +63,8 @@ public class UsuarioVM extends UsuarioVariables {
 			usuario.getOrganizacion().setActivar(false);
 			usuario.getOrganizacion().setDisableActiv(false);
 			usuario.getOrganizacion().setEjercicio(new Long(String.valueOf(Calendar.getInstance().getTime().getYear())));
-			usuario.getOrganizacion().setNumero(new Long(String.valueOf(organizacionService.getCountRows() + 1)));
+			
+			usuario.getOrganizacion().setNumero((long) organizacionRest.getCountRows().getSingle() + 1);
 			usuario.getOrganizacion().setProveedor(false);
 			usuario.getOrganizacion().setSucursalId(0);
 			

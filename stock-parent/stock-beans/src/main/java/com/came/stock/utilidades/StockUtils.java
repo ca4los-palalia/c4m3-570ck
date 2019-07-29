@@ -21,10 +21,14 @@ import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
+import javax.management.AttributeNotFoundException;
+import javax.management.InstanceNotFoundException;
+import javax.management.MBeanException;
 import javax.management.MBeanServer;
 import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
 import javax.management.Query;
+import javax.management.ReflectionException;
 
 import org.apache.commons.codec.binary.Base64;
 import org.springframework.stereotype.Repository;
@@ -270,15 +274,17 @@ public class StockUtils {
 	
 	public static CfgCore getInstanciaDelServidor()
 			throws MalformedObjectNameException, NullPointerException, UnknownHostException {
+		
 		MBeanServer beanServer = ManagementFactory.getPlatformMBeanServer();
-		Set<ObjectName> objectNames = beanServer.queryNames(new ObjectName("*:type=Connector,*"),
-				Query.match(Query.attr("protocol"), Query.value("HTTP/1.1")));
-		String host = InetAddress.getLocalHost().getHostAddress();
-		String port = objectNames.iterator().next().getKeyProperty("port");
+//		Set<ObjectName> objectNames = beanServer.queryNames(new ObjectName("*:type=Connector,*"),
+//				Query.match(Query.attr("protocol"), Query.value("HTTP/1.1")));
+//		String host = InetAddress.getLocalHost().getHostAddress();
+//		String port = objectNames.iterator().next().getKeyProperty("port");
 		
 		CfgCore urlHost = new CfgCore();
 		urlHost.setAtributo(ConstAtributos.CONTEXT_WEB);
-		urlHost.setValor("http" + "://" + host + ":" + port + "/cyber-core");
+//		urlHost.setValor("http" + "://" + host + ":" + port + "/cyber-core");
+		urlHost.setValor("http" + "://localhost:9090/cyber-core");
 		return urlHost;
 	}
 	

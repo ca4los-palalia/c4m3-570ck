@@ -1,4 +1,4 @@
-package com.cplsystems.stock.app.vm.producto.utils;
+package com.came.stock.web.vm.producto.utils;
 
 public class ModoDeBusqueda {
 	private boolean tipoFamilia;

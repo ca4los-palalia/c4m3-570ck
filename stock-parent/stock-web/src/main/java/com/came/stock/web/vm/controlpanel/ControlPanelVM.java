@@ -57,6 +57,7 @@ import com.came.stock.model.domain.Unidad;
 import com.came.stock.model.domain.Usuarios;
 import com.came.stock.utilidades.StockUtils;
 import com.came.stock.web.services.confya.Informacion_Empresa;
+import com.came.stock.web.utils.ConexionManual;
 import com.came.stock.web.vm.controlpanel.utils.ControlPanelMetaclass;
 
 @VariableResolver({ DelegatingVariableResolver.class })
@@ -1892,7 +1893,6 @@ public class ControlPanelVM extends ControlPanelMetaclass {
 								+ "\nEl proceso puede demorar algunos minutos.",
 						"acceptButtonWindowInformation", StockConstants.ICON_WIN_CONFIRM, 3);
 			else{
-				conffyaPartidaGenericaRest.getByOrganizacion(organizacion)
 				ConexionManual con = new ConexionManual();
 				cofiaPartidaGenericas = con.getAllPartidagenericaByOrg(organizacion, true);
 				con.cerrar();
@@ -1933,7 +1933,7 @@ public class ControlPanelVM extends ControlPanelMetaclass {
 	public void conffyaProyectos(){
 		if(visualizarControlesCame){
 			if (organizaciones == null || organizaciones.size() == 0)
-				organizaciones = organizacionService.getAll();
+				organizaciones = (List<Organizacion>) organizacionRest.getAll().getSingle();
 			cofiaPys = new ArrayList<>();
 			for (Organizacion itemOrg : organizaciones) {
 				List<ConffyaPy> listTemp = (List<ConffyaPy>) conffyaPyRest.getByOrganizacion(itemOrg).getSingle();

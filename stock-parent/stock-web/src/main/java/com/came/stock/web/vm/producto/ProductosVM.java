@@ -486,9 +486,9 @@ public class ProductosVM extends ProductoMetaClass {
 	public void findProductos() {
 		if ((buscarProducto.getNombre() != null) && (!buscarProducto.getNombre().isEmpty())) {
 			if (!buscarProducto.getNombre().equals("*")) {
-				productoDB = productoService.getByClaveNombre(buscarProducto.getNombre()).getSingle();
+				productoDB = (List<Producto>) productoRest.getByClaveNombre(buscarProducto.getNombre(), organizacion).getSingle();
 			} else if (buscarProducto.getNombre().equals("*")) {
-				productoDB = productoService.getAllNativeSQL().getSingle();
+				productoDB = (List<Producto>) productoRest.getAllNativeSQL(organizacion).getSingle();
 			}
 			if (productoDB != null) {
 				String mensaje = "";
@@ -525,7 +525,7 @@ public class ProductosVM extends ProductoMetaClass {
 	public void buscarProductosPorFamiliaChangeCombo() {
 		String mensaje = "Ningun producto encontrado de tipo: " + productoTipoSelected.getNombre();
 
-		familiasProductos = familiasProductoService.getByFamilia(productoTipoSelected).getSingle();
+		familiasProductos = (List<FamiliasProducto>) familiasProductoRest.getByFamilia(productoTipoSelected).getSingle();
 		if (familiasProductos != null) {
 			if (familiasProductos.size() == 1) {
 				mensaje = "Se encontro " + familiasProductos.size() + " producto de tipo "
@@ -570,25 +570,25 @@ public class ProductosVM extends ProductoMetaClass {
 	@NotifyChange({ "claveArmonizadaList", "productoTipo", "productoTipoDB", "producto", "codigosBarrasProductos",
 			"productoPrecios", "productoFactores", "productoMargenes", "productoCostos", "costosTiposLista" })
 	public void obtenerListaFamiliasProducto() {
-		producto = productoService.getById(producto.getIdProducto()).getSingle();
+		producto = (Producto) productoRest.getById(producto.getIdProducto(), organizacion).getSingle();
 
 		if (producto.getUnidad() != null)
-			producto.setUnidad(getUnidadFromList(producto.getUnidad().getIdUnidad()));
+			producto.setUnidad(iteratorList.getUnidadFromList(unidadesDB, producto.getUnidad().getIdUnidad()));
 		if (producto.getProductoNaturaleza() != null)
 			producto.setProductoNaturaleza(
-					getProductoNaturalezaFromList(producto.getProductoNaturaleza().getIdProductoNaturaleza()));
+					iteratorList.getProductoNaturalezaFromList(productosNaturalezas, producto.getProductoNaturaleza().getIdProductoNaturaleza()));
 		if (producto.getPresentacion() != null)
-			producto.setPresentacion(getPresentacionFromList(producto.getPresentacion().getIdPresentacion()));
+			producto.setPresentacion(iteratorList.getPresentacionFromList(presentaciones, producto.getPresentacion().getIdPresentacion()));
 
 		generarListaFamiliasProductos();
 		if (costosTiposLista == null)
-			costosTiposLista = costosTiposService.getAll(true).getSingle();
-		productoPrecios = productoPreciosService.getByProductoOrderMostRecentDate(producto);
-		productoFactores = productoFactoresService.getByProductoOrderMostRecentDate(producto).getSingle();
-		productoMargenes = productoMargenService.getByProductoOrderMostRecentDate(producto).getSingle();
-		productoCostos = productoCostosService.getByProductoOrderMostRecentDate(producto).getSingle();
+			costosTiposLista = (List<CostosTipos>) costosTiposRest.getAll(true, organizacion).getSingle();
+		productoPrecios = (List<ProductoPrecios>) productoPreciosRest.getByProductoOrderMostRecentDate(producto, organizacion).getSingle();
+		productoFactores = (List<ProductoFactores>) productoFactoresRest.getByProductoOrderMostRecentDate(producto).getSingle();
+		productoMargenes = (List<ProductoMargen>) productoMargenRest.getByProductoOrderMostRecentDate(producto).getSingle();
+		productoCostos = (List<ProductoCostos>) productoCostosRest.getByProductoOrderMostRecentDate(producto).getSingle();
 
-		List<CodigoBarrasProducto> codigos = codigoBarrasProductoService.getByProducto(producto).getSingle();
+		List<CodigoBarrasProducto> codigos = (List<CodigoBarrasProducto>) codigoBarrasProductoRest.getByProducto(producto).getSingle();
 		if (codigos != null) {
 			producto.setCodigosDeBarras(codigos);
 			producto.setCodigosDeBarrasSelected(codigos.get(0));
@@ -596,11 +596,11 @@ public class ProductosVM extends ProductoMetaClass {
 
 		if (producto.getConffyaPartidaGenerica() != null)
 			producto.setConffyaPartidaGenerica(
-					getPartidaGenericaFromListById(producto.getConffyaPartidaGenerica(), catalogoPartidaGenericas));
+					iteratorList.getPartidaGenericaFromListById(producto.getConffyaPartidaGenerica(), catalogoPartidaGenericas));
 
 		if (productoCostos != null) {
 			for (ProductoCostos item : productoCostos) {
-				CostosTipos returnItem = getCostosTiposByIdFromList(item.getCostosTipos().getIdCostosTipos(),
+				CostosTipos returnItem = iteratorList.getCostosTiposByIdFromList(item.getCostosTipos().getIdCostosTipos(),
 						costosTiposLista);
 				if (returnItem != null)
 					item.setCostosTipos(returnItem);
@@ -617,10 +617,10 @@ public class ProductosVM extends ProductoMetaClass {
 			// producto = productoService.getById(producto.getIdProducto());
 
 			if (selectedTab0 || selectedTab2) {
-				familiasProductos = familiasProductoService.getByProducto(producto).getSingle();
+				familiasProductos = (List<FamiliasProducto>) familiasProductoRest.getByProducto(producto).getSingle();
 			}
 
-			productoTipoDB = productoTipoService.getAll().getSingle();
+			productoTipoDB = (List<ProductoTipo>) productoTipoRest.getAll(organizacion).getSingle();
 			/*
 			 * if (producto.getConffyaPartidaGenerica() != null){
 			 * ConffyaPartidaGenerica itemTemp =
@@ -632,18 +632,18 @@ public class ProductosVM extends ProductoMetaClass {
 
 			if (producto.getProductoNaturaleza() != null)
 				producto.setProductoNaturaleza(
-						getProductoNaturalezaFromList(producto.getProductoNaturaleza().getIdProductoNaturaleza()));
+						iteratorList.getProductoNaturalezaFromList(productosNaturalezas, producto.getProductoNaturaleza().getIdProductoNaturaleza()));
 			if (producto.getMoneda() != null)
-				producto.setMoneda(getMonedaFromList(producto.getMoneda().getIdMoneda()));
+				producto.setMoneda(iteratorList.getMonedaFromList(monedasDB, producto.getMoneda().getIdMoneda()));
 			if (producto.getUnidad() != null)
-				producto.setUnidad(getUnidadFromList(producto.getUnidad().getIdUnidad()));
+				producto.setUnidad(iteratorList.getUnidadFromList(unidadesDB, producto.getUnidad().getIdUnidad()));
 
 			if (selectedTab3)
-				codigosBarrasProductos = codigoBarrasProductoService.getByProducto(producto).getSingle();
+				codigosBarrasProductos = (List<CodigoBarrasProducto>) codigoBarrasProductoRest.getByProducto(producto).getSingle();
 
 			if (familiasProductos != null) {
 				for (FamiliasProducto item : familiasProductos) {
-					ProductoTipo temp = getProductoTipoFromList(productoTipoDB,
+					ProductoTipo temp = iteratorList.getProductoTipoFromList(productoTipoDB,
 							item.getProductoTipo().getIdProductoTipo());
 					if (temp != null)
 						productoTipo.add(temp);
@@ -690,7 +690,7 @@ public class ProductosVM extends ProductoMetaClass {
 				if (existeProductoTipo(movingItem.getIdProductoTipo())) {
 					productoTipo.add(movingItem);
 
-					FamiliasProducto productosfamiliaTemp = familiasProductoService.getByProductoProductoTipo(producto,
+					FamiliasProducto productosfamiliaTemp = (FamiliasProducto) familiasProductoRest.getByProductoProductoTipo(producto,
 							movingItem).getSingle();
 					if (productosfamiliaTemp != null) {
 						familiasProductos.add(productosfamiliaTemp);
@@ -711,7 +711,7 @@ public class ProductosVM extends ProductoMetaClass {
 				productoTipoDB.add(movingItem);
 				productoTipo.remove(movingItem);
 
-				FamiliasProducto productosfamiliaTemp = familiasProductoService.getByProductoProductoTipo(producto,
+				FamiliasProducto productosfamiliaTemp = (FamiliasProducto) familiasProductoRest.getByProductoProductoTipo(producto,
 						movingItem).getSingle();
 				for (FamiliasProducto item : familiasProductos) {
 					if (productosfamiliaTemp != null) {
@@ -774,7 +774,7 @@ public class ProductosVM extends ProductoMetaClass {
 	public void obtenerProductosPorFamiliaSelectItemList() {
 		String mensaje = "Ningun producto encontrado de tipo: " + productoTipoSelected.getNombre();
 
-		familiasProductos = familiasProductoService.getByFamilia(productoTipoSelected).getSingle();
+		familiasProductos = (List<FamiliasProducto>) familiasProductoRest.getByFamilia(productoTipoSelected).getSingle();
 		if (familiasProductos != null) {
 			if (familiasProductos.size() == 1) {
 				mensaje = "Se encontro " + familiasProductos.size() + " producto de tipo "
@@ -829,7 +829,7 @@ public class ProductosVM extends ProductoMetaClass {
 				&& (codigosBarrasProductos.size() > 0)) {
 			codigosBarrasProductos.remove(codigoBarrasProducto);
 			if (codigoBarrasProducto.getIdCodigoBarrasProducto() != null) {
-				codigoBarrasProductoService.delete(codigoBarrasProducto);
+				codigoBarrasProductoRest.delete(codigoBarrasProducto);
 			}
 			if (codigoBarrasProducto.getCodigo() != null) {
 				StockUtils.showSuccessmessage(codigoBarrasProducto.getCodigo() + " ha sido eliminado", "info",
@@ -847,7 +847,7 @@ public class ProductosVM extends ProductoMetaClass {
 				item.setProducto(producto);
 				if ((item.getCodigo() != null) && (!item.getCodigo().isEmpty())) {
 					item.setCodigo(item.getCodigo().toUpperCase());
-					codigoBarrasProductoService.save(item).getSingle();
+					item = (CodigoBarrasProducto) codigoBarrasProductoRest.save(item).getSingle();
 				}
 			}
 			StockUtils.showSuccessmessage("Nuevos codigos han sido guardados para el producto " + producto.getNombre(),
@@ -877,7 +877,7 @@ public class ProductosVM extends ProductoMetaClass {
 		producto = new Producto();
 		if (productoDB == null || productoDB.size() == 0) {
 			// productoDB = productoService.getAllNativeSQL();
-			productoDB = productoService.getAll().getSingle();
+			productoDB = (List<Producto>) productoRest.getAll(organizacion).getSingle();
 		}
 
 		productoPrecios = new ArrayList<>();
@@ -910,7 +910,7 @@ public class ProductosVM extends ProductoMetaClass {
 		selectedTab2 = true;
 		selectedTab3 = false;
 		selectedTab4 = false;
-		productoTipoClasificaciones = productoTipoService.getAll().getSingle();
+		productoTipoClasificaciones = (List<ProductoTipo>) productoTipoRest.getAll(organizacion).getSingle();
 	}
 
 	@Command
@@ -963,7 +963,7 @@ public class ProductosVM extends ProductoMetaClass {
 					item.setOrganizacion(organizacion);
 					item.setProducto(producto);
 					item.setUsuario(usuario);
-					productoPreciosService.save(item).getSingle();
+					item = (ProductoPrecios) productoPreciosRest.save(item).getSingle();
 					StockUtils.showSuccessmessage("Un nuevo precio ha sido agregado", Clients.NOTIFICATION_TYPE_INFO, 0,
 							comp);
 				}
@@ -980,7 +980,7 @@ public class ProductosVM extends ProductoMetaClass {
 		productoPrecio = productoPrecios.get(index);
 		productoPrecios.remove(productoPrecio);
 		if (productoPrecio.getIdProductoPrecios() != null)
-			productoPreciosService.delete(productoPrecio).getSingle();
+			productoPreciosRest.delete(productoPrecio);
 
 		int i = 0;
 		for (ProductoPrecios item : productoPrecios) {
@@ -1016,7 +1016,7 @@ public class ProductosVM extends ProductoMetaClass {
 					item.setOrganizacion(organizacion);
 					item.setProducto(producto);
 					item.setUsuario(usuario);
-					productoFactoresService.save(item).getSingle();
+					item = (ProductoFactores) productoFactoresRest.save(item).getSingle();
 					StockUtils.showSuccessmessage("Un nuevo factor ha sido agregado", Clients.NOTIFICATION_TYPE_INFO, 0,
 							comp);
 				}
@@ -1033,7 +1033,7 @@ public class ProductosVM extends ProductoMetaClass {
 		productoFactor = productoFactores.get(index);
 		productoFactores.remove(productoFactor);
 		if (productoFactor.getIdProductoFactores() != null)
-			productoFactoresService.delete(productoFactor);
+			productoFactoresRest.delete(productoFactor);
 
 		int i = 0;
 		for (ProductoFactores item : productoFactores) {
@@ -1069,7 +1069,7 @@ public class ProductosVM extends ProductoMetaClass {
 					item.setOrganizacion(organizacion);
 					item.setProducto(producto);
 					item.setUsuario(usuario);
-					productoMargenService.save(item).getSingle();
+					item = (ProductoMargen) productoMargenRest.save(item).getSingle();
 					StockUtils.showSuccessmessage("Un nuevo margen ha sido agregado", Clients.NOTIFICATION_TYPE_INFO, 0,
 							comp);
 				}
@@ -1086,7 +1086,7 @@ public class ProductosVM extends ProductoMetaClass {
 		productoMargen = productoMargenes.get(index);
 		productoMargenes.remove(productoMargen);
 		if (productoMargen.getIdProductoMargen() != null)
-			productoMargenService.delete(productoMargen);
+			productoMargenRest.delete(productoMargen);
 
 		int i = 0;
 		for (ProductoMargen item : productoMargenes) {
@@ -1120,7 +1120,7 @@ public class ProductosVM extends ProductoMetaClass {
 					item.setOrganizacion(organizacion);
 					item.setProducto(producto);
 					item.setUsuario(usuario);
-					productoCostosService.save(item).getSingle();
+					item = (ProductoCostos) productoCostosRest.save(item).getSingle();
 					StockUtils.showSuccessmessage("Un nuevo costo ha sido agregado", Clients.NOTIFICATION_TYPE_INFO, 0,
 							comp);
 				}
@@ -1137,7 +1137,7 @@ public class ProductosVM extends ProductoMetaClass {
 		productoCosto = productoCostos.get(index);
 		productoCostos.remove(productoCosto);
 		if (productoCosto.getIdProductoCostos() != null)
-			productoCostosService.delete(productoCosto);
+			productoCostosRest.delete(productoCosto);
 
 		int i = 0;
 		for (ProductoCostos item : productoCostos) {

@@ -2,7 +2,8 @@ package com.came.stock.web.layer;
 
 import java.io.Serializable;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+import org.zkoss.zk.ui.select.annotation.WireVariable;
 
 import com.came.stock.web.services.AlmacenEntradaRest;
 import com.came.stock.web.services.AlmacenRest;
@@ -77,152 +78,153 @@ import com.came.stock.web.services.TelefonoRest;
 import com.came.stock.web.services.UnidadRest;
 import com.came.stock.web.services.UsuarioRest;
 
-public class LayerWebServices extends LayerWebTag implements Serializable {
+@Repository
+public abstract class LayerWebServices extends LayerWebTag implements Serializable {
 	
 	private static final long serialVersionUID = 1927215250713591705L;
 
-	@Autowired
+	@WireVariable
 	protected AlmacenEntradaRest almacenEntradaRest;
-	@Autowired
+	@WireVariable
 	protected AlmacenRest almacenRest;
-	@Autowired
+	@WireVariable
 	protected AreaRest areaRest;
-	@Autowired
+	@WireVariable
 	protected BancoRest bancoRest;
-	@Autowired
+	@WireVariable
 	protected BannerRest bannerRest;
-	@Autowired
+	@WireVariable
 	protected CalculosCostoRest calculosCostoRest;
-	@Autowired
+	@WireVariable
 	protected ClaveArmonizadaRest claveArmonizadaRest;
-	@Autowired
+	@WireVariable
 	protected CodigoBarrasProductoRest codigoBarrasProductoRest;
-	@Autowired
+	@WireVariable
 	protected ConffyaFuenteFinanciamientoRest conffyaFuenteFinanciamientoRest;
-	@Autowired
+	@WireVariable
 	protected ConffyaPartidaGenericaRest conffyaPartidaGenericaRest;
-	@Autowired
+	@WireVariable
 	protected ConffyaPresupuestoDesglosadoRest conffyaPresupuestoDesglosadoRest;
-	@Autowired
+	@WireVariable
 	protected ConffyaProgRest conffyaProgRest;
-	@Autowired
+	@WireVariable
 	protected ConffyaPyRest conffyaPyRest;
-	@Autowired
+	@WireVariable
 	protected ConfiguracionCorreoRest configuracionCorreoRest;
-	@Autowired
+	@WireVariable
 	protected ContactoRest contactoRest;
-	@Autowired
+	@WireVariable
 	protected ContratoRest contratoRest;
-	@Autowired
+	@WireVariable
 	protected CostosProductoRest costosProductoRest;;
-	@Autowired
+	@WireVariable
 	protected CostosTiposRest costosTiposRest;
-	@Autowired
+	@WireVariable
 	protected CotizacionInboxRest cotizacionInboxRest;
-	@Autowired
+	@WireVariable
 	protected CotizacionProductoRest cotizacionProductoRest;
-	@Autowired
+	@WireVariable
 	protected CotizacionRest cotizacionRest;
-	@Autowired
+	@WireVariable
 	protected CuentasPagoRest cuentasPagoRest;
-	@Autowired
+	@WireVariable
 	protected DestinoRest destinoRest;
-	@Autowired
+	@WireVariable
 	protected DevelopmentToolRest developmentToolRest;
-	@Autowired
+	@WireVariable
 	protected DireccionEntregaRest direccionEntregaRest;
-	@Autowired
+	@WireVariable
 	protected DireccionRest direccionRest;
-	@Autowired
+	@WireVariable
 	protected EmailRest emailRest;
-	@Autowired
+	@WireVariable
 	protected EstadoRest estadoRest;
-	@Autowired
+	@WireVariable
 	protected EstatusRequisicionRest estatusRequisicionRest;
-	@Autowired
+	@WireVariable
 	protected FamiliasProductoRest familiasProductoRest;
-	@Autowired
+	@WireVariable
 	protected GiroRest giroRest;
-	@Autowired
+	@WireVariable
 	protected JustificacionRest justificacionRest;
-	@Autowired
+	@WireVariable
 	protected KardexProveedorRest kardexProveedorRest;
-	@Autowired
+	@WireVariable
 	protected KardexRest kardexRest;
-	@Autowired
+	@WireVariable
 	protected LabelsModulosRest labelsModulosRest;
-	@Autowired
+	@WireVariable
 	protected LugarRest lugarRest;
-	@Autowired
+	@WireVariable
 	protected ModulosOrganizacionRest modulosOrganizacionRest;
-	@Autowired
+	@WireVariable
 	protected ModulosRest modulosRest;
-	@Autowired
+	@WireVariable
 	protected MonedaRest monedaRest;
-	@Autowired
+	@WireVariable
 	protected MunicipioRest municipioRest;
-	@Autowired
+	@WireVariable
 	protected OrdenCompraInboxRest ordenCompraInboxRest;
-	@Autowired
+	@WireVariable
 	protected OrdenCompraProductoRest ordenCompraProductoRest;
-	@Autowired
+	@WireVariable
 	protected OrdenCompraRest ordenCompraRest;
-	@Autowired
+	@WireVariable
 	protected OrganizacionRest organizacionRest;
-	@Autowired
+	@WireVariable
 	protected PaisRest paisRest;
-	@Autowired
+	@WireVariable
 	protected PartidaRest partidaRest;
-	@Autowired
+	@WireVariable
 	protected PersonaRest personaRest;
-	@Autowired
+	@WireVariable
 	protected PosicionRest posicionRest;
-	@Autowired
+	@WireVariable
 	protected PresentacionRest presentacionRest;
-	@Autowired
+	@WireVariable
 	protected PrivilegioRest privilegioRest;
-	@Autowired
+	@WireVariable
 	protected ProductoCostosRest productoCostosRest;
-	@Autowired
+	@WireVariable
 	protected ProductoFactoresRest productoFactoresRest;
-	@Autowired
+	@WireVariable
 	protected ProductoMargenRest productoMargenRest;
-	@Autowired
+	@WireVariable
 	protected ProductoNaturalezaRest productoNaturalezaRest;
-	@Autowired
+	@WireVariable
 	protected ProductoPreciosRest productoPreciosRest;
-	@Autowired
+	@WireVariable
 	protected ProductoRest productoRest;
-	@Autowired
+	@WireVariable
 	protected ProductoTipoRest productoTipoRest;
-	@Autowired
+	@WireVariable
 	protected ProductoTipoSubFamiliaRest productoTipoSubFamiliaRest;
-	@Autowired
+	@WireVariable
 	protected ProductoTopeRest productoTopeRest;
-	@Autowired
+	@WireVariable
 	protected ProveedorProductoRest proveedorProductoRest;
-	@Autowired
+	@WireVariable
 	protected ProveedorRest proveedorRest;
-	@Autowired
+	@WireVariable
 	protected ProveedorUsuarioRest proveedorUsuarioRest;
-	@Autowired
+	@WireVariable
 	protected ProyectoRest proyectoRest;
-	@Autowired
+	@WireVariable
 	protected RequisicionInboxRest requisicionInboxRest;
-	@Autowired
+	@WireVariable
 	protected RequisicionPartidaRest requisicionPartidaRest;
-	@Autowired
+	@WireVariable
 	protected RequisicionProductoRest requisicionProductoRest;
-	@Autowired
+	@WireVariable
 	protected RequisicionProveedorRest requisicionProveedorRest;
-	@Autowired
+	@WireVariable
 	protected RequisicionRest requisicionRest;
-	@Autowired
+	@WireVariable
 	protected RestMetaclas restMetaclas;
-	@Autowired
+	@WireVariable
 	protected TelefonoRest telefonoRest;
-	@Autowired
+	@WireVariable
 	protected UnidadRest unidadRest;
-	@Autowired
+	@WireVariable
 	protected UsuarioRest usuarioRest;
 }

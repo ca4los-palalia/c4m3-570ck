@@ -1,4 +1,4 @@
-package com.cplsystems.stock.app.vm.producto;
+package com.came.stock.web.vm.producto;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,10 +19,9 @@ import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zkplus.spring.DelegatingVariableResolver;
 import org.zkoss.zul.Window;
 
-import com.cplsystems.stock.app.vm.BasicStructure;
-import com.cplsystems.stock.domain.Area;
-import com.cplsystems.stock.domain.Organizacion;
-import com.cplsystems.stock.domain.Usuarios;
+import com.came.stock.model.domain.Organizacion;
+import com.came.stock.model.domain.Usuarios;
+import com.came.stock.web.vm.BasicStructure;
 
 @VariableResolver({ DelegatingVariableResolver.class })
 public class ValidarUsuarioAccionVM extends BasicStructure {

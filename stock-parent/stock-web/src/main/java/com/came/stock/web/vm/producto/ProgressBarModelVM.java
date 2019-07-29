@@ -1,4 +1,4 @@
-package com.cplsystems.stock.app.vm.producto;
+package com.came.stock.web.vm.producto;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -30,13 +30,17 @@ import org.zkoss.zul.Progressmeter;
 import org.zkoss.zul.Timer;
 import org.zkoss.zul.Window;
 
-import com.cplsystems.stock.app.vm.BasicStructure;
-import com.cplsystems.stock.domain.Direccion;
-import com.cplsystems.stock.domain.Organizacion;
-import com.cplsystems.stock.domain.ProcesoTime;
-import com.cplsystems.stock.domain.Proveedor;
-import com.cplsystems.stock.domain.ProveedorProducto;
-import com.cplsystems.stock.domain.Usuarios;
+import com.came.stock.beans.ProcesoTime;
+import com.came.stock.model.domain.Direccion;
+import com.came.stock.model.domain.Estado;
+import com.came.stock.model.domain.Municipio;
+import com.came.stock.model.domain.Organizacion;
+import com.came.stock.model.domain.Pais;
+import com.came.stock.model.domain.Producto;
+import com.came.stock.model.domain.Proveedor;
+import com.came.stock.model.domain.ProveedorProducto;
+import com.came.stock.model.domain.Usuarios;
+import com.came.stock.web.vm.BasicStructure;
 
 @VariableResolver({ DelegatingVariableResolver.class })
 public class ProgressBarModelVM extends BasicStructure {
@@ -181,7 +185,7 @@ public class ProgressBarModelVM extends BasicStructure {
 		float time_start, time_end;
 		time_start = System.currentTimeMillis();
 		percent = getPorcentaje(procesos.get(0).getTime());
-		estados = estadoService.getAll();
+		estados = (List<Estado>) estadoRest.getAll().getSingle();
 		time_end = System.currentTimeMillis();
 		System.err.println("Estados: " + (time_end - time_start) + " " + percent + "%");
 		
@@ -190,19 +194,19 @@ public class ProgressBarModelVM extends BasicStructure {
 		
 		time_start = System.currentTimeMillis();
 		percent = getPorcentaje(procesos.get(1).getTime());
-		municipios = municipioService.getAll();
+		municipios = (List<Municipio>) municipioRest.getAll().getSingle();
 		time_end = System.currentTimeMillis();
 		System.err.println("Municipios: " + (time_end - time_start) + " " + percent + "%");
 		
 		time_start = System.currentTimeMillis();
 		percent = getPorcentaje(procesos.get(2).getTime());
-		paises = paisService.getAll();
+		paises = (List<Pais>) paisRest.getAll().getSingle();
 		time_end = System.currentTimeMillis();
 		System.err.println("Paises: " + (time_end - time_start) + " " + percent + "%");
 		
 		time_start = System.currentTimeMillis();
 		percent = getPorcentaje(procesos.get(3).getTime());
-		productosDB = productoService.getAllNativeSQL();
+		productosDB = (List<Producto>) productoRest.getAllNativeSQL(organizacion).getSingle();
 		time_end = System.currentTimeMillis();
 		System.err.println("Productos: " + (time_end - time_start) + " " + percent + "%");
 		
@@ -312,7 +316,7 @@ public class ProgressBarModelVM extends BasicStructure {
 		}
 		if(direccionTemp.size() > 0){
 			for (Direccion item : direccionTemp) {
-				direccionService.save(item);
+				item = (Direccion) direccionRest.save(item).getSingle();
 			}
 			
 			direccionesList = direccionTemp;
@@ -348,7 +352,7 @@ public class ProgressBarModelVM extends BasicStructure {
 		}
 		if(proveedorTemp.size() > 0){
 			for (Proveedor item : proveedorTemp) {
-				proveedorService.save(item);
+				item = (Proveedor) proveedorRest.save(item).getSingle();
 			}
 			proveedoresLista = proveedorTemp;
 		}
@@ -395,7 +399,7 @@ public class ProgressBarModelVM extends BasicStructure {
 			time_start = System.currentTimeMillis();
 			percent = getPorcentaje(procesos.get(8).getTime());
 			for (ProveedorProducto item : proveedorProductoTemp) {
-				proveedorProductoService.save(item);
+				item = (ProveedorProducto) proveedorProductoRest.save(item).getSingle();
 			}
 			proveedorProductos = proveedorProductoTemp;
 			time_end = System.currentTimeMillis();
@@ -435,26 +439,26 @@ public class ProgressBarModelVM extends BasicStructure {
 		case 6:
 			if ((valor != null) && (!valor.isEmpty()) && (!valor.equalsIgnoreCase("NULL"))){
 				if (valor.contains(".0")) {
-					valor = removerPuntoCero(valor);
+					valor = stockUtilString.removerPuntoCero(valor);
 				}
-				direccion.setEstado(getEstadoFromList(Long.parseLong(valor)));
+				direccion.setEstado(iteratorList.getEstadoFromList(estados, Long.parseLong(valor)));
 			}
 				
 			break;
 		case 7:
 			if ((valor != null) && (!valor.isEmpty()) && (!valor.equalsIgnoreCase("NULL"))){
 				if (valor.contains(".0")) {
-					valor = removerPuntoCero(valor);
+					valor = stockUtilString.removerPuntoCero(valor);
 				}
-				direccion.setMunicipio(getMunicipioFromList(Long.parseLong(valor)));
+				direccion.setMunicipio(iteratorList.getMunicipioFromList(municipios, Long.parseLong(valor)));
 			}
 			break;
 		case 8:
 			if ((valor != null) && (!valor.isEmpty()) && (!valor.equalsIgnoreCase("NULL"))){
 				if (valor.contains(".0")) {
-					valor = removerPuntoCero(valor);
+					valor = stockUtilString.removerPuntoCero(valor);
 				}
-				direccion.setPais(getPaisFromList(Long.parseLong(valor)));
+				direccion.setPais(iteratorList.getPaisFromList(paises, Long.parseLong(valor)));
 			}
 			break;
 		
@@ -473,7 +477,7 @@ public class ProgressBarModelVM extends BasicStructure {
 		case 1:
 			if ((valor != null) && (!valor.isEmpty()) && (!valor.equalsIgnoreCase("NULL"))) {
 				if (valor.contains(".0")) {
-					valor = removerPuntoCero(valor);
+					valor = stockUtilString.removerPuntoCero(valor);
 				}
 				proveedor.setCuentaCargo(Long.parseLong(valor));
 			}
@@ -489,15 +493,15 @@ public class ProgressBarModelVM extends BasicStructure {
 		case 4:
 			if ((valor != null) && (!valor.isEmpty()) && (!valor.equalsIgnoreCase("NULL"))){
 				if (valor.contains(".0")) {
-					valor = removerPuntoCero(valor);
-					proveedor.setDireccionFiscal(getDireccionFromList(Long.parseLong(valor)));
+					valor = stockUtilString.removerPuntoCero(valor);
+					proveedor.setDireccionFiscal(iteratorList.getDireccionFromList(direccionesList, Long.parseLong(valor)));
 				}
 			}
 			break;
 		case 5:
 			if ((valor != null) && (!valor.isEmpty()) && (!valor.equalsIgnoreCase("NULL"))){
 				if (valor.contains(".0")) {
-					valor = removerPuntoCero(valor);
+					valor = stockUtilString.removerPuntoCero(valor);
 					if(valor.equals("1"))
 						proveedor.setProveedorActivo(true);
 					else
@@ -517,21 +521,21 @@ public class ProgressBarModelVM extends BasicStructure {
 			case 0:
 				if ((valor != null) && (!valor.isEmpty()) && (!valor.equalsIgnoreCase("NULL"))) {
 					if (valor.contains(".0"))
-						valor = removerPuntoCero(valor);				
-					proveedorProducto.setProducto(getProductoFromList(Long.parseLong(valor), productosDB));
+						valor = stockUtilString.removerPuntoCero(valor);				
+					proveedorProducto.setProducto(iteratorList.getProductoFromList(Long.parseLong(valor), productosDB));
 				}
 				break;
 			case 1:
 				if ((valor != null) && (!valor.isEmpty()) && (!valor.equalsIgnoreCase("NULL"))) {
 					if (valor.contains(".0"))
-						valor = removerPuntoCero(valor);				
-					proveedorProducto.setProveedor(getProveedorFromList(Long.parseLong(valor), proveedoresLista));
+						valor = stockUtilString.removerPuntoCero(valor);				
+					proveedorProducto.setProveedor(iteratorList.getProveedorFromList(Long.parseLong(valor), proveedoresLista));
 				}
 				break;
 			case 2:
 				if ((valor != null) && (!valor.isEmpty()) && (!valor.equalsIgnoreCase("NULL"))) {
 					if (valor.contains(".0"))
-						valor = removerPuntoCero(valor);
+						valor = stockUtilString.removerPuntoCero(valor);
 					proveedorProducto.setCantidad(valor);
 				}
 				break;

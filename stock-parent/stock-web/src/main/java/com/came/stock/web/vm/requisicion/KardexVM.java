@@ -29,6 +29,7 @@ import com.came.stock.model.domain.Organizacion;
 import com.came.stock.model.domain.Producto;
 import com.came.stock.model.domain.Usuarios;
 import com.came.stock.utilidades.StockUtils;
+import com.came.stock.web.utils.ConexionManual;
 import com.came.stock.web.vm.BasicStructure;
 
 @VariableResolver({ DelegatingVariableResolver.class })

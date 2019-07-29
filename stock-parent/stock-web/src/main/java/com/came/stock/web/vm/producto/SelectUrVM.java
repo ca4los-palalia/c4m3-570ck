@@ -1,7 +1,5 @@
-package com.cplsystems.stock.app.vm.producto;
+package com.came.stock.web.vm.producto;
 
-import com.cplsystems.stock.app.vm.BasicStructure;
-import com.cplsystems.stock.domain.Area;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,12 +13,14 @@ import org.zkoss.bind.annotation.ContextType;
 import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.select.Selectors;
 import org.zkoss.zk.ui.select.annotation.VariableResolver;
 import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zkplus.spring.DelegatingVariableResolver;
 import org.zkoss.zul.Window;
+
+import com.came.stock.model.domain.Area;
+import com.came.stock.web.vm.BasicStructure;
 
 @VariableResolver({ DelegatingVariableResolver.class })
 public class SelectUrVM extends BasicStructure {

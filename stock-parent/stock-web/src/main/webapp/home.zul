@@ -1,6 +1,6 @@
 <?page title="Home" contentType="text/html;charset=UTF-8" id="PH"?>
 <?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
-<?init class="com.cplsystems.stock.app.utils.IntegrityChecker" BENUTZER="${sessionUtils}"?>
+<?init class="com.came.stock.web.utils.IntegrityChecker" BENUTZER="${sessionUtils}"?>
 <?link  type="image/x-icon" href="/images/toolbar/cost32.png" rel="shortcut icon"?>
 <zk>
 	

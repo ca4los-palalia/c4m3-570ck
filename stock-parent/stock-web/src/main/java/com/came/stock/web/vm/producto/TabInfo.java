@@ -1,6 +1,6 @@
-package com.cplsystems.stock.app.vm.producto;
+package com.came.stock.web.vm.producto;
 
-import com.cplsystems.stock.domain.ProductoTipo;
+import com.came.stock.model.domain.ProductoTipo;
 
 public class TabInfo {
 	private String path;

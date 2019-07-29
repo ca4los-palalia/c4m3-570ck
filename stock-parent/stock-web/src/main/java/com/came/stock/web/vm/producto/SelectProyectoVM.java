@@ -1,4 +1,4 @@
-package com.cplsystems.stock.app.vm.producto;
+package com.came.stock.web.vm.producto;
 
 import java.util.HashMap;
 import java.util.List;
@@ -19,10 +19,10 @@ import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zkplus.spring.DelegatingVariableResolver;
 import org.zkoss.zul.Window;
 
-import com.cplsystems.stock.app.vm.BasicStructure;
-import com.cplsystems.stock.domain.Area;
-import com.cplsystems.stock.domain.ConffyaProg;
-import com.cplsystems.stock.domain.ConffyaPy;
+import com.came.stock.model.domain.Area;
+import com.came.stock.model.domain.ConffyaProg;
+import com.came.stock.model.domain.ConffyaPy;
+import com.came.stock.web.vm.BasicStructure;
 
 @VariableResolver({ DelegatingVariableResolver.class })
 public class SelectProyectoVM extends BasicStructure {

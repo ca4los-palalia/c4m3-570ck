@@ -1,4 +1,4 @@
-package com.cplsystems.stock.app.vm.producto;
+package com.came.stock.web.vm.producto;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -24,16 +24,15 @@ import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zkplus.spring.DelegatingVariableResolver;
 import org.zkoss.zul.Listbox;
-import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
 
-import com.cplsystems.stock.app.utils.StockConstants;
-import com.cplsystems.stock.app.utils.StockUtils;
-import com.cplsystems.stock.app.vm.BasicStructure;
-import com.cplsystems.stock.domain.DevelopmentTool;
-import com.cplsystems.stock.domain.Kardex;
-import com.cplsystems.stock.domain.Organizacion;
-import com.cplsystems.stock.domain.Usuarios;
+import com.came.stock.model.domain.DevelopmentTool;
+import com.came.stock.model.domain.Kardex;
+import com.came.stock.model.domain.Organizacion;
+import com.came.stock.model.domain.Producto;
+import com.came.stock.model.domain.Usuarios;
+import com.came.stock.utilidades.StockUtils;
+import com.came.stock.web.vm.BasicStructure;
 
 @VariableResolver({ DelegatingVariableResolver.class })
 public class TarjetaKardexProductoVM extends BasicStructure {
@@ -68,7 +67,7 @@ public class TarjetaKardexProductoVM extends BasicStructure {
 		kardexCargarProductosConCalculoCosto();
 		
 		if(general){
-			listaProductosKardex = kardexService.getAllProductosNoRepetidos();
+			listaProductosKardex = (List<Producto>) kardexRest.getAllProductosNoRepetidos(organizacion).getSingle();
 		}else
 			title = "Tarjeta de kardex para " + kardexList.get(0).getProducto().getNombre();
 	}
@@ -306,7 +305,7 @@ public class TarjetaKardexProductoVM extends BasicStructure {
 		
 		salidaKardex.setEnableSaveBotton(false);
 		
-		kardexService.save(salidaKardex);
+		salidaKardex = (Kardex) kardexRest.save(salidaKardex).getSingle();
 		kardexListInside.add(salidaKardex);
 		
 		return salidaKardex;
@@ -353,13 +352,15 @@ public class TarjetaKardexProductoVM extends BasicStructure {
 		boolean ok = true;
 		listItems = (Listbox) tarjetaKardexModalDialog.getFellow("tarjetaKardexModalDialog").getFellow("winProductos").getFellow("listItems");
 		if(kardexListInside.get(index).getEntradaCantidad() != null){
-			kardexService.save(kardexListInside.get(index));
+			Kardex k = kardexListInside.get(index);
+			k = (Kardex) kardexRest.save(k).getSingle();
 			if(kardexListInside.get(index).getEntradaLote() != null && kardexListInside.get(index).getExistenciaLote() != null)
 				kardexListInside.get(index).setEnableSaveBotton(false);
 			mensaje += "Se ha modificado informacion en la entrada del producto";
 		}else{
 			if(kardexListInside.get(index).getSalidaLote() != null){
-				kardexService.save(kardexListInside.get(index));
+				Kardex k = kardexListInside.get(index);
+				k = (Kardex) kardexRest.save(k).getSingle();
 				if(kardexListInside.get(index).getSalidaLote() != null && kardexListInside.get(index).getExistenciaLote() != null)
 					kardexListInside.get(index).setEnableSaveBotton(false);
 				mensaje += "Se ha modificado informacion en la salida de mercancia";
@@ -378,7 +379,7 @@ public class TarjetaKardexProductoVM extends BasicStructure {
 	@NotifyChange({ "kardexListInside", "title" })
 	@Command
 	public void verTarjetaProductoSeleccionado(){
-		kardexListInside = kardexService.getByProducto(productosKardexSelected);
+		kardexListInside = (List<Kardex>) kardexRest.getByProducto(productosKardexSelected, organizacion).getSingle();
 		kardexCargarProductosConCalculoCosto();
 		title = "Tarjeta de kardex para " + productosKardexSelected.getNombre();
 	}
